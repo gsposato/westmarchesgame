@@ -36,8 +36,8 @@ class DocumentTest extends \Codeception\Test\Unit
     public function testReadDocument()
     {
         $this->testCreateDocument();
-        $campaign = Document::find()->one();
-        $this->assertNotEmpty($campaign);
+        $document = Document::find()->one();
+        $this->assertNotEmpty($document);
     }
 
     public function testUpdateDocument()
