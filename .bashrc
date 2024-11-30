@@ -116,3 +116,12 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# tmux
+if [ -n "$BASH_VERSION" -a -n "$PS1" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+    #. "$HOME/.bashrc"
+    PS1="$ "
+    fi
+fi
