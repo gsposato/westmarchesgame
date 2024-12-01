@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m241130_153657_game_poll extends Migration
+class m241201_125804_game_poll_slot extends Migration
 {
     /**
      * {@inheritdoc}
@@ -10,10 +10,12 @@ class m241130_153657_game_poll extends Migration
     public function safeUp()
     {
         $sql = <<<SQL
-create table game_poll(
+create table game_poll_slot(
     id int not null auto_increment,
-    gameId int not null,
-    note text not null,
+    gamePollId int not null,
+    humantime datetime not null,
+    timezone varchar(255) not null,
+    unixtime int not null,
     owner int not null,
     creator int not null,
     created int not null,
@@ -21,7 +23,7 @@ create table game_poll(
     primary key (id)
 )
 SQL;
-    Yii::$app->db->createCommand($sql)->execute();
+        Yii::$app->db->createCommand($sql)->execute();
     }
 
     /**
@@ -30,7 +32,7 @@ SQL;
     public function safeDown()
     {
         $sql = <<<SQL
-drop table game_poll
+drop table game_poll_slot
 SQL;
         Yii::$app->db->createCommand($sql)->execute();
     }
