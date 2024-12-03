@@ -11,6 +11,9 @@ use Yii;
  * @property int $gameId
  * @property string $note
  * @property int $pinned
+ * @property int $inGamePoll
+ * @property int $inGameEvent
+ * @property int $inGameSummary
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -33,7 +36,7 @@ class GameNote extends \yii\db\ActiveRecord
     {
         return [
             [['gameId', 'note', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['gameId', 'pinned', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['gameId', 'pinned', 'inGamePoll', 'inGameEvent', 'inGameSummary', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['note'], 'string'],
         ];
     }
@@ -48,6 +51,9 @@ class GameNote extends \yii\db\ActiveRecord
             'gameId' => 'Game ID',
             'note' => 'Note',
             'pinned' => 'Pinned',
+            'inGamePoll' => 'In Game Poll',
+            'inGameEvent' => 'In Game Event',
+            'inGameSummary' => 'In Game Summary',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',

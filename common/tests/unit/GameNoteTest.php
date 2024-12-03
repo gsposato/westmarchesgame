@@ -22,6 +22,9 @@ class GameNoteTest extends \Codeception\Test\Unit
         $gameNote = new GameNote();
         $gameNote->note = "Test";
         $gameNote->gameId = 1;
+        $gameNote->inGamePoll = 1;
+        $gameNote->inGameEvent = 1;
+        $gameNote->inGameSummary = 1;
         $gameNote->owner = 1;
         $gameNote->creator = 1;
         $gameNote->created = $now;
