@@ -5,25 +5,27 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "document".
+ * This is the model class for table "campaign_document".
  *
  * @property int $id
  * @property int $campaignId
  * @property string $name
  * @property string $url
+ * @property int|null $playerVisible
+ * @property int|null $hostVisible
  * @property int $owner
  * @property int $creator
  * @property int $created
  * @property int $updated
  */
-class Document extends \yii\db\ActiveRecord
+class CampaignDocument extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'document';
+        return 'campaign_document';
     }
 
     /**
@@ -33,7 +35,7 @@ class Document extends \yii\db\ActiveRecord
     {
         return [
             [['campaignId', 'name', 'url', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'playerVisible', 'hostVisible', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['url'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
@@ -49,6 +51,8 @@ class Document extends \yii\db\ActiveRecord
             'campaignId' => 'Campaign ID',
             'name' => 'Name',
             'url' => 'Url',
+            'playerVisible' => 'Player Visible',
+            'hostVisible' => 'Host Visible',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',

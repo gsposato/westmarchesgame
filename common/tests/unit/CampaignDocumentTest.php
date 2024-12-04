@@ -4,9 +4,9 @@
 namespace common\tests\Unit;
 
 use common\tests\UnitTester;
-use common\models\Document;
+use common\models\CampaignDocument;
 
-class DocumentTest extends \Codeception\Test\Unit
+class CampaignDocumentTest extends \Codeception\Test\Unit
 {
 
     protected UnitTester $tester;
@@ -16,10 +16,10 @@ class DocumentTest extends \Codeception\Test\Unit
     }
 
     // tests
-    public function testCreateDocument()
+    public function testCreateCampaignDocument()
     {
         $now = time();
-        $document = new Document();
+        $document = new CampaignDocument();
         $document->name = "Test";
         $document->url = "https://example.com";
         $document->campaignId = 1;
@@ -33,35 +33,35 @@ class DocumentTest extends \Codeception\Test\Unit
         $this->assertEmpty($hasErrors);
     }
 
-    public function testReadDocument()
+    public function testReadCampaignDocument()
     {
-        $this->testCreateDocument();
-        $document = Document::find()->one();
+        $this->testCreateCampaignDocument();
+        $document = CampaignDocument::find()->one();
         $this->assertNotEmpty($document);
     }
 
-    public function testUpdateDocument()
+    public function testUpdateCampaignDocument()
     {
         $expected = 1;
-        $this->testCreateDocument();
-        $document = Document::find()->one();
+        $this->testCreateCampaignDocument();
+        $document = CampaignDocument::find()->one();
         $actual = $document->owner;
         $this->assertEquals($expected, $actual);
         $expected = 2;
         $document->owner = 2;
         $document->save();
-        $test = Document::find()->one();
+        $test = CampaignDocument::find()->one();
         $actual = $test->owner;
         $this->assertEquals($expected, $actual);
     }
 
-    public function testDeleteDocument()
+    public function testDeleteCampaignDocument()
     {
-        $this->testCreateDocument();
-        $document = Document::find()->one();
+        $this->testCreateCampaignDocument();
+        $document = CampaignDocument::find()->one();
         $this->assertNotEmpty($document);
         $document->delete();
-        $document = Document::find()->one();
+        $document = CampaignDocument::find()->one();
         $this->assertEmpty($document);
     }
 }

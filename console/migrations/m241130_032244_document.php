@@ -10,11 +10,13 @@ class m241130_032244_document extends Migration
     public function safeUp()
     {
         $sql = <<<SQL
-create table document(
+create table campaign_document(
     id int not null auto_increment,
     campaignId int not null,
     name varchar(255) not null,
     url text not null,
+    playerVisible tinyint(1) default 0,
+    hostVisible tinyint(1) default 0,
     owner int(11) not null,
     creator int(11) not null,
     created int(11) not null,
@@ -31,7 +33,7 @@ SQL;
     public function safeDown()
     {
         $sql = <<<SQL
-drop table document
+drop table campaign_document
 SQL;
         return Yii::$app->db->createCommand($sql)->execute();
     }
