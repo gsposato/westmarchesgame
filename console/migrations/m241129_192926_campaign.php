@@ -13,6 +13,7 @@ class m241129_192926_campaign extends Migration
 create table campaign(
     id int not null auto_increment,
     name varchar(255) not null,
+    rules text null,
     owner int(11) not null,
     creator int(11) not null,
     created int(11) not null,

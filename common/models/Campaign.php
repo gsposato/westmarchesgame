@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property string|null $rules
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -31,6 +32,7 @@ class Campaign extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'owner', 'creator', 'created', 'updated'], 'required'],
+            [['rules'], 'string'],
             [['owner', 'creator', 'created', 'updated'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
@@ -44,6 +46,7 @@ class Campaign extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'rules' => 'Rules',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',
