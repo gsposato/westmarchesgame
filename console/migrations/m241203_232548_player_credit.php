@@ -15,6 +15,7 @@ create table player_credit(
     campaignId int not null,
     userId int not null,
     gameId int null,
+    characterId int null,
     category int not null,
     amount decimal(10,4) not null,
     note text null,

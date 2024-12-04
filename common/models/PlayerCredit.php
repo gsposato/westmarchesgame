@@ -11,6 +11,7 @@ use Yii;
  * @property int $campaignId
  * @property int $userId
  * @property int|null $gameId
+ * @property int|null $characterId
  * @property int $category
  * @property float $amount
  * @property string|null $note
@@ -36,7 +37,7 @@ class PlayerCredit extends \yii\db\ActiveRecord
     {
         return [
             [['campaignId', 'userId', 'category', 'amount', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'userId', 'gameId', 'category', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'userId', 'gameId', 'characterId', 'category', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['amount'], 'number'],
             [['note'], 'string'],
         ];
@@ -52,6 +53,7 @@ class PlayerCredit extends \yii\db\ActiveRecord
             'campaignId' => 'Campaign ID',
             'userId' => 'User ID',
             'gameId' => 'Game ID',
+            'characterId' => 'Character ID',
             'category' => 'Category',
             'amount' => 'Amount',
             'note' => 'Note',
