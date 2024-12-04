@@ -1,4 +1,4 @@
 #!/bin/bash
-#php vendor/bin/codecept generate:test unit CampaignCharacter -c common # make new test for "common/Campaign"
-#php vendor/bin/codecept run common/tests/unit/CampaignCharacterTest.php --fail-fast # only run one model test
+#php vendor/bin/codecept generate:test unit PlayerCredit -c common # make new test
+#php vendor/bin/codecept run common/tests/unit/PlayerCreditTest.php --fail-fast # run fewer tests
 php vendor/bin/codecept run # run all tests (slow)
