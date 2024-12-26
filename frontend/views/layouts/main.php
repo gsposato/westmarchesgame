@@ -110,11 +110,6 @@ if (in_array($uri, $uris)) {
                         <?= $content ?>
                     </div>
                 </main>
-                <footer class="footer mt-auto py-3 text-muted">
-                    <div class="container">
-                        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-                    </div>
-                </footer>
             </div>
             <?php else: ?>
                 <main role="main" class="flex-shrink-0">
@@ -126,17 +121,15 @@ if (in_array($uri, $uris)) {
                         <?= $content ?>
                     </div>
                 </main>
-                <footer class="footer mt-auto py-3 text-muted">
-                    <div class="container">
-                        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-                    </div>
-                </footer>
         <?php endif; ?>
-
-
-
-
-
+    <hr />
+    <footer class="footer mt-auto py-3 text-muted">
+        <div class="container">
+            <p class="float-start">Made with &#9829; by Gregory Sposato.</p>
+            <p class="float-start">&nbsp;&nbsp;&nbsp;&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+            <p class="float-start">&nbsp;&nbsp;&nbsp;<a href="/frontend/web/site/about">About</a>
+        </div>
+    </footer>
 <?php $this->endBody() ?>
 </body>
 </html>

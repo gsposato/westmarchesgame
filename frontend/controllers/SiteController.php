@@ -16,6 +16,8 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
+use common\models\Campaign;
+
 /**
  * Site controller
  */
@@ -78,7 +80,11 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->actionLogin();
         }
-        return $this->render('index');
+        $campaigns = Campaign::find()->all();
+        $params = [
+            "campaigns" => $campaigns
+        ];
+        return $this->render('index', $params);
     }
 
     /**
