@@ -26,10 +26,6 @@ class PlayerComplaintTest extends \Codeception\Test\Unit
         $complaint->offendingUserId = 1;
         $complaint->offendingCharacterId = 1;
         $complaint->note = "Test";
-        $complaint->owner = 1;
-        $complaint->creator = 1;
-        $complaint->created = $now;
-        $complaint->updated = $now;
         $isSaved = $complaint->save();
         $this->assertTrue($isSaved);
         $hasErrors = $complaint->getErrors();
@@ -45,16 +41,16 @@ class PlayerComplaintTest extends \Codeception\Test\Unit
 
     public function testUpdatePlayerComplaint()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreatePlayerComplaint();
         $complaint = PlayerComplaint::find()->one();
-        $actual = $complaint->owner;
+        $actual = $complaint->note;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $complaint->owner = 2;
+        $expected = "Test2";
+        $complaint->note = $expected;
         $complaint->save();
         $test = PlayerComplaint::find()->one();
-        $actual = $test->owner;
+        $actual = $test->note;
         $this->assertEquals($expected, $actual);
     }
 

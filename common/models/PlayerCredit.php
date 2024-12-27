@@ -20,7 +20,7 @@ use Yii;
  * @property int $created
  * @property int $updated
  */
-class PlayerCredit extends \yii\db\ActiveRecord
+class PlayerCredit extends NotarizedModel
 {
     /**
      * {@inheritdoc}

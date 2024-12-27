@@ -24,10 +24,6 @@ class CampaignCharacterTest extends \Codeception\Test\Unit
         $char->campaignId = 1;
         $char->slot = 1;
         $char->status = 1;
-        $char->owner = 1;
-        $char->creator = 1;
-        $char->created = $now;
-        $char->updated = $now;
         $isSaved = $char->save();
         $this->assertTrue($isSaved);
         $hasErrors = $char->getErrors();
@@ -46,13 +42,13 @@ class CampaignCharacterTest extends \Codeception\Test\Unit
         $expected = 1;
         $this->testCreateCampaignCharacter();
         $char = CampaignCharacter::find()->one();
-        $actual = $char->owner;
+        $actual = $char->status;
         $this->assertEquals($expected, $actual);
         $expected = 2;
-        $char->owner = 2;
+        $char->status = $expected;
         $char->save();
         $test = CampaignCharacter::find()->one();
-        $actual = $test->owner;
+        $actual = $test->status;
         $this->assertEquals($expected, $actual);
     }
 

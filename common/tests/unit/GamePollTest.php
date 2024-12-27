@@ -22,10 +22,6 @@ class GamePollTest extends \Codeception\Test\Unit
         $gamePoll = new GamePoll();
         $gamePoll->note = "Test";
         $gamePoll->gameId = 1;
-        $gamePoll->owner = 1;
-        $gamePoll->creator = 1;
-        $gamePoll->created = $now;
-        $gamePoll->updated = $now;
         $isSaved = $gamePoll->save();
         $this->assertTrue($isSaved);
         $hasErrors = $gamePoll->getErrors();
@@ -41,16 +37,16 @@ class GamePollTest extends \Codeception\Test\Unit
 
     public function testUpdateGamePoll()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreateGamePoll();
         $gamePoll = GamePoll::find()->one();
-        $actual = $gamePoll->owner;
+        $actual = $gamePoll->note;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $gamePoll->owner = 2;
+        $expected = "Test2";
+        $gamePoll->note = $expected;
         $gamePoll->save();
         $test = GamePoll::find()->one();
-        $actual = $test->owner;
+        $actual = $test->note;
         $this->assertEquals($expected, $actual);
     }
 

@@ -24,10 +24,6 @@ class GamePlayerTest extends \Codeception\Test\Unit
         $gamePlayer->userId = 1;
         $gamePlayer->characterId = 1;
         $gamePlayer->status = 1;
-        $gamePlayer->owner = 1;
-        $gamePlayer->creator = 1;
-        $gamePlayer->created = $now;
-        $gamePlayer->updated = $now;
         $isSaved = $gamePlayer->save();
         $this->assertTrue($isSaved);
         $hasErrors = $gamePlayer->getErrors();
@@ -46,13 +42,13 @@ class GamePlayerTest extends \Codeception\Test\Unit
         $expected = 1;
         $this->testCreateGamePlayer();
         $gamePlayer = GamePlayer::find()->one();
-        $actual = $gamePlayer->owner;
+        $actual = $gamePlayer->status;
         $this->assertEquals($expected, $actual);
         $expected = 2;
-        $gamePlayer->owner = 2;
+        $gamePlayer->status = $expected;
         $gamePlayer->save();
         $test = GamePlayer::find()->one();
-        $actual = $test->owner;
+        $actual = $test->status;
         $this->assertEquals($expected, $actual);
     }
 

@@ -16,7 +16,7 @@ use Yii;
  * @property int $created
  * @property int $updated
  */
-class CampaignAnnouncement extends \yii\db\ActiveRecord
+class CampaignAnnouncement extends NotarizedModel
 {
     /**
      * {@inheritdoc}

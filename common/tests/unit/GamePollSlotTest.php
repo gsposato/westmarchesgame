@@ -26,10 +26,6 @@ class GamePollSlotTest extends \Codeception\Test\Unit
         $gamePollSlot->humantime = $humantime;
         $gamePollSlot->timezone = $tz;
         $gamePollSlot->makeUnixTime();
-        $gamePollSlot->owner = 1;
-        $gamePollSlot->creator = 1;
-        $gamePollSlot->created = $now;
-        $gamePollSlot->updated = $now;
         $isSaved = $gamePollSlot->save();
         $this->assertTrue($isSaved);
         $hasErrors = $gamePollSlot->getErrors();
@@ -45,16 +41,16 @@ class GamePollSlotTest extends \Codeception\Test\Unit
 
     public function testUpdateGamePollSlot()
     {
-        $expected = 1;
+        $expected = "America/New_York";
         $this->testCreateGamePollSlot();
         $gamePollSlot = GamePollSlot::find()->one();
-        $actual = $gamePollSlot->owner;
+        $actual = $gamePollSlot->timezone;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $gamePollSlot->owner = 2;
+        $expected = "America/Chicago";
+        $gamePollSlot->timezone = $expected;
         $gamePollSlot->save();
         $test = GamePollSlot::find()->one();
-        $actual = $test->owner;
+        $actual = $test->timezone;
         $this->assertEquals($expected, $actual);
     }
 

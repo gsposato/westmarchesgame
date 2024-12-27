@@ -22,10 +22,6 @@ class GameSummaryTest extends \Codeception\Test\Unit
         $gameSummary = new GameSummary();
         $gameSummary->note = "Test";
         $gameSummary->gameId = 1;
-        $gameSummary->owner = 1;
-        $gameSummary->creator = 1;
-        $gameSummary->created = $now;
-        $gameSummary->updated = $now;
         $isSaved = $gameSummary->save();
         $this->assertTrue($isSaved);
         $hasErrors = $gameSummary->getErrors();
@@ -41,16 +37,16 @@ class GameSummaryTest extends \Codeception\Test\Unit
 
     public function testUpdateGameSummary()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreateGameSummary();
         $gameSummary = GameSummary::find()->one();
-        $actual = $gameSummary->owner;
+        $actual = $gameSummary->note;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $gameSummary->owner = 2;
+        $expected = "Test2";
+        $gameSummary->note = $expected;
         $gameSummary->save();
         $test = GameSummary::find()->one();
-        $actual = $test->owner;
+        $actual = $test->note;
         $this->assertEquals($expected, $actual);
     }
 

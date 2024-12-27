@@ -21,10 +21,6 @@ class CampaignTest extends \Codeception\Test\Unit
         $now = time();
         $campaign = new Campaign();
         $campaign->name = "Test";
-        $campaign->owner = 1;
-        $campaign->creator = 1;
-        $campaign->created = $now;
-        $campaign->updated = $now;
         $isSaved = $campaign->save();
         $this->assertTrue($isSaved);
         $hasErrors = $campaign->getErrors();
@@ -40,16 +36,16 @@ class CampaignTest extends \Codeception\Test\Unit
 
     public function testUpdateCampaign()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreateCampaign();
         $campaign = Campaign::find()->one();
-        $actual = $campaign->owner;
+        $actual = $campaign->name;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $campaign->owner = 2;
+        $expected = "Test2";
+        $campaign->name = $expected;
         $campaign->save();
         $test = Campaign::find()->one();
-        $actual = $test->owner;
+        $actual = $test->name;
         $this->assertEquals($expected, $actual);
     }
 

@@ -17,7 +17,7 @@ use Yii;
  * @property int $created
  * @property int $updated
  */
-class GamePlayer extends \yii\db\ActiveRecord
+class GamePlayer extends NotarizedModel
 {
     /**
      * {@inheritdoc}

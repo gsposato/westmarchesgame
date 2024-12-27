@@ -17,7 +17,7 @@ use Yii;
  * @property int $created
  * @property int $updated
  */
-class GamePollSlot extends \yii\db\ActiveRecord
+class GamePollSlot extends NotarizedModel
 {
     /**
      * {@inheritdoc}

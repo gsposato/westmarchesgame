@@ -22,10 +22,6 @@ class GameTest extends \Codeception\Test\Unit
         $game = new Game();
         $game->name = "Test";
         $game->campaignId = 1;
-        $game->owner = 1;
-        $game->creator = 1;
-        $game->created = $now;
-        $game->updated = $now;
         $isSaved = $game->save();
         $this->assertTrue($isSaved);
         $hasErrors = $game->getErrors();
@@ -41,16 +37,16 @@ class GameTest extends \Codeception\Test\Unit
 
     public function testUpdateGame()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreateGame();
         $game = Game::find()->one();
-        $actual = $game->owner;
+        $actual = $game->name;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $game->owner = 2;
+        $expected = "Test2";
+        $game->name = $expected;
         $game->save();
         $test = Game::find()->one();
-        $actual = $test->owner;
+        $actual = $test->name;
         $this->assertEquals($expected, $actual);
     }
 

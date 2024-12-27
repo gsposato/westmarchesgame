@@ -25,10 +25,6 @@ class GameNoteTest extends \Codeception\Test\Unit
         $gameNote->inGamePoll = 1;
         $gameNote->inGameEvent = 1;
         $gameNote->inGameSummary = 1;
-        $gameNote->owner = 1;
-        $gameNote->creator = 1;
-        $gameNote->created = $now;
-        $gameNote->updated = $now;
         $isSaved = $gameNote->save();
         $this->assertTrue($isSaved);
         $hasErrors = $gameNote->getErrors();
@@ -44,16 +40,16 @@ class GameNoteTest extends \Codeception\Test\Unit
 
     public function testUpdateGameNote()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreateGameNote();
         $gameNote = GameNote::find()->one();
-        $actual = $gameNote->owner;
+        $actual = $gameNote->note;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $gameNote->owner = 2;
+        $expected = "Test2";
+        $gameNote->note = $expected;
         $gameNote->save();
         $test = GameNote::find()->one();
-        $actual = $test->owner;
+        $actual = $test->note;
         $this->assertEquals($expected, $actual);
     }
 

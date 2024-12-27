@@ -21,12 +21,8 @@ class CampaignDocumentTest extends \Codeception\Test\Unit
         $now = time();
         $document = new CampaignDocument();
         $document->name = "Test";
-        $document->url = "https://example.com";
+        $document->url = "https://example.com/1";
         $document->campaignId = 1;
-        $document->owner = 1;
-        $document->creator = 1;
-        $document->created = $now;
-        $document->updated = $now;
         $isSaved = $document->save();
         $this->assertTrue($isSaved);
         $hasErrors = $document->getErrors();
@@ -42,16 +38,16 @@ class CampaignDocumentTest extends \Codeception\Test\Unit
 
     public function testUpdateCampaignDocument()
     {
-        $expected = 1;
+        $expected = "https://example.com/1";
         $this->testCreateCampaignDocument();
         $document = CampaignDocument::find()->one();
-        $actual = $document->owner;
+        $actual = $document->url;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $document->owner = 2;
+        $expected = "https://example.com/2";
+        $document->url = $expected;
         $document->save();
         $test = CampaignDocument::find()->one();
-        $actual = $test->owner;
+        $actual = $test->url;
         $this->assertEquals($expected, $actual);
     }
 

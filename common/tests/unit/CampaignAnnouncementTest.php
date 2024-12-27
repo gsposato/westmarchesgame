@@ -18,15 +18,10 @@ class CampaignAnnouncementTest extends \Codeception\Test\Unit
     // tests
     public function testCreateCampaignAnnouncement()
     {
-        $now = time();
         $document = new CampaignAnnouncement();
         $document->name = "Test";
         $document->note = "example note";
         $document->campaignId = 1;
-        $document->owner = 1;
-        $document->creator = 1;
-        $document->created = $now;
-        $document->updated = $now;
         $isSaved = $document->save();
         $this->assertTrue($isSaved);
         $hasErrors = $document->getErrors();
@@ -42,16 +37,16 @@ class CampaignAnnouncementTest extends \Codeception\Test\Unit
 
     public function testUpdateCampaignAnnouncement()
     {
-        $expected = 1;
+        $expected = "example note";
         $this->testCreateCampaignAnnouncement();
         $document = CampaignAnnouncement::find()->one();
-        $actual = $document->owner;
+        $actual = $document->note;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $document->owner = 2;
+        $expected = "example note 2";
+        $document->note = $expected;
         $document->save();
         $test = CampaignAnnouncement::find()->one();
-        $actual = $test->owner;
+        $actual = $test->note;
         $this->assertEquals($expected, $actual);
     }
 

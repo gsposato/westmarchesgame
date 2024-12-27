@@ -23,10 +23,6 @@ class GameEventTest extends \Codeception\Test\Unit
         $gameEvent->note = "Test";
         $gameEvent->gameId = 1;
         $gameEvent->gamePollSlotId = 1;
-        $gameEvent->owner = 1;
-        $gameEvent->creator = 1;
-        $gameEvent->created = $now;
-        $gameEvent->updated = $now;
         $isSaved = $gameEvent->save();
         $this->assertTrue($isSaved);
         $hasErrors = $gameEvent->getErrors();
@@ -42,16 +38,16 @@ class GameEventTest extends \Codeception\Test\Unit
 
     public function testUpdateGameEvent()
     {
-        $expected = 1;
+        $expected = "Test";
         $this->testCreateGameEvent();
         $gameEvent = GameEvent::find()->one();
-        $actual = $gameEvent->owner;
+        $actual = $gameEvent->note;
         $this->assertEquals($expected, $actual);
-        $expected = 2;
-        $gameEvent->owner = 2;
+        $expected = "Test2";
+        $gameEvent->note = $expected;
         $gameEvent->save();
         $test = GameEvent::find()->one();
-        $actual = $test->owner;
+        $actual = $test->note;
         $this->assertEquals($expected, $actual);
     }
 
