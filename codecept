@@ -1,5 +1,7 @@
 #!/bin/bash
+#./yii gii/crud --controllerClass "frontend\controllers\CampaignController" --modelClass "common\models\Campaign"
 #php vendor/bin/codecept generate:test unit PlayerComplaint -c common # make new test
+#php vendor/bin/codecept generate:cest functional NewCampaign -c frontend # make new cest
 #php vendor/bin/codecept run common/tests/unit/PlayerComplaintTest.php --fail-fast # run fewer tests
-#php vendor/bin/codecept run frontend/tests/functional/HomeCest.php --fail-fast # run cest
+#php vendor/bin/codecept run frontend/tests/functional/NewCampaignCest.php --fail-fast # run cest
 php vendor/bin/codecept run --fail-fast # run all tests (slow)
