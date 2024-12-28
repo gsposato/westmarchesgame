@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?php if ($model->canModify()): ?>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -24,19 +25,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
-        'attributes' => [
-            'id',
-            'name',
-            'rules:ntext',
-            'owner',
-            'creator',
-            'created',
-            'updated',
-        ],
+        'attributes' => array_merge (
+            [
+                'id',
+                'name',
+                'rules:ntext',
+            ],
+            $model->view()
+        )
     ]) ?>
 
 </div>

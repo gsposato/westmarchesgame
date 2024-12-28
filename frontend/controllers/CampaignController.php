@@ -6,8 +6,7 @@ use common\models\Campaign;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
+use frontend\helpers\ControllerHelper;
 
 /**
  * CampaignController implements the CRUD actions for Campaign model.
@@ -21,25 +20,7 @@ class CampaignController extends Controller
     {
         return array_merge(
             parent::behaviors(),
-            [
-                'access' => [
-                    'class' => AccessControl::class,
-                    'only' => ['index', 'view', 'create', 'update', 'delete'],
-                    'rules' => [
-                        [
-                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
-                            'allow' => true,
-                            'roles' => ['@'],
-                        ]
-                    ]
-                ],
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-            ]
+            ControllerHelper::behaviors()
         );
     }
 
