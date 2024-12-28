@@ -12,11 +12,31 @@ use yii\bootstrap5\NavBar;
 
 AppAsset::register($this);
 $showNav = false;
+$sel = new stdclass();
 $uri = $_SERVER['REQUEST_URI'];
 $uris = Yii::$app->params['showNav'];
-if (in_array($uri, $uris)) {
-    $showNav = true;
+if (!empty($uris)) {
+    foreach ($uris as $key => $value) {
+        if (str_contains($uri, $value)) {
+            $showNav = true;
+            $id = $_GET['id'];
+            $sel->{$key} = "nav-link-selected";
+            break;
+        }
+    }
 }
+$date = date('Y');
+$appName = Yii::$app->name;
+$footer = <<<HTML
+    <hr />
+    <footer class="footer mt-auto py-3 text-muted">
+        <div class="container">
+            <p class="float-start">Made with &#9829; by Gregory Sposato.</p>
+            <p class="float-start">&nbsp;&nbsp;&nbsp;&copy; {$appName} {$date}</p>
+            <p class="float-start">&nbsp;&nbsp;&nbsp;<a href="/frontend/web/site/about">About</a>
+        </div>
+    </footer>
+HTML;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -88,7 +108,7 @@ if (in_array($uri, $uris)) {
                                 <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
                                 Games
                             </a>
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link <?= $sel->rules; ?>" href="<?= $uris['rules']; ?>?id=<?= $id; ?>">
                                 <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
                                 Rules
                             </a>
@@ -109,6 +129,7 @@ if (in_array($uri, $uris)) {
                         <?= Alert::widget() ?>
                         <?= $content ?>
                     </div>
+                    <?= $footer; ?>
                 </main>
             </div>
             <?php else: ?>
@@ -120,16 +141,9 @@ if (in_array($uri, $uris)) {
                         <?= Alert::widget() ?>
                         <?= $content ?>
                     </div>
+                    <?= $footer; ?>
                 </main>
         <?php endif; ?>
-    <hr />
-    <footer class="footer mt-auto py-3 text-muted">
-        <div class="container">
-            <p class="float-start">Made with &#9829; by Gregory Sposato.</p>
-            <p class="float-start">&nbsp;&nbsp;&nbsp;&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-            <p class="float-start">&nbsp;&nbsp;&nbsp;<a href="/frontend/web/site/about">About</a>
-        </div>
-    </footer>
 <?php $this->endBody() ?>
 </body>
 </html>

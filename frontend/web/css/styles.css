@@ -3657,6 +3657,9 @@ textarea.form-control-lg {
   pointer-events: none;
   cursor: default;
 }
+.nav-link-selected {
+    background-color: green;
+}
 
 .nav-tabs {
   --bs-nav-tabs-border-width: 1px;
