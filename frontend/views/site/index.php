@@ -24,8 +24,8 @@ $this->title = Yii::$app->name;
                     <h2><?= $campaign->name; ?></h2>
                     <p>Manage this campaign.</p>
                     <?php $id = $campaign->id; ?>
-                    <?php $href = "/frontend/web/campaign/view?id=$id"; ?>
-                    <p><a class="btn btn-success" href="<?= $href; ?>">Manage</a></p>
+                    <?php $href = "/frontend/web/campaign/view?campaignId=$id"; ?>
+                    <p><a class="btn btn-primary" href="<?= $href; ?>">Manage</a></p>
                 </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@ $this->title = Yii::$app->name;
                 <div class="card-body">
                     <h2>New Campaign</h2>
                     <p>Create a new campaign!  It all starts here.</p>
-                    <p><a class="btn btn-primary" href="/frontend/web/campaign/create">Create New Campaign</a></p>
+                    <p><a class="btn btn-success" href="/frontend/web/campaign/create">Create New Campaign</a></p>
                 </div>
                 </div>
             </div>

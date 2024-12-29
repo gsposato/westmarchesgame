@@ -7,6 +7,7 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 8,
     'showNav' => [
-        'rules' => '/frontend/web/campaign/view'
+        'rules' => '/frontend/web/campaign/view',
+        'announcements' => '/frontend/web/campaign-announcement'
     ]
 ];

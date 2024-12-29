@@ -52,6 +52,11 @@ class NotarizedModel extends \yii\db\ActiveRecord
         if ($canHave) {
             $this->owner = $userId;
         }
+        $canHave = array_key_exists("campaignId", $attr);
+        $doesNotHave = empty($this->campaignId);
+        if ($canHave && $doesNotHave) {
+            $this->campaignId = $_GET['campaignId'];
+        }
     }
 
     /**

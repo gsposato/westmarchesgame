@@ -3,6 +3,7 @@
 /** @var \yii\web\View $this */
 /** @var string $content */
 
+use common\models\Campaign;
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use yii\bootstrap5\Breadcrumbs;
@@ -17,11 +18,12 @@ $uri = $_SERVER['REQUEST_URI'];
 $uris = Yii::$app->params['showNav'];
 if (!empty($uris)) {
     foreach ($uris as $key => $value) {
+        $sel->{$key} = "";
         if (str_contains($uri, $value)) {
             $showNav = true;
-            $id = $_GET['id'];
             $sel->{$key} = "nav-link-selected";
-            break;
+            $id = $_GET['campaignId'];
+            $name = Campaign::getName($id);
         }
     }
 }
@@ -91,27 +93,14 @@ HTML;
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Campaign</div>
-                            <a class="nav-link" href="index.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-bullhorn"></i></div>
-                                Announcements
+                            <div class="sb-sidenav-menu-heading"><?= $name; ?></div>
+                            <?php foreach ($uris as $label => $link): ?>
+                            <?php $grey = $sel->{$label}; ?>
+                            <a class="nav-link <?= $grey; ?>" href="<?= $link; ?>?campaignId=<?= $id; ?>">
+                                <div class="sb-nav-link-icon"><i class="fas fa-hashtag"></i></div>
+                                <?= ucfirst($label); ?>
                             </a>
-                            <a class="nav-link" href="index.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
-                                Documents
-                            </a>
-                            <a class="nav-link" href="index.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                Players
-                            </a>
-                            <a class="nav-link" href="index.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
-                                Games
-                            </a>
-                            <a class="nav-link <?= $sel->rules; ?>" href="<?= $uris['rules']; ?>?id=<?= $id; ?>">
-                                <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
-                                Rules
-                            </a>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
@@ -123,9 +112,11 @@ HTML;
             <div id="layoutSidenav_content">
                 <main role="main" class="flex-shrink-0">
                     <div class="container">
+                        <!--
                         <?= Breadcrumbs::widget([
                             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                         ]) ?>
+                        -->
                         <?= Alert::widget() ?>
                         <?= $content ?>
                     </div>

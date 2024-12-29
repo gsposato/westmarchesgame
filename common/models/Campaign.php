@@ -53,4 +53,17 @@ class Campaign extends NotarizedModel
             'updated' => 'Updated',
         ];
     }
+
+    /**
+     * Get Name
+     * @param integer $campaignId
+     */
+    public static function getName($campaignId)
+    {
+        $campaign = Campaign::findOne($campaignId);
+        if (empty($campaign->name)) {
+            return "";
+        }
+        return $campaign->name;
+    }
 }

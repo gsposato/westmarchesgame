@@ -3658,7 +3658,7 @@ textarea.form-control-lg {
   cursor: default;
 }
 .nav-link-selected {
-    background-color: green;
+    background-color: #343a40;
 }
 
 .nav-tabs {
