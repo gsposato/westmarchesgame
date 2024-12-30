@@ -13,7 +13,8 @@ class m241209_234501_campaign_player extends Migration
 create table campaign_player(
     id int not null auto_increment,
     campaignId int not null,
-    userId int not null,
+    name varchar(255) null,
+    userId int null,
     isPlayer tinyint(1) not null default 0,
     isHost tinyint(1) not null default 0,
     isAdmin tinyint(1) not null default 0,

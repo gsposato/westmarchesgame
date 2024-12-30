@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use common\models\Campaign;
+use common\models\CampaignPlayer;
 
 class ControllerHelper
 {
@@ -41,8 +42,11 @@ class ControllerHelper
      * Can View
      * @param integer $campaignId
      */
-    public static function canView($campaignId)
+    public static function canView($campaignId=0)
     {
+        if (empty($campaignId)) {
+            $campaignId = $_GET['campaignId'];
+        }
         $campaign = Campaign::findOne($campaignId);
         if (!$campaign) {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -58,6 +62,13 @@ class ControllerHelper
          * @todo
          * add lookup to see if they are campaign player
          */
+        $campaignPlayers = CampaignPlayer::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["userId" => $userId])
+            ->all();
+        if (!empty($campaignPlayers)) {
+            return true;
+        }
         throw new ForbiddenHttpException('This account is not authorized to view the requested page.');
     }
 

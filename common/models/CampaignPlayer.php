@@ -9,7 +9,8 @@ use Yii;
  *
  * @property int $id
  * @property int $campaignId
- * @property int $userId
+ * @property string|null $name
+ * @property int|null $userId
  * @property int $isPlayer
  * @property int $isHost
  * @property int $isAdmin
@@ -32,8 +33,9 @@ class CampaignPlayer extends NotarizedModel
     public function rules()
     {
         return [
-            [['campaignId', 'userId', 'created', 'updated'], 'required'],
+            [['campaignId', 'created', 'updated'], 'required'],
             [['campaignId', 'userId', 'isPlayer', 'isHost', 'isAdmin', 'created', 'updated'], 'integer'],
+            [['name'], 'string', 'max' => 255],
         ];
     }
 
@@ -45,6 +47,7 @@ class CampaignPlayer extends NotarizedModel
         return [
             'id' => 'ID',
             'campaignId' => 'Campaign ID',
+            'name' => 'Name',
             'userId' => 'User ID',
             'isPlayer' => 'Is Player',
             'isHost' => 'Is Host',

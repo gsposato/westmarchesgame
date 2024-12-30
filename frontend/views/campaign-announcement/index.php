@@ -1,5 +1,6 @@
 <?php
 
+use common\models\User;
 use common\models\CampaignAnnouncement;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -28,8 +29,15 @@ $create = 'create?campaignId=' . $campaignId;
         'columns' => [
             'id',
             'name',
-            'note:ntext',
-            'owner',
+            [
+                'label' => 'Owner',
+                'attribute' => 'owner',
+                'format' => 'text',
+                'value' => function($model) {
+                    $user = User::findOne($model->owner);
+                    return $user->username;
+                },
+            ],
             'updated:datetime',
             [
                 'label' => '',

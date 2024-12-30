@@ -8,6 +8,7 @@ return [
     'user.passwordMinLength' => 8,
     'showNav' => [
         'rules' => '/frontend/web/campaign/view',
-        'announcements' => '/frontend/web/campaign-announcement'
+        'announcements' => '/frontend/web/campaign-announcement',
+        'players' => '/frontend/web/campaign-player'
     ]
 ];

@@ -18,6 +18,7 @@ $campaignId = $_GET['campaignId'];
     <?= $form->field($model, 'note')->textarea(['rows' => 6]) ?>
 
     <br />
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
