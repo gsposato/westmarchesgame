@@ -9,6 +9,7 @@ return [
     'showNav' => [
         'rules' => '/frontend/web/campaign/view',
         'announcements' => '/frontend/web/campaign-announcement',
-        'players' => '/frontend/web/campaign-player'
+        'players' => '/frontend/web/campaign-player',
+        'complaints' => '/frontend/web/player-complaint'
     ]
 ];

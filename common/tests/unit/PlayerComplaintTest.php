@@ -21,9 +21,10 @@ class PlayerComplaintTest extends \Codeception\Test\Unit
         $now = time();
         $complaint = new PlayerComplaint();
         $complaint->campaignId = 1;
-        $complaint->reportingUserId = 1;
+        $complaint->name = uniqId();
+        $complaint->reportingPlayerId = 1;
         $complaint->reportingCharacterId = 1;
-        $complaint->offendingUserId = 1;
+        $complaint->offendingPlayerId = 1;
         $complaint->offendingCharacterId = 1;
         $complaint->note = "Test";
         $isSaved = $complaint->save();

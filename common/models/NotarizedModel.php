@@ -96,14 +96,20 @@ class NotarizedModel extends \yii\db\ActiveRecord
                 'attribute' => 'owner',
                 'value' => function ($model) {
                     $user = User::findOne($model->owner);
-                    return $user->username;
+                    if (!empty($user->username)) {
+                        return $user->username;
+                    }
+                    return $model->owner;
                 },
             ],
             [
                 'attribute' => 'creator',
                 'value' => function ($model) {
                     $user = User::findOne($model->creator);
-                    return $user->username;
+                    if (!empty($user->username)) {
+                        return $user->username;
+                    }
+                    return $model->creator;
                 },
             ],
             'created:datetime',

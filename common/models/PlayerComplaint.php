@@ -10,9 +10,10 @@ use Yii;
  * @property int $id
  * @property int $campaignId
  * @property int|null $gameId
- * @property int $reportingUserId
+ * @property string $name
+ * @property int $reportingPlayerId
  * @property int $reportingCharacterId
- * @property int $offendingUserId
+ * @property int $offendingPlayerId
  * @property int $offendingCharacterId
  * @property string $note
  * @property int $owner
@@ -36,9 +37,10 @@ class PlayerComplaint extends NotarizedModel
     public function rules()
     {
         return [
-            [['campaignId', 'reportingUserId', 'reportingCharacterId', 'offendingUserId', 'offendingCharacterId', 'note', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'gameId', 'reportingUserId', 'reportingCharacterId', 'offendingUserId', 'offendingCharacterId', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'name', 'reportingPlayerId', 'reportingCharacterId', 'offendingPlayerId', 'offendingCharacterId', 'note', 'owner', 'creator', 'created', 'updated'], 'required'],
+            [['campaignId', 'gameId', 'reportingPlayerId', 'reportingCharacterId', 'offendingPlayerId', 'offendingCharacterId', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['note'], 'string'],
+            [['name'], 'string', 'max' => 255],
         ];
     }
 
@@ -51,9 +53,10 @@ class PlayerComplaint extends NotarizedModel
             'id' => 'ID',
             'campaignId' => 'Campaign ID',
             'gameId' => 'Game ID',
-            'reportingUserId' => 'Reporting User ID',
+            'name' => 'Name',
+            'reportingPlayerId' => 'Reporting Player ID',
             'reportingCharacterId' => 'Reporting Character ID',
-            'offendingUserId' => 'Offending User ID',
+            'offendingPlayerId' => 'Offending Player ID',
             'offendingCharacterId' => 'Offending Character ID',
             'note' => 'Note',
             'owner' => 'Owner',
