@@ -58,10 +58,6 @@ class ControllerHelper
         if ($userId == $campaign->creator) {
             return true;
         }
-        /**
-         * @todo
-         * add lookup to see if they are campaign player
-         */
         $campaignPlayers = CampaignPlayer::find()
             ->where(["campaignId" => $campaignId])
             ->andWhere(["userId" => $userId])
@@ -70,6 +66,29 @@ class ControllerHelper
             return true;
         }
         throw new ForbiddenHttpException('This account is not authorized to view the requested page.');
+    }
+
+    /**
+     * Get Player Rank
+     */
+    public static function getPlayerRank($campaignId)
+    {
+        $userId = Yii::$app->user->identity->id ?? 1;
+        $player = CampaignPlayer::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["userId" => $userId])
+            ->one();
+        $ranks = [
+            'isAdmin',
+            'isHost',
+            'isPlayer'
+        ];
+        foreach ($ranks as $rank) {
+            if ($player->{$rank}) {
+                return $rank;
+            }
+        }
+        return '';
     }
 
 }

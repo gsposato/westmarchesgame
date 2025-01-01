@@ -12,5 +12,6 @@ return [
         'players' => '/frontend/web/campaign-player',
         'complaints' => '/frontend/web/player-complaint',
         'characters' => '/frontend/web/campaign-character',
+        'documents' => '/frontend/web/campaign-document',
     ]
 ];

@@ -2,8 +2,7 @@
 
 namespace frontend\controllers;
 
-use Yii;
-use common\models\CampaignPlayer;
+use common\models\CampaignDocument;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -12,9 +11,9 @@ use yii\filters\VerbFilter;
 use frontend\helpers\ControllerHelper;
 
 /**
- * CampaignPlayerController implements the CRUD actions for CampaignPlayer model.
+ * CampaignDocumentController implements the CRUD actions for CampaignDocument model.
  */
-class CampaignPlayerController extends Controller
+class CampaignDocumentController extends Controller
 {
     /**
      * @inheritDoc
@@ -37,14 +36,13 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Lists all CampaignPlayer models.
+     * Lists all CampaignDocument models.
      *
      * @return string
      */
     public function actionIndex($campaignId)
     {
-        $query = CampaignPlayer::find()
-            ->where(["campaignId" => $campaignId]);
+        $query = $this->query($campaignId);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -63,7 +61,7 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Displays a single CampaignPlayer model.
+     * Displays a single CampaignDocument model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -76,13 +74,13 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Creates a new CampaignPlayer model.
+     * Creates a new CampaignDocument model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate($campaignId)
     {
-        $model = new CampaignPlayer();
+        $model = new CampaignDocument();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -98,7 +96,7 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Updates an existing CampaignPlayer model.
+     * Updates an existing CampaignDocument model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -107,12 +105,6 @@ class CampaignPlayerController extends Controller
     public function actionUpdate($id, $campaignId)
     {
         $model = $this->findModel($id);
-
-        $userId = Yii::$app->user->identity->id ?? 1;
-        if ($userId == $model->userId) {
-            $forbiddenException = 'This account is not authorized to view the requested page.';
-            throw new ForbiddenHttpException($forbiddenException);
-        }
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['index', 'campaignId' => $campaignId]);
@@ -124,7 +116,7 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Deletes an existing CampaignPlayer model.
+     * Deletes an existing CampaignDocument model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -132,30 +124,72 @@ class CampaignPlayerController extends Controller
      */
     public function actionDelete($id, $campaignId)
     {
-        $userId = Yii::$app->user->identity->id ?? 1;
-        if ($userId == $model->userId) {
-            $forbiddenException = 'This account is not authorized to view the requested page.';
-            throw new ForbiddenHttpException($forbiddenException);
-        }
-
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the CampaignPlayer model based on its primary key value.
+     * Finds the CampaignDocument model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return CampaignPlayer the loaded model
+     * @return CampaignDocument the loaded model
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws ForbiddenHttpException if the model cannot be accessed
      */
     protected function findModel($id)
     {
-        if (($model = CampaignPlayer::findOne(['id' => $id])) !== null) {
-            return $model;
+        $campaignId = $_GET['campaignId'];
+        $forbiddenException = 'This account is not authorized to view the requested page.'; 
+        if (($model = CampaignDocument::findOne(['id' => $id])) !== null) {
+            switch (ControllerHelper::getPlayerRank($campaignId)) {
+                case 'isAdmin':
+                    return $model;
+                    break;
+                case 'isHost':
+                    if ($model->hostVisible) {
+                        return $model;
+                    }
+                    throw new ForbiddenHttpException($forbiddenException);
+                    break;
+                case 'isPlayer':
+                    if ($model->playerVisible) {
+                        return $model;
+                    }
+                    throw new ForbiddenHttpException($forbiddenException);
+                    break;
+                default:
+                    throw new ForbiddenHttpException($forbiddenException);
+            }
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * Query
+     * @param Integer $campaignId
+     */
+    protected function query($campaignId)
+    {
+        switch (ControllerHelper::getPlayerRank($campaignId)) {
+            case 'isPlayer':
+                $query = CampaignDocument::find()
+                    ->where(["campaignId" => $campaignId])
+                    ->andWhere(["PlayerVisible" => 1]);
+                break;
+            case 'isHost':
+                $query = CampaignDocument::find()
+                    ->where(["campaignId" => $campaignId])
+                    ->andWhere(["HostVisible" => 1]);
+                break;
+            case 'isAdmin':
+                $query = CampaignDocument::find()
+                    ->where(["campaignId" => $campaignId]);
+                break;
+            default:
+                $forbiddenException = 'This account is not authorized to view the requested page.'; 
+                throw new ForbiddenHttpException($forbiddenException);
+        }
+        return $query;
     }
 }

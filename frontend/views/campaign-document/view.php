@@ -2,18 +2,17 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use common\models\CampaignCharacter;
 
 /** @var yii\web\View $this */
-/** @var common\models\CampaignCharacter $model */
+/** @var common\models\CampaignDocument $model */
 
 $id = $_GET['campaignId'];
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Campaign Characters', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Campaign Documents', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="campaign-character-view">
+<div class="campaign-document-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -35,32 +34,31 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => array_merge(
             [
             'id',
+            'campaignId',
             'name',
+            'url:ntext',
             [
-                'label' => 'Type',
-                'attribute' => 'type',
+                'label' => 'Visible to Players',
+                'attribute' => 'playerVisible',
                 'format' => 'text',
                 'value' => function($model) {
-                    $type = CampaignCharacter::type();
-                    if (!empty($type[$model->type])) {
-                        return $type[$model->type];
+                    if (empty($model->playerVisible)) {
+                        return 'False';
                     }
-                    return $model->type;
-                }
+                    return 'True';
+                },
             ],
             [
-                'label' => 'Status',
-                'attribute' => 'status',
+                'label' => 'Visible to Hosts',
+                'attribute' => 'hostVisible',
                 'format' => 'text',
                 'value' => function($model) {
-                    $type = CampaignCharacter::status();
-                    if (!empty($type[$model->status])) {
-                        return $type[$model->status];
+                    if (empty($model->hostVisible)) {
+                        return 'False';
                     }
-                    return $model->status;
-                }
+                    return 'True';
+                },
             ],
-            'description:ntext',
             ],
             $model->view()
         )
