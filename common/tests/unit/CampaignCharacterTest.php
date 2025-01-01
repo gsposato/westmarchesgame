@@ -22,7 +22,8 @@ class CampaignCharacterTest extends \Codeception\Test\Unit
         $char = new CampaignCharacter();
         $char->name = "Test";
         $char->campaignId = 1;
-        $char->slot = 1;
+        $char->playerId = 1;
+        $char->type = 1;
         $char->status = 1;
         $isSaved = $char->save();
         $this->assertTrue($isSaved);

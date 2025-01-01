@@ -9,10 +9,11 @@ use Yii;
  *
  * @property int $id
  * @property int $campaignId
+ * @property int $playerId
  * @property string $name
- * @property int $slot
+ * @property int $type
  * @property int $status
- * @property string|null $kanka
+ * @property string|null $description
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -34,9 +35,9 @@ class CampaignCharacter extends NotarizedModel
     public function rules()
     {
         return [
-            [['campaignId', 'name', 'slot', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'slot', 'status', 'owner', 'creator', 'created', 'updated'], 'integer'],
-            [['kanka'], 'string'],
+            [['campaignId', 'playerId', 'name', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
+            [['campaignId', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['description'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -49,14 +50,39 @@ class CampaignCharacter extends NotarizedModel
         return [
             'id' => 'ID',
             'campaignId' => 'Campaign ID',
+            'playerId' => 'Player ID',
             'name' => 'Name',
-            'slot' => 'Slot',
+            'type' => 'Type',
             'status' => 'Status',
-            'kanka' => 'Kanka',
+            'description' => 'Description',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',
             'updated' => 'Updated',
+        ];
+    }
+
+    /**
+     * Get Type
+     */
+    public static function type()
+    {
+        return [
+            1 => "Player Character (PC)",
+            2 => "Non Playable Character (NPC)"
+        ];
+    }
+
+    /**
+     * Get Status
+     */
+    public static function status()
+    {
+        return [
+            1 => "New",
+            2 => "Active",
+            3 => "Retired",
+            4 => "Dead"
         ];
     }
 }

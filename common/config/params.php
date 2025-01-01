@@ -6,10 +6,11 @@ return [
     'senderName' => 'Example.com mailer',
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 8,
-    'showNav' => [
+    'navigation' => [
         'rules' => '/frontend/web/campaign/view',
         'announcements' => '/frontend/web/campaign-announcement',
         'players' => '/frontend/web/campaign-player',
-        'complaints' => '/frontend/web/player-complaint'
+        'complaints' => '/frontend/web/player-complaint',
+        'characters' => '/frontend/web/campaign-character',
     ]
 ];

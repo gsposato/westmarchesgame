@@ -2,18 +2,16 @@
 
 namespace frontend\controllers;
 
-use common\models\CampaignPlayer;
-use common\models\PlayerComplaint;
+use common\models\CampaignCharacter;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use frontend\helpers\ControllerHelper;
-
 /**
- * PlayerComplaintController implements the CRUD actions for PlayerComplaint model.
+ * CampaignCharacterController implements the CRUD actions for CampaignCharacter model.
  */
-class PlayerComplaintController extends Controller
+class CampaignCharacterController extends Controller
 {
     /**
      * @inheritDoc
@@ -36,13 +34,13 @@ class PlayerComplaintController extends Controller
     }
 
     /**
-     * Lists all PlayerComplaint models.
+     * Lists all CampaignCharacter models.
      *
      * @return string
      */
     public function actionIndex($campaignId)
     {
-        $query = PlayerComplaint::find()
+        $query = CampaignCharacter::find()
             ->where(["campaignId" => $campaignId]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -62,7 +60,7 @@ class PlayerComplaintController extends Controller
     }
 
     /**
-     * Displays a single PlayerComplaint model.
+     * Displays a single CampaignCharacter model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -75,13 +73,14 @@ class PlayerComplaintController extends Controller
     }
 
     /**
-     * Creates a new PlayerComplaint model.
+     * Creates a new CampaignCharacter model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate($campaignId)
     {
-        $model = new PlayerComplaint();
+        $model = new CampaignCharacter();
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['index', 'campaignId' => $campaignId]);
@@ -89,16 +88,14 @@ class PlayerComplaintController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-        if (empty($model->name)) {
-            $model->name = uniqid();
-        }
+
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Updates an existing PlayerComplaint model.
+     * Updates an existing CampaignCharacter model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -107,16 +104,18 @@ class PlayerComplaintController extends Controller
     public function actionUpdate($id, $campaignId)
     {
         $model = $this->findModel($id);
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['index', 'campaignId' => $campaignId]);
         }
+
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing PlayerComplaint model.
+     * Deletes an existing CampaignCharacter model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -130,15 +129,15 @@ class PlayerComplaintController extends Controller
     }
 
     /**
-     * Finds the PlayerComplaint model based on its primary key value.
+     * Finds the CampaignCharacter model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return PlayerComplaint the loaded model
+     * @return CampaignCharacter the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PlayerComplaint::findOne(['id' => $id])) !== null) {
+        if (($model = CampaignCharacter::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use common\models\User;
+use yii\helpers\ArrayHelper;
 
 use Yii;
 
@@ -84,6 +85,18 @@ class NotarizedModel extends \yii\db\ActiveRecord
             }
         }
         return true;
+    }
+
+    /**
+     * Select
+     */
+    public function select()
+    {
+        $campaignId = $_GET['campaignId'];
+        $records = $this::find()
+            ->where(["campaignId" => $campaignId])
+            ->all();
+        return ArrayHelper::map($records, 'id', 'name');
     }
 
     /**

@@ -15,7 +15,7 @@ AppAsset::register($this);
 $showNav = false;
 $sel = new stdclass();
 $uri = $_SERVER['REQUEST_URI'];
-$uris = Yii::$app->params['showNav'];
+$uris = Yii::$app->params['navigation'];
 if (!empty($uris)) {
     foreach ($uris as $key => $value) {
         $sel->{$key} = "";

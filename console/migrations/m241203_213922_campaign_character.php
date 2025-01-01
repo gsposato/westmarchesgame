@@ -13,10 +13,11 @@ class m241203_213922_campaign_character extends Migration
 create table campaign_character(
     id int not null auto_increment,
     campaignId int not null,
+    playerId int not null,
     name varchar(255) not null,
-    slot int not null,
+    type int not null,
     status int not null,
-    kanka text null,
+    description text null,
     owner int not null,
     creator int not null,
     created int not null,
