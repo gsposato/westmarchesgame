@@ -140,7 +140,7 @@ class CampaignPlayerController extends Controller
 
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'campaignId' => $campaignId]);
     }
 
     /**

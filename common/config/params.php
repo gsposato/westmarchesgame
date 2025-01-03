@@ -13,5 +13,6 @@ return [
         'complaints' => '/frontend/web/player-complaint',
         'characters' => '/frontend/web/campaign-character',
         'documents' => '/frontend/web/campaign-document',
+        'game' => '/frontend/web/game',
     ]
 ];

@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use frontend\helpers\ControllerHelper;
+
 /**
  * CampaignCharacterController implements the CRUD actions for CampaignCharacter model.
  */
@@ -125,7 +126,7 @@ class CampaignCharacterController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'campaignId' => $campaignId]);
     }
 
     /**

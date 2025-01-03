@@ -2,16 +2,17 @@
 
 namespace frontend\controllers;
 
-use common\models\CampaignAnnouncement;
+use common\models\Game;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 use frontend\helpers\ControllerHelper;
 
 /**
- * CampaignAnnouncementController implements the CRUD actions for CampaignAnnouncement model.
+ * GameController implements the CRUD actions for Game model.
  */
-class CampaignAnnouncementController extends Controller
+class GameController extends Controller
 {
     /**
      * @inheritDoc
@@ -34,15 +35,14 @@ class CampaignAnnouncementController extends Controller
     }
 
     /**
-     * Lists all CampaignAnnouncement models.
+     * Lists all Game models.
      *
      * @return string
      */
     public function actionIndex($campaignId)
     {
-        $query = CampaignAnnouncement::find()
+        $query = Game::find()
             ->where(["campaignId" => $campaignId]);
-        ControllerHelper::canView($campaignId);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -61,7 +61,7 @@ class CampaignAnnouncementController extends Controller
     }
 
     /**
-     * Displays a single CampaignAnnouncement model.
+     * Displays a single Game model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -74,13 +74,13 @@ class CampaignAnnouncementController extends Controller
     }
 
     /**
-     * Creates a new CampaignAnnouncement model.
+     * Creates a new Game model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate($campaignId)
     {
-        $model = new CampaignAnnouncement();
+        $model = new Game();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -96,7 +96,7 @@ class CampaignAnnouncementController extends Controller
     }
 
     /**
-     * Updates an existing CampaignAnnouncement model.
+     * Updates an existing Game model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -116,7 +116,7 @@ class CampaignAnnouncementController extends Controller
     }
 
     /**
-     * Deletes an existing CampaignAnnouncement model.
+     * Deletes an existing Game model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -130,15 +130,15 @@ class CampaignAnnouncementController extends Controller
     }
 
     /**
-     * Finds the CampaignAnnouncement model based on its primary key value.
+     * Finds the Game model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return CampaignAnnouncement the loaded model
+     * @return Game the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = CampaignAnnouncement::findOne(['id' => $id])) !== null) {
+        if (($model = Game::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

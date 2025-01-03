@@ -58,4 +58,9 @@ class CampaignTest extends \Codeception\Test\Unit
         $campaign = Campaign::find()->one();
         $this->assertEmpty($campaign);
     }
+
+    public function testGetName()
+    {
+        $this->testCreateCampaign();
+    }
 }
