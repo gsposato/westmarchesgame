@@ -48,7 +48,7 @@ class GamePollSlot extends NotarizedModel
         return [
             'id' => 'ID',
             'gamePollId' => 'Game Poll ID',
-            'humantime' => 'Humantime',
+            'humantime' => 'Timestamp',
             'timezone' => 'Timezone',
             'unixtime' => 'Unixtime',
             'owner' => 'Owner',

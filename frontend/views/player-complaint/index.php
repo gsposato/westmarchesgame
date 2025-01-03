@@ -29,6 +29,7 @@ $create = 'create?campaignId=' . $campaignId;
         'columns' => [
             'id',
             'name',
+            /*
             [
                 'label' => 'Reporting Player',
                 'attribute' => 'reportingPlayerId',
@@ -53,6 +54,7 @@ $create = 'create?campaignId=' . $campaignId;
                     return $model->offendingPlayerId;
                 }
             ],
+            */
             'updated:datetime',
             [
                 'label' => '',

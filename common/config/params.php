@@ -7,12 +7,12 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 8,
     'navigation' => [
-        'rules' => '/frontend/web/campaign/view',
         'announcements' => '/frontend/web/campaign-announcement',
-        'players' => '/frontend/web/campaign-player',
-        'complaints' => '/frontend/web/player-complaint',
-        'characters' => '/frontend/web/campaign-character',
         'documents' => '/frontend/web/campaign-document',
-        'game' => '/frontend/web/game',
+        'games' => '/frontend/web/game',
+        'players' => '/frontend/web/campaign-player',
+        'characters' => '/frontend/web/campaign-character',
+        'complaints' => '/frontend/web/player-complaint',
+        'rules' => '/frontend/web/campaign/view',
     ]
 ];

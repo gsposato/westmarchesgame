@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\Game;
+use common\models\GamePoll;
+use common\models\GamePollSlot;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -106,8 +108,17 @@ class GameController extends Controller
     {
         $model = $this->findModel($id);
 
+        if (!empty($_POST["GamePoll"]["note"])) {
+            $gamePoll = GamePoll::find()->where(["gameId" => $id])->one();
+            if (!empty($gamePoll)) {
+                $gamePoll->note = $_POST["GamePoll"]["note"];
+                $gamePoll->save();
+            }
+        }
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'campaignId' => $campaignId]);
+            $url = 'view?campaignId='.$campaignId.'&id='.$id;
+            return $this->redirect([$url]);
         }
 
         return $this->render('update', [
@@ -127,6 +138,69 @@ class GameController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index', 'campaignId' => $campaignId]);
+    }
+
+    /**
+     * Game Poll
+     * @param Integer $id
+     * @param Integer $campaignId
+     */
+    public function actionPoll($id, $campaignId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamepoll';
+        $poll = GamePoll::find()->where(["gameId" => $id])->one();
+        if (!empty($poll)) {
+            return $this->redirect([$url]);
+        }
+        $poll = new GamePoll();
+        $poll->load($this->request->post());
+        $poll->gameId = $id;
+        $poll->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Poll Slot
+     * @param Integer $id
+     * @param Integer $campaignId
+     */
+    public function actionPollslot($id, $campaignId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamepoll';
+        $poll = GamePoll::find()->where(["gameId" => $id])->one();
+        if (empty($poll)) {
+            return $this->redirect([$url]);
+        }
+        $slot = new GamePollSlot();
+        $slot->load($this->request->post());
+        $slot->unixtime = strtotime($slot->humantime);
+        $slot->gamePollId = $poll->id;
+        $slot->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Poll Slot Delete
+     * @param Integer $id
+     * @param Integer $campaignId
+     * @param Integer $slotId
+     */
+    public function actionPollslotdelete($id, $campaignId, $slotId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamepoll';
+        $poll = GamePoll::find()->where(["gameId" => $id])->one();
+        if (empty($poll)) {
+            return $this->redirect([$url]);
+        }
+        $slot = GamePollSlot::findOne($slotId);
+        if (empty($slot)) {
+            return $this->redirect([$url]);
+        }
+        if ($slot->gamePollId != $poll->id) {
+            return $this->redirect([$url]);
+        }
+        $slot->delete();
+        return $this->redirect([$url]);
     }
 
     /**

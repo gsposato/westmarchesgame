@@ -58,6 +58,11 @@ class NotarizedModel extends \yii\db\ActiveRecord
         if ($canHave && $doesNotHave) {
             $this->campaignId = $_GET['campaignId'];
         }
+        $canHave = array_key_exists("timezone", $attr);
+        $doesNotHave = empty($this->timezone);
+        if ($canHave && $doesNotHave) {
+            $this->timezone = date_default_timezone_get();
+        }
     }
 
     /**
@@ -129,5 +134,17 @@ class NotarizedModel extends \yii\db\ActiveRecord
             'updated:datetime',
         ];
         return $attributes;
+    }
+
+    /**
+     * Owner
+     */
+    public function owner()
+    {
+        $user = User::findOne($this->owner);
+        if (!empty($user->username)) {
+            return $user->username;
+        }
+        return $this->owner;
     }
 }

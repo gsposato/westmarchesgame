@@ -26,9 +26,10 @@ $create = 'create?campaignId=' . $campaignId;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            'id',
+            //'id',
             'name',
             'userId',
+            /*
             [
                 'label' => 'Is Player',
                 'attribute' => 'isPlayer',
@@ -62,6 +63,7 @@ $create = 'create?campaignId=' . $campaignId;
                     return 'True';
                 },
             ],
+            */
             //'created',
             'updated:datetime',
             [

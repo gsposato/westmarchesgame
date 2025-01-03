@@ -29,6 +29,7 @@ $create = 'create?campaignId=' . $campaignId;
         'columns' => [
             'id',
             'name',
+            /*
             [
                 'label' => 'Owner',
                 'attribute' => 'owner',
@@ -38,6 +39,7 @@ $create = 'create?campaignId=' . $campaignId;
                     return $user->username;
                 },
             ],
+            */
             'updated:datetime',
             [
                 'label' => '',

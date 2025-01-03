@@ -8,6 +8,7 @@ $this->title = Yii::$app->name;
     <div class="p-5 mb-4 bg-transparent rounded-3">
         <div class="container-fluid py-5 text-center">
             <h3 class="display-4 gothic">Campaigns</h3>
+            <h1><i class="fa fa-chevron-down"></i></h1>
         </div>
     </div>
 
@@ -24,7 +25,7 @@ $this->title = Yii::$app->name;
                     <h2><?= $campaign->name; ?></h2>
                     <p>Manage this campaign.</p>
                     <?php $id = $campaign->id; ?>
-                    <?php $href = "/frontend/web/campaign/view?campaignId=$id"; ?>
+                    <?php $href = "/frontend/web/campaign-announcement?campaignId=$id"; ?>
                     <p><a class="btn btn-primary" href="<?= $href; ?>">Manage</a></p>
                 </div>
                 </div>

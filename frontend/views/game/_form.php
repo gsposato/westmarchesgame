@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\GamePoll;
 
 /** @var yii\web\View $this */
 /** @var common\models\Game $model */
@@ -52,7 +53,7 @@ use yii\widgets\ActiveForm;
     <small>
         <p>
             <em>
-                Example: levels 3, 4, 5
+                Example: 3, 4, 5
             </em>
         </p>
     </small>
@@ -74,6 +75,19 @@ use yii\widgets\ActiveForm;
             </em>
         </p>
     </small>
+
+    <?php $gamePoll = GamePoll::find()->where(["gameId" => $model->id])->one(); ?>
+    <?php if (!empty($gamePoll->note)): ?>
+        <div class="form-group">
+        <label for="gamepoll-note">Game Poll Note</label>
+        <textarea id="gamepoll-note" name="GamePoll[note]" rows="6" class="form-control">
+<?= $gamePoll->note; ?>
+        </textarea>
+            <em>
+                The description that appears in your Game Poll text
+            </em>
+        </div>
+    <?php endif; ?>
 
     <br />
 

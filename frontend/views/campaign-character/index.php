@@ -27,7 +27,7 @@ $create = 'create?campaignId=' . $campaignId;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            'id',
+            //'id',
             [
                 'label' => 'Player',
                 'attribute' => 'playerId',
@@ -41,6 +41,7 @@ $create = 'create?campaignId=' . $campaignId;
                 }
             ],
             'name',
+            /*
             [
                 'label' => 'Type',
                 'attribute' => 'type',
@@ -65,6 +66,7 @@ $create = 'create?campaignId=' . $campaignId;
                     return $model->status;
                 },
             ],
+            */
             'updated:datetime',
             [
                 'label' => '',

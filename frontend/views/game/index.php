@@ -28,8 +28,8 @@ $create = 'create?campaignId=' . $campaignId;
         'columns' => [
             'id',
             'name',
-            'levelRange',
-            'owner',
+            //'levelRange',
+            //'owner',
             'updated:datetime',
             [
                 'label' => '',
