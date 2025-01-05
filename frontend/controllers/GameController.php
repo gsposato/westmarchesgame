@@ -5,6 +5,8 @@ namespace frontend\controllers;
 use common\models\Game;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
+use common\models\GameEvent;
+use common\models\GamePlayer;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -200,6 +202,58 @@ class GameController extends Controller
             return $this->redirect([$url]);
         }
         $slot->delete();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Event
+     * @param Integer $id
+     * @param Integer $campaignId
+     * @param Integer $slotId
+     */
+    public function actionEvent($id, $campaignId, $slotId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gameevent';
+        $event = GameEvent::find()->where(["gameId" => $id])->one();
+        if (!empty($event)) {
+            return $this->redirect([$url]);
+        }
+        $event = new GameEvent();
+        $event->load($this->request->post());
+        $event->gameId = $id;
+        $event->note = uniqId();
+        $event->gamePollSlotId = $slotId;
+        $event->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Player
+     * @param Integer $id
+     * @param Integer $campaignId
+     */
+    public function actionPlayer($id, $campaignId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gameevent';
+        $player = new GamePlayer();
+        $player->load($this->request->post());
+        $exists = GamePlayer::find()
+            ->where(["userId" => $player->userId])
+            ->andWhere(["gameId" => $id])
+            ->one();
+        if (!empty($exists)) {
+            return $this->redirect([$url]);
+        }
+        $player->gameId = $id;
+        $player->characterId = -1; // fill in later
+        $player->status = GamePlayer::status("scheduled");
+        //$player->save();
+        if (!$player->save()) {
+            foreach ($player->getErrors() as $err) {
+                print_r($err);
+            }
+            die;
+        }
         return $this->redirect([$url]);
     }
 

@@ -70,6 +70,7 @@ class ControllerHelper
 
     /**
      * Get Player Rank
+     * @param Integer $campaignId
      */
     public static function getPlayerRank($campaignId)
     {
