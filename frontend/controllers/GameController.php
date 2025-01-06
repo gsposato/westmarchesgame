@@ -247,13 +247,7 @@ class GameController extends Controller
         $player->gameId = $id;
         $player->characterId = -1; // fill in later
         $player->status = GamePlayer::status("scheduled");
-        //$player->save();
-        if (!$player->save()) {
-            foreach ($player->getErrors() as $err) {
-                print_r($err);
-            }
-            die;
-        }
+        $player->save();
         return $this->redirect([$url]);
     }
 

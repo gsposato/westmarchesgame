@@ -53,7 +53,7 @@ if (!empty($gameEvent)) {
 <?php $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId); ?>
 <?php $timestamp = $slot->unixtime; ?>
 <pre id="gamepoll-text" style="overflow-x:hidden;">
-**Tavern Rescue: Melodious Muse**
+**<?= $model->name; ?>**
 *Hosted by* @<?= $model->owner(); ?> 
 
 **Game Invite Link:** <?= $model->gameInviteLink; ?> 

@@ -16,6 +16,8 @@ use Yii;
  * @property int $isAdmin
  * @property int $created
  * @property int $updated
+ * @property int $gameEventTimestamp
+ * @property int $gameEventNumber
  */
 class CampaignPlayer extends NotarizedModel
 {
@@ -54,6 +56,8 @@ class CampaignPlayer extends NotarizedModel
             'isAdmin' => 'Is Admin',
             'created' => 'Created',
             'updated' => 'Updated',
+            'gameEventTimestamp' => 'Game Event Timestamp',
+            'gameEventNumber' => 'Game Event Number',
         ];
     }
 }

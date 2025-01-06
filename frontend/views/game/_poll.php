@@ -44,7 +44,7 @@ if (!empty($gamePoll->id)) {
                     </div>
                     <div class="card-body" style="background-color:#333;color:#fff">
 <pre id="gamepoll-text" style="overflow-x:hidden;">
-**Tavern Rescue: Melodious Muse**
+**<?= $model->name; ?>**
 DM @<?= $model->owner(); ?> 
 Game Invite Link: <?= $model->gameInviteLink; ?> 
 Gold Per Player: <?= $model->goldPayoutPerPlayer; ?> 

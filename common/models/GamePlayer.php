@@ -93,7 +93,13 @@ class GamePlayer extends NotarizedModel
             if ($campaignPlayer->isAdmin) {
                 continue;
             }
-            $players[$campaignPlayer->updated] = $gamePlayer;
+            if (empty($campaignPlayer->gameEventTimestamp)) {
+                $campaignPlayer->gameEventTimestamp = rand(1, 1000000);
+                $campaignPlayer->save();
+            }
+            if (empty($players[$campaignPlayer->gameEventTimestamp])) {
+                $players[$campaignPlayer->gameEventTimestamp] = $gamePlayer;
+            }
             $list[] = $gamePlayer->id;
         }
         ksort($players);
@@ -106,7 +112,14 @@ class GamePlayer extends NotarizedModel
             if (in_array($gamePlayer->id, $list)) {
                 continue;
             }
-            $admins[$campaignPlayer->updated] = $gamePlayer;
+            if (empty($campaignPlayer->gameEventTimestamp)) {
+                $campaignPlayer->gameEventTimestamp = rand(1, 1000000);
+                $campaignPlayer->save();
+            }
+            if (empty($admins[$campaignPlayer->gameEventTimestamp])) {
+                $admins[$campaignPlayer->gameEventTimestamp] = $gamePlayer;
+            }
+            $admins[$campaignPlayer->gameEventTimestamp] = $gamePlayer;
         }
         ksort($admins);
         return array_merge($players, $admins);

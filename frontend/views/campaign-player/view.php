@@ -69,6 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     return 'True';
                 },
             ],
+            'gameEventTimestamp:datetime',
+            'gameEventNumber',
             'created:datetime',
             'updated:datetime',
         ],

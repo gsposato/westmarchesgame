@@ -113,7 +113,12 @@ class CampaignPlayerController extends Controller
             $forbiddenException = 'This account is not authorized to view the requested page.';
             throw new ForbiddenHttpException($forbiddenException);
         }
-
+        if (!empty($_POST['CampaignPlayer']['gameEventTimestamp'])) {
+            $model->gameEventTimestamp = strtotime($_POST['CampaignPlayer']['gameEventTimestamp']);
+        }
+        if (!empty($_POST['CampaignPlayer']['gameEventNumber'])) {
+            $model->gameEventNumber = $_POST['CampaignPlayer']['gameEventNumber'];
+        }
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['index', 'campaignId' => $campaignId]);
         }

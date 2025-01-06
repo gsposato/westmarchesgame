@@ -15,10 +15,10 @@ $campaignId = $_GET['campaignId'];
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'userId')->textInput() ?>
 
     <br />
+
     <div class="card">
         <div class="card-header">
         Is Player
@@ -52,6 +52,11 @@ $campaignId = $_GET['campaignId'];
             <?= $form->field($model, 'isAdmin')->radio(['label' => 'False', 'value' => 0, 'uncheck' => null]) ?> 
         </div>
     </div>
+
+    <br />
+
+    <?= $form->field($model, 'gameEventTimestamp')->textInput(['type' => 'datetime-local']) ?>
+    <?= $form->field($model, 'gameEventNumber')->textInput(['type' => 'number']) ?>
 
     <br />
 
