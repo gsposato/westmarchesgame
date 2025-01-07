@@ -7,6 +7,7 @@ use common\models\GamePoll;
 use common\models\GamePollSlot;
 use common\models\GameEvent;
 use common\models\GamePlayer;
+use common\models\CampaignCharacter;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -252,7 +253,7 @@ class GameController extends Controller
     }
 
     /**
-     * Game Player
+     * Game Player Status
      * @param Integer $id
      * @param Integer $campaignId
      * @param Integer $gamePlayerId
@@ -265,12 +266,37 @@ class GameController extends Controller
             return $this->redirect([$url]);
         }
         $player->status = GamePlayer::change($player->status);
-        if (!$player->save()) {
-            foreach ($player->getErrors() as $err) {
-                print_r($err);
-            }
-            die;
+        $player->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Character
+     * @param Integer $id
+     * @param Integer $campaignId
+     * @param Integer $characterId
+     */
+    public function actionCharacter($id, $campaignId, $characterId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamecharacter';
+        $character = CampaignCharacter::findOne($characterId);
+        if (empty($character)) {
+            return $this->redirect([$url]);
         }
+        $player = GamePlayer::find()
+            ->where(["userId" => $character->playerId])
+            ->andWhere(["gameId" => $id])
+            ->one();
+        if (empty($player)) {
+            return $this->redirect([$url]);
+        }
+        if ($player->characterId == $character->id) {
+            $player->characterId = -1;
+            $player->save();
+            return $this->redirect([$url]);
+        }
+        $player->characterId = $character->id;
+        $player->save();
         return $this->redirect([$url]);
     }
 

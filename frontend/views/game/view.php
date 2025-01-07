@@ -60,6 +60,13 @@ $canModify = $model->canModify();
             'canModify' => $canModify
         ]) ?>
     </div>
+    <br />
+    <div id="gamecharacter">
+        <?= $this->render('_character', [
+            'model' => $model,
+            'canModify' => $canModify
+        ]) ?>
+    </div>
 </div>
 <script type="text/javascript">
 function copyText(id) {
