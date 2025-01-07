@@ -19,6 +19,12 @@ use Yii;
  */
 class GamePlayer extends NotarizedModel
 {
+    public const STATUS_SCHEDULED = 1;
+    public const STATUS_RESERVED = 2;
+    public const STATUS_DROPOUT = 3;
+    public const STATUS_ACTIVATED = 4;
+    public const STATUS_COHOST = 5;
+
     /**
      * {@inheritdoc}
      */
@@ -126,27 +132,51 @@ class GamePlayer extends NotarizedModel
     }
 
     /**
-     * Status
-     * @param Mixed $string
+     * Status Color
      */
-    public static function status($string)
+    public function statusColor()
     {
-        if (!is_string($string)) {
-            $string = strval($string);
-        }
-        switch ($string) {
-            case "scheduled": return "1";
-            case "reserved": return "2";
-            case "dropout": return "3";
-            case "activated": return "4";
-            case "co-host": return "5";
-            case "1": return "scheduled";
-            case "2": return "reserved";
-            case "3": return "dropout";
-            case "4": return "activated";
-            case "5": return "co-host";
+        switch ($this->status) {
+            case self::STATUS_SCHEDULED: return "btn-success";
+            case self::STATUS_RESERVED: return "btn-warning";
+            case self::STATUS_DROPOUT: return "btn-secondary";
+            case self::STATUS_ACTIVATED: return "btn-primary";
+            case self::STATUS_COHOST: return "btn-danger";
             default:
-                throw new \Exception("Unknown Status [$string]\n");
+                throw new \Exception("Unknown Status [$this->status]\n");
+        }
+    }
+
+    /**
+     * Status Icon
+     */
+    public function statusIcon()
+    {
+        switch ($this->status) {
+            case self::STATUS_SCHEDULED: return "fa-check";
+            case self::STATUS_RESERVED: return "fa-clock";
+            case self::STATUS_DROPOUT: return "fa-minus";
+            case self::STATUS_ACTIVATED: return "fa-chevron-up";
+            case self::STATUS_COHOST: return "fa-fire-flame-curved";
+            default:
+                throw new \Exception("Unknown Status [$this->status]\n");
+        }
+    }
+
+    /**
+     * Status Change
+     * @param Integer $current
+     */
+    public static function change($current)
+    {
+        switch ($current) {
+            case self::STATUS_SCHEDULED: return self::STATUS_RESERVED;
+            case self::STATUS_RESERVED: return self::STATUS_DROPOUT;
+            case self::STATUS_DROPOUT: return self::STATUS_ACTIVATED;
+            case self::STATUS_ACTIVATED: return self::STATUS_COHOST;
+            case self::STATUS_COHOST: return self::STATUS_SCHEDULED;
+            default:
+                throw new \Exception("Unknown Status [$current]\n");
         }
     }
 }

@@ -246,8 +246,31 @@ class GameController extends Controller
         }
         $player->gameId = $id;
         $player->characterId = -1; // fill in later
-        $player->status = GamePlayer::status("scheduled");
+        $player->status = self::STATUS_SCHEDULED;
         $player->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Player
+     * @param Integer $id
+     * @param Integer $campaignId
+     * @param Integer $gamePlayerId
+     */
+    public function actionPlayerstatus($id, $campaignId, $gamePlayerId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gameevent';
+        $player = GamePlayer::findOne($gamePlayerId);
+        if (empty($player)) {
+            return $this->redirect([$url]);
+        }
+        $player->status = GamePlayer::change($player->status);
+        if (!$player->save()) {
+            foreach ($player->getErrors() as $err) {
+                print_r($err);
+            }
+            die;
+        }
         return $this->redirect([$url]);
     }
 

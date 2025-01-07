@@ -11,6 +11,7 @@ use common\models\CampaignPlayer;
 $id = $_GET['campaignId'];
 $createGameEvent = '/frontend/web/game/event?campaignId=' . $id . '&id=' . $model->id;
 $createGamePlayer = '/frontend/web/game/player?campaignId=' . $id . '&id=' . $model->id;
+$changeGamePlayerStatus = '/frontend/web/game/playerstatus?campaignId=' . $id . '&id=' . $model->id;
 $gamePoll = GamePoll::find()->where(["gameId" => $model->id])->one();
 $gamePollSlots = array();
 if (!empty($gamePoll->id)) {
@@ -55,6 +56,13 @@ if (!empty($gameEvent)) {
 <pre id="gamepoll-text" style="overflow-x:hidden;">
 **<?= $model->name; ?>**
 *Hosted by* @<?= $model->owner(); ?> 
+<?php if (!empty($gamePlayers)): ?>
+<?php foreach ($gamePlayers as $gamePlayer): ?>
+<?php if ($gamePlayer->status == GamePlayer::STATUS_COHOST): ?>
+*Co-Host* @<?= $gamePlayer->name() . "\n"; ?>
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
 
 **Game Invite Link:** <?= $model->gameInviteLink; ?> 
 **Venue:** <?= $model->voiceVenueLink; ?> 
@@ -64,12 +72,42 @@ if (!empty($gameEvent)) {
 <?php if (!empty($gamePlayers)): ?> 
 **Players** 
 <?php foreach ($gamePlayers as $gamePlayer): ?>
+<?php if ($gamePlayer->status == GamePlayer::STATUS_SCHEDULED): ?>
 @<?= $gamePlayer->name() . "\n"; ?>
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
+<?php if (!empty($gamePlayers)): ?> 
+**Reserve** 
+<?php foreach ($gamePlayers as $gamePlayer): ?>
+<?php if ($gamePlayer->status == GamePlayer::STATUS_RESERVED): ?>
+@<?= $gamePlayer->name() . "\n"; ?>
+<?php endif; ?>
 <?php endforeach; ?>
 <?php endif; ?>
 </pre>
                     </div>
                     <div class="card-footer">
+                        <?php if (!empty($gamePlayers)): ?>
+                            <small style="color:#aaa">
+                                <i class="fa fa-check"></i>&nbsp;Scheduled&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-clock"></i>&nbsp;Reserved&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-minus"></i>&nbsp;Dropout&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-chevron-up"></i>&nbsp;Activated&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-fire-flame-curved"></i>&nbsp;Co-Host&nbsp;&nbsp;&nbsp;&nbsp;
+                            </small>
+                            <br />
+                            <?php foreach ($gamePlayers as $gamePlayer): ?>
+                                <?php $url = $changeGamePlayerStatus; ?>
+                                <?php $url .= "&gamePlayerId=" . $gamePlayer->id; ?>
+                                <?php $color = $gamePlayer->statusColor(); ?>
+                                <?php $icon = $gamePlayer->statusIcon(); ?>
+                                <a href="<?= $url; ?>" class="btn <?= $color; ?>" style="margin:5px">
+                                    <i class="fa <?= $icon; ?>"></i>&nbsp;<?= $gamePlayer->name(); ?>
+                                </a>
+                            <?php endforeach; ?>
+                            <hr />
+                        <?php endif; ?>
                         <?php $gamePlayer = new GamePlayer(); ?>
                         <?php $campaignPlayer = new CampaignPlayer(); ?>
                         <?php $select = $campaignPlayer->select(); ?>
