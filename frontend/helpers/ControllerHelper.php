@@ -44,6 +44,10 @@ class ControllerHelper
      */
     public static function canView($campaignId=0)
     {
+        date_default_timezone_set("UTC");
+        if (!empty(Yii::$app->user->identity->timezone)) {
+            date_default_timezone_set(Yii::$app->user->identity->timezone);
+        }
         if (empty($campaignId)) {
             $campaignId = $_GET['campaignId'];
         }

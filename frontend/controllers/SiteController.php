@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\models\User;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -153,6 +154,32 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Sets User Timezone.
+     * @param string $tz
+     * @return mixed
+     */
+    public function actionTimezone($tz)
+    {
+        $isGuest = empty(Yii::$app->user->identity->id);
+        if ($isGuest) {
+            return;
+        }
+        $user = User::findOne(Yii::$app->user->identity->id);
+        if (!$user) {
+            return;
+        }
+        $timezone = urldecode($tz);
+        $user->timezone = $timezone;
+        if ($user->save()) {
+            return 'timezone set to ' . $timezone;
+        }
+        foreach ($user->getErrors() as $err) {
+            print_r($err);
+        }
+        return;
     }
 
     /**

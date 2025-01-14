@@ -136,6 +136,26 @@ HTML;
                 </main>
         <?php endif; ?>
 <?php $this->endBody() ?>
+    <script type="text/javascript">
+        const timezone = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        function postTimezoneToServer(timezone) {
+            isGuest = <?= empty(Yii::$app->user->identity->id) ? 'true' : 'false'; ?>;
+            if (isGuest) {
+                return;
+            }
+            const xhr = new XMLHttpRequest();
+            const url = '/frontend/web/site/timezone?tz='+timezone; // URL of the PHP backend
+            xhr.open('GET', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('Timezone successfully sent to the server.');
+                }
+            };
+            xhr.send(`timezone=${encodeURIComponent(timezone)}`);
+        }
+        postTimezoneToServer(timezone);
+    </script>
 </body>
 </html>
 <?php $this->endPage();
