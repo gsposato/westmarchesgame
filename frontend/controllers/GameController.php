@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\Game;
+use common\models\GameNote;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
 use common\models\GameEvent;
@@ -247,7 +248,7 @@ class GameController extends Controller
         }
         $player->gameId = $id;
         $player->characterId = -1; // fill in later
-        $player->status = self::STATUS_SCHEDULED;
+        $player->status = GamePlayer::STATUS_SCHEDULED;
         $player->save();
         return $this->redirect([$url]);
     }
@@ -297,6 +298,43 @@ class GameController extends Controller
         }
         $player->characterId = $character->id;
         $player->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Game Note
+     * @param Integer $id
+     * @param Integer $campaignId
+     */
+    public function actionNote($id, $campaignId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamesummary';
+        if (!$this->request->isPost) {
+            return $this->redirect([$url]);
+        }
+        $model = new GameNote();
+        $model->load($this->request->post());
+        $model->gameId = $id;
+        $model->pinned = 0;
+        $model->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
+     * Delete Game Notes
+     * @param Integer $id
+     * @param Integer $campaignId
+     */
+    public function actionDeletenotes($id, $campaignId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamesummary';
+        $notes = GameNote::find()->where(["gameId" => $id])->all();
+        if (empty($notes)) {
+            return $this->redirect([$url]);
+        }
+        foreach ($notes as $note) {
+            $note->delete();
+        }
         return $this->redirect([$url]);
     }
 

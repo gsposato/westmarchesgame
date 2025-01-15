@@ -9,6 +9,7 @@ use common\models\GamePlayer;
 use common\models\CampaignPlayer;
 
 $id = $_GET['campaignId'];
+$owner = CampaignPlayer::find()->where(["userId" => $model->owner])->one();
 $createGameEvent = '/frontend/web/game/event?campaignId=' . $id . '&id=' . $model->id;
 $createGamePlayer = '/frontend/web/game/player?campaignId=' . $id . '&id=' . $model->id;
 $changeGamePlayerStatus = '/frontend/web/game/playerstatus?campaignId=' . $id . '&id=' . $model->id;
@@ -55,7 +56,7 @@ if (!empty($gameEvent)) {
 <?php $timestamp = $slot->unixtime; ?>
 <pre id="gamepoll-text" style="overflow-x:hidden;">
 **<?= $model->name; ?>**
-*Hosted by* @<?= $model->owner(); ?> 
+*Hosted by* @<?= $owner->name; ?> 
 <?php if (!empty($gamePlayers)): ?>
 <?php foreach ($gamePlayers as $gamePlayer): ?>
 <?php if ($gamePlayer->status == GamePlayer::STATUS_COHOST): ?>

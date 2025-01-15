@@ -4,8 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
+use common\models\CampaignPlayer;
 
 $id = $_GET['campaignId'];
+$owner = CampaignPlayer::find()->where(["userId" => $model->owner])->one();
 $createGamePoll = '/frontend/web/game/poll?campaignId=' . $id . '&id=' . $model->id;
 $createGamePollSlot = '#';
 $deleteGamePollSlot = '#';
@@ -45,7 +47,7 @@ if (!empty($gamePoll->id)) {
                     <div class="card-body" style="background-color:#333;color:#fff">
 <pre id="gamepoll-text" style="overflow-x:hidden;">
 **<?= $model->name; ?>**
-DM @<?= $model->owner(); ?> 
+DM @<?= $owner->name; ?> 
 Game Invite Link: <?= $model->gameInviteLink; ?> 
 Gold Per Player: <?= $model->goldPayoutPerPlayer; ?> 
 Levels: <?= $model->levelRange; ?> 
