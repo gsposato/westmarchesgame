@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\CampaignCharacter;
+use common\models\GamePlayer;
+use common\models\Game;
 
 /** @var yii\web\View $this */
 /** @var common\models\CampaignCharacter $model */
@@ -11,6 +13,8 @@ $id = $_GET['campaignId'];
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Campaign Characters', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
+$characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="campaign-character-view">
@@ -67,3 +71,34 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+
+
+            <div class="card">
+                <div class="card-header">
+                    <b>Game History</b>
+                    <b style="float: right;">
+                        <button class="btn btn-secondary">
+                            Character Level: <?= $characterAdvancement; ?>
+                        </button>
+                    </b>
+                </div>
+                <div class="card-body">
+                <ol>
+                <?php foreach ($gamesPlayed as $gamePlayed): ?>
+                    <?php $game = Game::findOne($gamePlayed->gameId); ?>
+                    <?php if (!$game->isEnded()): ?>
+                        <?php continue; ?>
+                    <?php endif; ?>
+                    <li>
+                        Session #<?= $game->id ?> - <?= $game->name; ?> /
+                        <small style="font-weight:bold;color:#df8607;">
+                            <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
+                        </small>
+                    </li>
+                <?php endforeach; ?>
+                </ol>
+                </div>
+                <div class="card-footer">
+                    &nbsp;
+                </div>
+            </div>

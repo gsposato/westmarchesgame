@@ -65,4 +65,38 @@ class Game extends NotarizedModel
             'updated' => 'Updated',
         ];
     }
+
+    /**
+     * Get Duration As Seconds
+    */
+    public function durationInSeconds()
+    {
+        preg_match_all('/\d+/', $this->timeDuration, $matches);
+        $numbers = array_map('intval', $matches[0]);
+        $maxNumber = max($numbers);
+        return $maxNumber * 60 * 60;
+    }
+
+    /**
+     * Is Ended
+     */
+    public function isEnded()
+    {
+        $gameEvent = GameEvent::find()->where(["gameId" => $this->id])->one();
+        if (empty($gameEvent)) {
+            return false;
+        }
+        $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
+        if (empty($slot)) {
+            return false;
+        }
+        $now = time();
+        $timestamp = $slot->unixtime;
+        $duration = $this->durationInSeconds();
+        $end = $timestamp + $duration;
+        if ($now > $end) {
+            return true;
+        }
+        return false;
+    }
 }

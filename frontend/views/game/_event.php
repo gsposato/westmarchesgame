@@ -74,7 +74,9 @@ if (!empty($gameEvent)) {
 **Players** 
 <?php foreach ($gamePlayers as $gamePlayer): ?>
 <?php if ($gamePlayer->status == GamePlayer::STATUS_SCHEDULED): ?>
+<?php if ($gamePlayer->userId != $owner->id): ?>
 @<?= $gamePlayer->name() . "\n"; ?>
+<?php endif; ?>
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endif; ?>
@@ -99,6 +101,9 @@ if (!empty($gameEvent)) {
                             </small>
                             <br />
                             <?php foreach ($gamePlayers as $gamePlayer): ?>
+                                <?php if ($gamePlayer->userId == $owner->id): ?>
+                                    <?php continue; ?>
+                                <?php endif; ?>
                                 <?php $url = $changeGamePlayerStatus; ?>
                                 <?php $url .= "&gamePlayerId=" . $gamePlayer->id; ?>
                                 <?php $color = $gamePlayer->statusColor(); ?>

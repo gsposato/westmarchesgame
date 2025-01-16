@@ -85,4 +85,47 @@ class CampaignCharacter extends NotarizedModel
             4 => "Dead"
         ];
     }
+
+    /**
+     * Character Advancement
+     * @param integer $campaignId
+     * @param integer $gamesPlayed
+     */
+    public static function advancement($campaignId, $gamesPlayed)
+    {
+        $campaign = Campaign::findOne($campaignId);
+        if (!$campaign) {
+            return 0;
+        }
+        $rules = json_decode($campaign->rules);
+        if (empty($rules)) {
+            return 0;
+        }
+        if (empty($rules->CampaignCharacter->startingLevel)) {
+            return 0;
+        }
+        if (empty($rules->CampaignCharacter->GameLevelAdvancement)) {
+            return 0;
+        }
+        $credit = 0;
+        foreach ($gamesPlayed as $gamePlayed) {
+            $game = Game::findOne($gamePlayed->gameId);
+            if (!$game->isEnded()) {
+                continue;
+            }
+            if (!$game) {
+                $credit += 1;
+                continue;
+            }
+            $credit += $game->credit;
+        }
+        $currentAdvancement = $rules->CampaignCharacter->startingLevel;
+        foreach ($rules->CampaignCharacter->GameLevelAdvancement as $games => $advancement) {
+            if ($credit < $games) {
+                return $currentAdvancement;
+            }
+            $currentAdvancement = $advancement;
+        }
+        return $currentAdvancement;
+    }
 }

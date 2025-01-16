@@ -236,6 +236,7 @@ class GameController extends Controller
      */
     public function actionPlayer($id, $campaignId)
     {
+        $this->addOwnerToGame($id);
         $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gameevent';
         $player = new GamePlayer();
         $player->load($this->request->post());
@@ -336,6 +337,31 @@ class GameController extends Controller
             $note->delete();
         }
         return $this->redirect([$url]);
+    }
+
+    /**
+     * Add Owner To Game
+     * @param Integer $id
+     */
+    protected function addOwnerToGame($id)
+    {
+        $game = Game::findOne($id);
+        if (empty($game)) {
+            return;
+        }
+        $player = new GamePlayer();
+        $exists = GamePlayer::find()
+            ->where(["userId" => $game->owner])
+            ->andWhere(["gameId" => $id])
+            ->one();
+        if (!empty($exists)) {
+            return;
+        }
+        $player->gameId = $id;
+        $player->characterId = -1;
+        $player->userId = $game->owner;
+        $player->status = GamePlayer::STATUS_SCHEDULED;
+        $player->save();
     }
 
     /**
