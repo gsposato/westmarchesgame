@@ -9,6 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use common\models\Campaign;
 use common\models\CampaignPlayer;
+use common\models\UserAction;
 
 class ControllerHelper
 {
@@ -53,13 +54,16 @@ class ControllerHelper
         }
         $campaign = Campaign::findOne($campaignId);
         if (!$campaign) {
+            self::createUserAction(404);
             throw new NotFoundHttpException('The requested page does not exist.');
         }
         $userId = Yii::$app->user->identity->id ?? 1;
         if ($userId == $campaign->owner) {
+            self::createUserAction(200);
             return true;
         }
         if ($userId == $campaign->creator) {
+            self::createUserAction(200);
             return true;
         }
         $campaignPlayers = CampaignPlayer::find()
@@ -67,8 +71,10 @@ class ControllerHelper
             ->andWhere(["userId" => $userId])
             ->all();
         if (!empty($campaignPlayers)) {
+            self::createUserAction(200);
             return true;
         }
+        self::createUserAction(404);
         throw new ForbiddenHttpException('This account is not authorized to view the requested page.');
     }
 
@@ -94,6 +100,40 @@ class ControllerHelper
             }
         }
         return '';
+    }
+
+    /**
+     * Create User Action
+     * @param integer $statuscode
+     */
+    public static function createUserAction($statuscode)
+    {
+        $action = new UserAction();
+        $action->userId = Yii::$app->user->identity->id;
+        $action->uri = $_SERVER['REQUEST_URI'];
+        $action->unixtime = time();
+        $action->statuscode = $statuscode;
+        $action->save();
+    }
+
+    /**
+     * Update User Action
+     * @param integer $statuscode
+     */
+    public static function updateUserAction($statuscode)
+    {
+        $uri = $_SERVER['REQUEST_URI'];
+        $userId = Yii::$app->user->identity->id;
+        $action = UserAction::find()
+            ->where(["userId" => $userId])
+            ->andWhere(["uri" => $uri])
+            ->orderBy(["id" => SORT_DESC])
+            ->one();
+        if (empty($action)) {
+            return;
+        }
+        $action->statuscode = $statuscode;
+        $action->save();
     }
 
 }

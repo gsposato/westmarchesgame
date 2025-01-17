@@ -141,7 +141,7 @@ class CampaignCharacterController extends Controller
         if (($model = CampaignCharacter::findOne(['id' => $id])) !== null) {
             return $model;
         }
-
+        ControllerHelper::updateUserAction(404);
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

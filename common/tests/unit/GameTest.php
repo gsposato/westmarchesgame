@@ -22,6 +22,7 @@ class GameTest extends \Codeception\Test\Unit
         $game = new Game();
         $game->name = "Test";
         $game->campaignId = 1;
+        $game->timeDuration = "4-5 hours";
         $isSaved = $game->save();
         $this->assertTrue($isSaved);
         $hasErrors = $game->getErrors();
@@ -58,5 +59,14 @@ class GameTest extends \Codeception\Test\Unit
         $game->delete();
         $game = Game::find()->one();
         $this->assertEmpty($game);
+    }
+
+    public function testDurationInSeconds()
+    {
+        $this->testCreateGame();
+        $game = Game::find()->one();
+        $expected = 5 * 60 * 60;
+        $actual = $game->durationInSeconds();
+        $this->assertEquals($expected, $actual);
     }
 }

@@ -150,18 +150,22 @@ class CampaignDocumentController extends Controller
                     if ($model->hostVisible) {
                         return $model;
                     }
+                    ControllerHelper::updateUserAction(403);
                     throw new ForbiddenHttpException($forbiddenException);
                     break;
                 case 'isPlayer':
                     if ($model->playerVisible) {
                         return $model;
                     }
+                    ControllerHelper::updateUserAction(403);
                     throw new ForbiddenHttpException($forbiddenException);
                     break;
                 default:
+                    ControllerHelper::updateUserAction(403);
                     throw new ForbiddenHttpException($forbiddenException);
             }
         }
+        ControllerHelper::updateUserAction(404);
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
@@ -187,6 +191,7 @@ class CampaignDocumentController extends Controller
                     ->where(["campaignId" => $campaignId]);
                 break;
             default:
+                ControllerHelper::updateUserAction(403);
                 $forbiddenException = 'This account is not authorized to view the requested page.'; 
                 throw new ForbiddenHttpException($forbiddenException);
         }

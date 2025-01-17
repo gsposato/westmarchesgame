@@ -111,6 +111,7 @@ class CampaignPlayerController extends Controller
         $userId = Yii::$app->user->identity->id ?? 1;
         if ($userId == $model->userId) {
             $forbiddenException = 'This account is not authorized to view the requested page.';
+            ControllerHelper::updateUserAction(403);
             throw new ForbiddenHttpException($forbiddenException);
         }
         if (!empty($_POST['CampaignPlayer']['gameEventTimestamp'])) {
@@ -139,6 +140,7 @@ class CampaignPlayerController extends Controller
     {
         $userId = Yii::$app->user->identity->id ?? 1;
         if ($userId == $model->userId) {
+            ControllerHelper::updateUserAction(403);
             $forbiddenException = 'This account is not authorized to view the requested page.';
             throw new ForbiddenHttpException($forbiddenException);
         }
@@ -160,7 +162,7 @@ class CampaignPlayerController extends Controller
         if (($model = CampaignPlayer::findOne(['id' => $id])) !== null) {
             return $model;
         }
-
+        ControllerHelper::updateUserAction(404);
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

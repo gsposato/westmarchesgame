@@ -23,6 +23,7 @@ class UserActionTest extends \Codeception\Test\Unit
         $userAction->userId = 1;
         $userAction->uri = "/example";
         $userAction->unixtime = $now;
+        $userAction->statuscode = 200;
         $isSaved = $userAction->save();
         $this->assertTrue($isSaved);
         $hasErrors = $userAction->getErrors();

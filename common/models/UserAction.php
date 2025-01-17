@@ -11,6 +11,7 @@ use Yii;
  * @property int $userId
  * @property string $uri
  * @property int $unixtime
+ * @property int $statuscode
  */
 class UserAction extends \yii\db\ActiveRecord
 {
@@ -28,8 +29,8 @@ class UserAction extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userId', 'uri', 'unixtime'], 'required'],
-            [['userId', 'unixtime'], 'integer'],
+            [['userId', 'uri', 'unixtime', 'statuscode'], 'required'],
+            [['userId', 'unixtime', 'statuscode'], 'integer'],
             [['uri'], 'string', 'max' => 255],
         ];
     }
@@ -44,6 +45,7 @@ class UserAction extends \yii\db\ActiveRecord
             'userId' => 'User ID',
             'uri' => 'Uri',
             'unixtime' => 'Unixtime',
+            'statuscode' => 'Statuscode',
         ];
     }
 }
