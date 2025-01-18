@@ -61,6 +61,34 @@ class CampaignCharacterController extends Controller
     }
 
     /**
+     * Roundup
+     *
+     * @return string
+     */
+    public function actionRoundup($campaignId)
+    {
+        $query = CampaignCharacter::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["type" => 1])
+            ->andWhere(["status" => 2]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 150
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ]
+            ],
+        ]);
+
+        return $this->render('roundup', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
      * Displays a single CampaignCharacter model.
      * @param int $id ID
      * @return string
