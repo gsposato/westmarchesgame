@@ -67,6 +67,59 @@ class GameController extends Controller
     }
 
     /**
+     * Roundup
+     *
+     * @return string
+     */
+    public function actionRoundup($campaignId, $after=0, $before=0)
+    {
+        $now = time();
+        $after = strtotime($after);
+        if (empty($after)) {
+            $after = $now - (30 * 24 * 60 * 60);
+        }
+        $before = strtotime($before);
+        if (empty($before)) {
+            $before = $now;
+        }
+        $games = array();
+        $allGames = Game::find()
+            ->where(["campaignId" => $campaignId])
+            ->all();
+        foreach ($allGames as $game) {
+            $gameEvent = GameEvent::find()
+                ->where(["gameId" => $game->id])
+                ->one();
+            $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
+            if (empty($gamePollSlot)) {
+                continue;
+            }
+            if ($gamePollSlot->unixtime <= $after) {
+                continue;
+            }
+            if ($gamePollSlot->unixtime >= $before) {
+                continue;
+            }
+            array_push($games, $game);
+        }
+        $levels = CampaignCharacter::levels($campaignId);
+        $retired = CampaignCharacter::find()
+            ->where([">=", "updated", $after])
+            ->andWhere(["status" => 3])
+            ->all();
+        $new = CampaignCharacter::find()
+            ->where([">=", "created", $after])
+            ->andWhere(["status" => 2])
+            ->all();
+        return $this->render('roundup', [
+            'games' => $games,
+            'levels' => $levels,
+            'retired' => $retired,
+            'new' => $new,
+        ]);
+    }
+
+    /**
      * Displays a single Game model.
      * @param int $id ID
      * @return string
@@ -192,6 +245,10 @@ class GameController extends Controller
     public function actionPollslotdelete($id, $campaignId, $slotId)
     {
         $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamepoll';
+        $event = GameEvent::find()->where(["gamePollSlotId" => $slotId])->one();
+        if (!empty($event)) {
+            return $this->redirect([$url]);
+        }
         $poll = GamePoll::find()->where(["gameId" => $id])->one();
         if (empty($poll)) {
             return $this->redirect([$url]);

@@ -87,6 +87,33 @@ class CampaignCharacter extends NotarizedModel
     }
 
     /**
+     * Character Levels
+     * @param integer $campaignId
+     */
+    public static function levels($campaignId)
+    {
+        $characters = CampaignCharacter::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["status" => 2])
+            ->all();
+        if (empty($characters)) {
+            return;
+        }
+        $levels = array();
+        foreach ($characters as $character) {
+            $gamesPlayed = GamePlayer::find()
+                ->where(["characterId" => $character->id])
+                ->all();
+            $advancement = self::advancement($campaignId, $gamesPlayed);
+            if (empty($levels[$advancement])) {
+                $levels[$advancement] = 0;
+            }
+            $levels[$advancement]++;
+        }
+        return $levels;
+    }
+
+    /**
      * Character Advancement
      * @param integer $campaignId
      * @param integer $gamesPlayed

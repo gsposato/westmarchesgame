@@ -13,6 +13,7 @@ $this->title = 'Games';
 $this->params['breadcrumbs'][] = $this->title;
 $campaignId = $_GET['campaignId'];
 $create = 'create?campaignId=' . $campaignId;
+$roundup = 'roundup?campaignId=' . $campaignId;
 ?>
 <div class="game-index">
 
@@ -20,6 +21,7 @@ $create = 'create?campaignId=' . $campaignId;
 
     <p>
         <?= Html::a('Create Game', [$create], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Roundup', [$roundup], ['class' => 'btn btn-secondary']) ?>
     </p>
 
 
