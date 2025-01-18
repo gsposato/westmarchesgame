@@ -2,11 +2,15 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\Campaign;
 use common\models\GamePoll;
 
 /** @var yii\web\View $this */
 /** @var common\models\Game $model */
 /** @var yii\widgets\ActiveForm $form */
+$campaignId = $_GET['campaignId'];
+$campaign = Campaign::findOne($campaignId);
+$rules = json_decode($campaign->rules);
 ?>
 
 <div class="game-form">
@@ -44,7 +48,7 @@ use common\models\GamePoll;
     <small>
         <p>
             <em>
-                Typically, it's 4-5 hours
+                Typically, it's <?= $rules->Game->defaultTimeDuration ?? "4 hours"; ?>
             </em>
         </p>
     </small>
@@ -62,7 +66,7 @@ use common\models\GamePoll;
     <small>
         <p>
             <em>
-                Typically, its 400
+                Typically, its <?= $rules->Game->defaultGoldPayoutPerPlayer ?? 400; ?>
             </em>
         </p>
     </small>
@@ -71,7 +75,7 @@ use common\models\GamePoll;
     <small>
         <p>
             <em>
-                Credit represents the amount of game credit earned.  Typically, one game is worth one credit.
+                Typically, one game is worth <?= $rules->Game->totalGameCreditPerPlayer ?? 1; ?> credit.
             </em>
         </p>
     </small>
