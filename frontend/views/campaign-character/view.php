@@ -84,6 +84,7 @@ $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
                 </div>
                 <div class="card-body">
                 <ol>
+                <?php $totalGoldEarned = 0; ?>
                 <?php foreach ($gamesPlayed as $gamePlayed): ?>
                     <?php $game = Game::findOne($gamePlayed->gameId); ?>
                     <?php if (!$game->isEnded()): ?>
@@ -91,14 +92,22 @@ $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
                     <?php endif; ?>
                     <li>
                         Session #<?= $game->id ?> - <?= $game->name; ?> /
-                        <small style="font-weight:bold;color:#df8607;">
+                        <small style="font-weight:bold;">
                             <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
+                        </small> /
+                        <small style="font-weight:bold;color:#df8607;">
+                            <?= $game->goldPayoutPerPlayer; ?> gold
+                            <?php $totalGoldEarned += $game->goldPayoutPerPlayer; ?>
                         </small>
                     </li>
                 <?php endforeach; ?>
                 </ol>
                 </div>
                 <div class="card-footer">
-                    &nbsp;
+                    <?php if ($totalGoldEarned > 0): ?>
+                        Total Gold Earned: <b style="color:#df8607"><?= $totalGoldEarned; ?></b>
+                    <?php else: ?>
+                        Total Gold Earned: <b><?= $totalGoldEarned; ?></b>
+                    <?php endif; ?>
                 </div>
             </div>
