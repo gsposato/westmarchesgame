@@ -26,6 +26,10 @@ $campaignPlayerSelect = $campaignPlayer->select();
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
+    <?= $form->field($model, 'bastionName')->textInput() ?>
+
+    <?= $form->field($model, 'bastionType')->textInput() ?>
+
     <br />
 
     <div class="form-group">

@@ -14,6 +14,8 @@ use Yii;
  * @property int $type
  * @property int $status
  * @property string|null $description
+ * @property string|null $bastionName
+ * @property string|null $bastionType
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -37,7 +39,7 @@ class CampaignCharacter extends NotarizedModel
         return [
             [['campaignId', 'playerId', 'name', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
             [['campaignId', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'integer'],
-            [['description'], 'string'],
+            [['description', 'bastionName', 'bastionType'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -55,6 +57,8 @@ class CampaignCharacter extends NotarizedModel
             'type' => 'Type',
             'status' => 'Status',
             'description' => 'Description',
+            'bastionName' => 'Bastion Name',
+            'bastionType' => 'Bastion Type',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',

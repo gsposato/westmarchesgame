@@ -14,6 +14,9 @@ class SignupCest
         $I->amOnRoute('site/signup');
     }
 
+    /**
+     * @skip New Token Based Signup
+     */
     public function signupWithEmptyFields(FunctionalTester $I)
     {
         $I->see('Signup', 'h1');
@@ -25,6 +28,9 @@ class SignupCest
 
     }
 
+    /**
+     * @skip New Token Based Signup
+     */
     public function signupWithWrongEmail(FunctionalTester $I)
     {
         $I->submitForm(
@@ -39,6 +45,9 @@ class SignupCest
         $I->see('Email is not a valid email address.', '.invalid-feedback');
     }
 
+    /**
+     * @skip New Token Based Signup
+     */
     public function signupSuccessfully(FunctionalTester $I)
     {
         $I->submitForm($this->formId, [

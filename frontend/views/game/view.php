@@ -42,6 +42,8 @@ $canModify = $model->canModify();
             'timeDuration',
             'levelRange',
             'goldPayoutPerPlayer',
+            'baseBastionPointsPerPlayer',
+            'bonusBastionPointsPerPlayer',
             'credit',
         ],
         $model->view()
@@ -70,6 +72,13 @@ $canModify = $model->canModify();
     <br />
     <div id="gamesummary">
         <?= $this->render('_summary', [
+            'model' => $model,
+            'canModify' => $canModify
+        ]) ?>
+    </div>
+    <br />
+    <div id="gamebonus">
+        <?= $this->render('_bonus', [
             'model' => $model,
             'canModify' => $canModify
         ]) ?>

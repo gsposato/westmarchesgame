@@ -397,6 +397,37 @@ class GameController extends Controller
     }
 
     /**
+     * Game Bonus
+     * @param Integer $id
+     * @param Integer $campaignId
+     * @param Integer $characterId
+     */
+    public function actionBonus($id, $campaignId, $characterId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamebonus';
+        $character = CampaignCharacter::findOne($characterId);
+        if (empty($character)) {
+            return $this->redirect([$url]);
+        }
+        $player = GamePlayer::find()
+            ->where(["userId" => $character->playerId])
+            ->andWhere(["characterId" => $character->id])
+            ->andWhere(["gameId" => $id])
+            ->one();
+        if (empty($player)) {
+            return $this->redirect([$url]);
+        }
+        if (!empty($player->hasBonusPoints)) {
+            $player->hasBonusPoints = 0;
+            $player->save();
+            return $this->redirect([$url]);
+        }
+        $player->hasBonusPoints = 1;
+        $player->save();
+        return $this->redirect([$url]);
+    }
+
+    /**
      * Add Owner To Game
      * @param Integer $id
      */

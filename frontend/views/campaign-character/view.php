@@ -2,7 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Campaign;
 use common\models\CampaignCharacter;
+use common\models\CampaignPlayer;
 use common\models\GamePlayer;
 use common\models\Game;
 
@@ -13,8 +15,13 @@ $id = $_GET['campaignId'];
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Campaign Characters', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$campaign = Campaign::findOne($id);
+$campaignRules = json_decode($campaign->rules);
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
 $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
+$totalGoldEarned = $campaignRules->CampaignCharacter->startingGold ?? 0;
+$totalBastionPointsEarned = $campaignRules->CampaignCharacter->startingBastionPoints ?? 0;
+$totalCreditsEarned = 0;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="campaign-character-view">
@@ -39,6 +46,18 @@ $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
         'attributes' => array_merge(
             [
             'id',
+            [
+                'label' => 'Player',
+                'attribute' => 'playerId',
+                'format' => 'text',
+                'value' => function($model) {
+                    $player = CampaignPlayer::findOne($model->playerId);
+                    if (!empty($player->name)) {
+                        return $player->name;
+                    }
+                    return $model->playerId;
+                }
+            ],
             'name',
             [
                 'label' => 'Type',
@@ -65,6 +84,8 @@ $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
                 }
             ],
             'description:ntext',
+            'bastionName:ntext',
+            'bastionType:ntext',
             ],
             $model->view()
         )
@@ -84,7 +105,6 @@ $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
                 </div>
                 <div class="card-body">
                 <ol>
-                <?php $totalGoldEarned = 0; ?>
                 <?php foreach ($gamesPlayed as $gamePlayed): ?>
                     <?php $game = Game::findOne($gamePlayed->gameId); ?>
                     <?php if (!$game->isEnded()): ?>
@@ -94,20 +114,28 @@ $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
                         Session #<?= $game->id ?> - <?= $game->name; ?> /
                         <small style="font-weight:bold;">
                             <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
+                            <?php $totalCreditsEarned += $game->credit; ?>
                         </small> /
                         <small style="font-weight:bold;color:#df8607;">
                             <?= $game->goldPayoutPerPlayer; ?> gold
                             <?php $totalGoldEarned += $game->goldPayoutPerPlayer; ?>
+                        </small> /
+                        <small style="font-weight:bold;">
+                            <?php $bastionPoints = 0; ?>
+                            <?php $bastionPoints += $game->baseBastionPointsPerPlayer; ?>
+                            <?php if (!empty($gamePlayed->hasBonusPoints)): ?>
+                                <?php $bastionPoints += $game->bonusBastionPointsPerPlayer; ?>
+                            <?php endif; ?>
+                            <?= $bastionPoints; ?> bastion points
+                            <?php $totalBastionPointsEarned += $bastionPoints; ?>
                         </small>
                     </li>
                 <?php endforeach; ?>
                 </ol>
                 </div>
                 <div class="card-footer">
-                    <?php if ($totalGoldEarned > 0): ?>
-                        Total Gold Earned: <b style="color:#df8607"><?= $totalGoldEarned; ?></b>
-                    <?php else: ?>
-                        Total Gold Earned: <b><?= $totalGoldEarned; ?></b>
-                    <?php endif; ?>
+                    Total Credits Earned: <b><?= $totalCreditsEarned; ?></b> /
+                    Total Gold Earned: <b style="color:#df8607"><?= $totalGoldEarned; ?></b> /
+                    Total Bastion Points Earned: <b><?= $totalBastionPointsEarned; ?></b>
                 </div>
             </div>

@@ -71,6 +71,24 @@ $rules = json_decode($campaign->rules);
         </p>
     </small>
 
+    <?= $form->field($model, 'baseBastionPointsPerPlayer')->textInput(["type" => "number"]) ?>
+    <small>
+        <p>
+            <em>
+                Typically, its <?= $rules->Game->defaultBaseBastionPointsPerPlayer ?? 20; ?>
+            </em>
+        </p>
+    </small>
+
+    <?= $form->field($model, 'bonusBastionPointsPerPlayer')->textInput(["type" => "number"]) ?>
+    <small>
+        <p>
+            <em>
+                Typically, its <?= $rules->Game->defaultBonusBastionPointsPerPlayer ?? 5; ?>
+            </em>
+        </p>
+    </small>
+
     <?= $form->field($model, 'credit')->textInput(["type"=>"number"]) ?>
     <small>
         <p>

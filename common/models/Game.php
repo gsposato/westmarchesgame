@@ -15,6 +15,8 @@ use Yii;
  * @property string|null $timeDuration
  * @property string|null $voiceVenueLink
  * @property int|null $goldPayoutPerPlayer
+ * @property int|null $baseBastionPointsPerPlayer
+ * @property int|null $bonusBastionPointsPerPlayer
  * @property int $credit
  * @property int $owner
  * @property int $creator
@@ -38,7 +40,7 @@ class Game extends NotarizedModel
     {
         return [
             [['campaignId', 'name', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'goldPayoutPerPlayer', 'credit', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'credit', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['gameInviteLink', 'voiceVenueLink'], 'string'],
             [['name', 'levelRange', 'timeDuration'], 'string', 'max' => 255],
         ];
@@ -58,6 +60,8 @@ class Game extends NotarizedModel
             'timeDuration' => 'Time Duration',
             'voiceVenueLink' => 'Voice Venue Link',
             'goldPayoutPerPlayer' => 'Gold Payout Per Player',
+            'baseBastionPointsPerPlayer' => 'Base Bastion Points Per Player',
+            'bonusBastionPointsPerPlayer' => 'Bonus Bastion Points Per Player',
             'credit' => 'Credit',
             'owner' => 'Owner',
             'creator' => 'Creator',

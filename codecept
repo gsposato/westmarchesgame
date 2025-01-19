@@ -4,4 +4,4 @@
 #php vendor/bin/codecept generate:cest functional NewCampaign -c frontend # make new cest
 #php vendor/bin/codecept run common/tests/unit/CampaignAnnouncementTest.php --fail-fast # run fewer tests
 #php vendor/bin/codecept run frontend/tests/functional/NewCampaignCest.php --fail-fast # run cest
-php vendor/bin/codecept run --fail-fast # run all tests (slow)
+php vendor/bin/codecept run -v --fail-fast # run all tests (slow)

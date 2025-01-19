@@ -12,6 +12,7 @@ use Yii;
  * @property int|null $userId
  * @property int $characterId
  * @property int $status
+ * @property int $hasBonusPoints
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -40,7 +41,7 @@ class GamePlayer extends NotarizedModel
     {
         return [
             [['gameId', 'characterId', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['gameId', 'userId', 'characterId', 'status', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['gameId', 'userId', 'characterId', 'status', 'hasBonusPoints', 'owner', 'creator', 'created', 'updated'], 'integer'],
         ];
     }
 
@@ -55,6 +56,7 @@ class GamePlayer extends NotarizedModel
             'userId' => 'Player',
             'characterId' => 'Character ID',
             'status' => 'Status',
+            'hasBonusPoints' => 'Has Bonus Points',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',
