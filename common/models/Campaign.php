@@ -66,4 +66,36 @@ class Campaign extends NotarizedModel
         }
         return $campaign->name;
     }
+
+    /**
+     * Get My Campaigns
+     */
+    public static function getMyCampaigns()
+    {
+        $user = User::findOne(Yii::$app->user->identity->id);
+        if (empty($user)) {
+            return;
+        }
+        $campaigns = Campaign::find()->all();
+        $myCampaigns = array();
+        foreach ($campaigns as $campaign) {
+            if ($user->id == $campaign->owner) {
+                array_push($myCampaigns, $campaign);
+                continue;
+            }
+            if ($user->id == $campaign->creator) {
+                array_push($myCampaigns, $campaign);
+                continue;
+            }
+            $player = CampaignPlayer::find()
+                ->where(["campaignId" => $campaign->id])
+                ->andWhere(["userId" => $user->id])
+                ->one();
+            if ($player) {
+                array_push($myCampaigns, $campaign);
+                continue;
+            }
+        }
+        return $myCampaigns;
+    }
 }

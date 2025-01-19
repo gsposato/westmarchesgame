@@ -82,7 +82,7 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->actionLogin();
         }
-        $campaigns = Campaign::find()->all();
+        $campaigns = Campaign::getMyCampaigns();
         $params = [
             "campaigns" => $campaigns
         ];
