@@ -74,7 +74,7 @@ class ControllerHelper
             self::createUserAction(200);
             return true;
         }
-        self::createUserAction(404);
+        self::createUserAction(403);
         throw new ForbiddenHttpException('This account is not authorized to view the requested page.');
     }
 

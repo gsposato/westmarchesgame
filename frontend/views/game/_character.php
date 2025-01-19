@@ -25,7 +25,7 @@ if (!empty($gameEvent)) {
                 <div class="card-body">
                         <p>Choose the characters receiving credit for this game:</p>
                         <?php foreach ($gamePlayers as $gamePlayer): ?>
-                            <?php $where = ["playerId" => $gamePlayer->userId]; ?>
+                            <?php $where = ["playerId" => $gamePlayer->userId, "status" => 2]; ?>
                             <?php $characters = CampaignCharacter::find()->where($where)->all(); ?>
                                 <?php foreach ($characters as $character): ?>
                                 <?php $url = $addRemoveCharacter . "&characterId=" . $character->id; ?>

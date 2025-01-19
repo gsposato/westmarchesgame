@@ -7,6 +7,18 @@ use yii\widgets\DetailView;
 /** @var common\models\CampaignPlayer $model */
 
 $id = $_GET['campaignId'];
+$now = time();
+$json = <<<JSON
+{
+    "campaignId": "{$id}",
+    "campaignPlayerId": {$model->id},
+    "unixtimestamp": {$now}
+}
+JSON;
+$token = base64_encode($json);
+$signup = (empty($_SERVER['HTTPS']) ? 'http' : 'https');
+$signup .= "://$_SERVER[HTTP_HOST]/frontend/web/site/signup";
+$invite = $signup . "?token=" . $token;
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Campaign Players', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -76,4 +88,40 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <?php if (empty($model->userId)): ?>
+    <div class="card">
+        <div class="card-header">
+            <b>Invite Link</b>
+            <button id="invite-text-btn" onclick="copyText('invite-text')" class="btn btn-primary" style="float:right;">
+                <i class="fa fa-copy"></i>&nbsp;Copy
+            </button>
+        </div>
+        <div class="card-body" style="background-color:#333;color:#fff">
+<pre id="invite-text" style="overflow-x:hidden;">
+<?= $invite; ?>
+</pre>
+        </div>
+        <div class="card-footer">
+            &nbsp;
+        </div>
+    </div>
+    <?php endif; ?>
+
 </div>
+<script type="text/javascript">
+function copyText(id) {
+  btn = "#"+id+"-btn";
+  try {
+      navigator.clipboard.writeText(document.getElementById(id).innerHtml);
+      alert("Text Copied!");
+      $(btn).removeClass("btn-primary");
+      $(btn).addClass("btn-success");
+      $(btn).html('<i class="fa fa-copy"></i>&nbsp;Copied!');
+  } catch (err) {
+      $(btn).removeClass("btn-primary");
+      $(btn).addClass("btn-danger");
+      $(btn).html('<i class="fa fa-copy"></i>&nbsp;Failed!');
+      console.log(err);
+  }
+}
+</script>

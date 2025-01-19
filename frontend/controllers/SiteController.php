@@ -10,6 +10,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use common\models\CampaignPlayer;
 use common\models\LoginForm;
 use common\models\User;
 use frontend\models\PasswordResetRequestForm;
@@ -187,11 +188,41 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionSignup()
+    public function actionSignup($token="")
     {
+        if (empty($token)) {
+            return $this->goHome();
+        }
+        $json = json_decode(base64_decode($token));
+        $keys = [
+            "campaignId",
+            "campaignPlayerId",
+            "unixtimestamp"
+        ];
+        foreach ($keys as $key) {
+            if (empty($json->{$key})) {
+                return $this->goHome();
+            }
+        }
+        $twentyFourHoursAgo = time() - 86400;
+        if ($json->unixtimestamp < $twentyFourHoursAgo) {
+            return $this->goHome();
+        }
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            $campaignPlayer = CampaignPlayer::findOne($json->campaignPlayerId);
+            if (empty($campaignPlayer->userId)) {
+                $user = User::find()
+                    ->where(["status" => 9])
+                    ->orderBy(["id" => SORT_DESC])
+                    ->one();
+                $campaignPlayer->userId = $user->id;
+                $campaignPlayer->save();
+            }
+            Yii::$app->session->setFlash(
+                'success',
+                'Thank you for registration. Please check your inbox for verification email.'
+            );
             return $this->goHome();
         }
 
