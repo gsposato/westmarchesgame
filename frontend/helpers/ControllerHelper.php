@@ -95,6 +95,9 @@ class ControllerHelper
             'isPlayer'
         ];
         foreach ($ranks as $rank) {
+            if (empty($player->{$rank})) {
+                return '';
+            }
             if ($player->{$rank}) {
                 return $rank;
             }

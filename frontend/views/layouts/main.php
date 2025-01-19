@@ -22,7 +22,7 @@ if (!empty($uris)) {
         if (str_contains($uri, $value)) {
             $showNav = true;
             $sel->{$key} = "nav-link-selected";
-            $id = $_GET['campaignId'];
+            $id = $_GET['campaignId'] ?? $_GET['id'];
             $name = Campaign::getName($id);
         }
     }

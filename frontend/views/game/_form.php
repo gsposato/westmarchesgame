@@ -75,7 +75,7 @@ $rules = json_decode($campaign->rules);
     <small>
         <p>
             <em>
-                Typically, one game is worth <?= $rules->Game->totalGameCreditPerPlayer ?? 1; ?> credit.
+                Typically, one game is worth <?= $rules->Game->defaultGameCreditPerPlayer ?? 1; ?> credit.
             </em>
         </p>
     </small>

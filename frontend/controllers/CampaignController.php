@@ -40,8 +40,11 @@ class CampaignController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($campaignId)
+    public function actionView($campaignId=0, $id=0)
     {
+        if (empty($campaignId) && !empty($id)) {
+            $campaignId = $id;
+        }
         return $this->render('view', [
             'model' => $this->findModel($campaignId),
         ]);

@@ -17,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?php if ($model->canModify()): ?>
-        <?= Html::a('Update', ['update', 'campaignId' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'campaignId' => $model->id], [
+        <?= Html::a('Update Campaign', ['update', 'campaignId' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete Entire Campaign!', ['delete', 'campaignId' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -34,10 +34,25 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'id',
                 'name',
-                'rules:ntext',
             ],
             $model->view()
         )
     ]) ?>
+
+    <div class="card">
+        <div class="card-header">
+            <b>Campaign Rules</b>
+        </div>
+    <div class="card-body" style="background-color:#333;color:#fff">
+<pre id="rules-text" style="overflow-x:hidden;">
+<code>
+<?php print_r(json_decode($model->rules, true)); ?>
+</code>
+</pre>
+        </div>
+        <div class="card-footer">
+            &nbsp;
+        </div>
+    </div>
 
 </div>
