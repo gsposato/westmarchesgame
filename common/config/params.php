@@ -12,6 +12,7 @@ return [
         'games' => '/frontend/web/game',
         'players' => '/frontend/web/campaign-player',
         'characters' => '/frontend/web/campaign-character',
+        'purchases' => '/frontend/web/purchase',
         'complaints' => '/frontend/web/player-complaint',
         'rules' => '/frontend/web/campaign/view',
     ]

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Purchase;
 use common\models\Campaign;
 use common\models\CampaignCharacter;
 use common\models\CampaignPlayer;
@@ -17,11 +18,14 @@ $this->params['breadcrumbs'][] = ['label' => 'Campaign Characters', 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 $campaign = Campaign::findOne($id);
 $campaignRules = json_decode($campaign->rules);
+$purchases = Purchase::find()->where(["characterId" => $model->id])->all();
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
 $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
 $totalGoldEarned = $campaignRules->CampaignCharacter->startingGold ?? 0;
 $totalBastionPointsEarned = $campaignRules->CampaignCharacter->startingBastionPoints ?? 0;
 $totalCreditsEarned = 0;
+$totalGoldSpent = 0;
+$totalBastionPointsSpent = 0;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="campaign-character-view">
@@ -93,6 +97,7 @@ $totalCreditsEarned = 0;
 
 </div>
 
+            <br />
 
             <div class="card">
                 <div class="card-header">
@@ -137,5 +142,46 @@ $totalCreditsEarned = 0;
                     Total Credits Earned: <b><?= $totalCreditsEarned; ?></b> /
                     Total Gold Earned: <b style="color:#df8607"><?= $totalGoldEarned; ?></b> /
                     Total Bastion Points Earned: <b><?= $totalBastionPointsEarned; ?></b>
+                </div>
+            </div>
+
+            <br />
+
+            <br />
+
+            <div class="card">
+                <div class="card-header">
+                    <b>Purchase History</b>
+                    <b style="float: right;">
+                        <button class="btn btn-secondary">
+                            Character Level: <?= $characterAdvancement; ?>
+                        </button>
+                    </b>
+                </div>
+                <div class="card-body">
+                <ul>
+                    <?php foreach ($purchases as $purchase): ?>
+                        <?php if ($purchase->currency == 1): ?>
+                            <?php $color = "#df8607"; ?>
+                            <?php $currency = "gold"; ?>
+                            <?php $totalGoldSpent += $purchase->price; ?>
+                        <?php endif; ?>
+                        <?php if ($purchase->currency == 2): ?>
+                            <?php $color = "#000"; ?>
+                            <?php $currency = "bastion points"; ?>
+                            <?php $totalBastionPointsSpent += $purchase->price; ?>
+                        <?php endif; ?>
+                        <li>
+                            <?= $purchase->name; ?> /
+                            <small style="font-weight:bold;color:<?= $color; ?>;">
+                                <?= $purchase->price; ?> <?= $currency; ?>
+                            </small>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                </div>
+                <div class="card-footer">
+                    Total Gold Spent: <b style="color:#df8607"><?= $totalGoldSpent; ?></b> /
+                    Total Bastion Points Spent: <b><?= $totalBastionPointsSpent; ?></b>
                 </div>
             </div>

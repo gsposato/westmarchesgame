@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\CampaignPlayer;
+use common\models\CampaignCharacter;
 
 /** @var yii\web\View $this */
 /** @var common\models\PlayerComplaint $model */
@@ -35,7 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => array_merge (
             [
             'id',
-            'campaignId',
             'gameId',
             'name',
             [
@@ -50,7 +50,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->reportingPlayerId;
                 }
             ],
-            'reportingCharacterId',
+            [
+                'label' => 'Reporting Character',
+                'attribute' => 'reportingCharacterId',
+                'format' => 'text',
+                'value' => function($model) {
+                    $character = CampaignCharacter::findOne($model->reportingCharacterId);
+                    if (!empty($character->name)) {
+                        return $character->name;
+                    }
+                    return $model->reportingCharacterId;
+                }
+            ],
             [
                 'label' => 'Offending Player',
                 'attribute' => 'offendingPlayerId',
@@ -63,7 +74,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->offendingPlayerId;
                 }
             ],
-            'offendingCharacterId',
+            [
+                'label' => 'Offending Character',
+                'attribute' => 'offendingCharacterId',
+                'format' => 'text',
+                'value' => function($model) {
+                    $character = CampaignCharacter::findOne($model->offendingCharacterId);
+                    if (!empty($character->name)) {
+                        return $character->name;
+                    }
+                    return $model->offendingCharacterId;
+                }
+            ],
             'note:ntext',
             ],
             $model->view()

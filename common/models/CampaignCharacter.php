@@ -52,7 +52,7 @@ class CampaignCharacter extends NotarizedModel
         return [
             'id' => 'ID',
             'campaignId' => 'Campaign ID',
-            'playerId' => 'Player ID',
+            'playerId' => 'Player',
             'name' => 'Name',
             'type' => 'Type',
             'status' => 'Status',
