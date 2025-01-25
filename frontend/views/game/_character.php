@@ -23,9 +23,11 @@ if (!empty($gameEvent)) {
                     <b>Game Character</b>
                 </div>
                 <div class="card-body">
-                        <p>Choose the characters receiving credit for this game:</p>
+                        <p>Choose the characters receiving <i>something</i> for this game:</p>
                         <?php foreach ($gamePlayers as $gamePlayer): ?>
-                            <?php $where = ["playerId" => $gamePlayer->userId, "status" => 2]; ?>
+                            <?php $where = array(); ?>
+                            <?php $where["playerId"] = $gamePlayer->userId; ?>
+                            <?php $where["status"] = CampaignCharacter::STATUS_ACTIVE; ?>
                             <?php $characters = CampaignCharacter::find()->where($where)->all(); ?>
                                 <?php foreach ($characters as $character): ?>
                                 <?php $url = $addRemoveCharacter . "&characterId=" . $character->id; ?>
@@ -40,6 +42,14 @@ if (!empty($gameEvent)) {
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         <?php endforeach; ?>
+                </div>
+                <div class="card-footer">
+
+                            <small style="color:#888">
+                                <i class="fa fa-check"></i>&nbsp;Selected&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-minus"></i>&nbsp;Not Selected&nbsp;&nbsp;&nbsp;&nbsp;
+                            </small>
+                            <br />
                 </div>
             </div>
     <?php endif; ?>

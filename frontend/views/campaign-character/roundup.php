@@ -69,21 +69,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                 'attribute' => '',
                 'format' => 'text',
                 'value' => function($model) {
-                    $lastGamePlayed = GamePlayer::find()
-                        ->where(["characterId" => $model->id])
-                        ->orderBy(["id" => SORT_DESC])
-                        ->one();
-                    if (empty($lastGamePlayed)) {
-                        return;
-                    }
-                    $gameEvent = GameEvent::find()
-                        ->where(["gameId" => $lastGamePlayed->gameId])
-                        ->one();
-                    if (empty($gameEvent)) {
-                        return;
-                    }
-                    $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
-                    return date("m/d/Y", $gamePollSlot->unixtime);
+                    return CampaignCharacter::previous($model->id);
                 }
             ],
             [

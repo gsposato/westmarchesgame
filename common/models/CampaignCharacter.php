@@ -23,6 +23,11 @@ use Yii;
  */
 class CampaignCharacter extends NotarizedModel
 {
+    public const STATUS_NEW = 1;
+    public const STATUS_ACTIVE = 2;
+    public const STATUS_RETIRED = 3;
+    public const STATUS_DEAD = 4;
+
     /**
      * {@inheritdoc}
      */
@@ -96,9 +101,9 @@ class CampaignCharacter extends NotarizedModel
      */
     public static function levels($campaignId)
     {
-        $characters = CampaignCharacter::find()
+        $characters = self::find()
             ->where(["campaignId" => $campaignId])
-            ->andWhere(["status" => 2])
+            ->andWhere(["status" => self::STATUS_ACTIVE])
             ->all();
         if (empty($characters)) {
             return;
@@ -158,5 +163,82 @@ class CampaignCharacter extends NotarizedModel
             $currentAdvancement = $advancement;
         }
         return $currentAdvancement;
+    }
+
+    /**
+     * Get Previous Game Date
+     * @param integer $characterId
+     */
+    public static function previous($characterId)
+    {
+        $lastGamePlayed = GamePlayer::find()
+            ->where(["characterId" => $characterId])
+            ->andWhere(['or',
+                    ['status' => GamePlayer::STATUS_SCHEDULED],
+                    ['status' => GamePlayer::STATUS_ACTIVATED]
+            ])
+            ->orderBy(["id" => SORT_DESC])
+            ->one();
+        if (empty($lastGamePlayed)) {
+            return;
+        }
+        $gameEvent = GameEvent::find()
+            ->where(["gameId" => $lastGamePlayed->gameId])
+            ->andWhere(["!=", "owner", $lastGamePlayed->userId])
+            ->one();
+        if (empty($gameEvent)) {
+            return;
+        }
+        $now = time();
+        $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
+        if (empty($gamePollSlot->unixtime)) {
+            return;
+        }
+        $campaignPlayer = CampaignPlayer::findOne($lastGamePlayed->userId);
+        if (empty($campaignPlayer)) {
+            return date("m/d/Y", $gamePollSlot->unixtime);
+        }
+        if ($campaignPlayer->gameEventTimestamp < $gamePollSlot->unixtime) {
+            $campaignPlayer->gameEventTimestamp = $gamePollSlot->unixtime;
+            $campaignPlayer->save();
+        }
+        return date("m/d/Y", $gamePollSlot->unixtime);
+    }
+
+    /**
+     * Is Host Character
+     * @param integer $gameId
+     * @param integer $characterId
+     */
+    public static function isHostCharacter($gameId, $characterId)
+    {
+        $character = self::findOne($characterId);
+        if (empty($character->playerId)) {
+            return false;
+        }
+        $player = CampaignPlayer::findOne($character->playerId);
+        if (empty($player->userId)) {
+            return false;
+        }
+        $user = User::findOne($player->userId);
+        if (empty($user->id)) {
+            return false;
+        }
+        $game = Game::findOne($gameId);
+        if (empty($game->owner)) {
+            return false;
+        }
+        if ($user->id == $game->owner) {
+            return true;
+        }
+        $gamePlayer = GamePlayer::find()
+            ->where(["gameId" => $gameId])
+            ->andWhere(["characterId" => $characterId])
+            ->andWhere(["status" => GamePlayer::STATUS_COHOST])
+            ->one();
+        if (!empty($gamePlayer)) {
+            return true;
+        }
+        return false;
     }
 }

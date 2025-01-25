@@ -26,6 +26,30 @@ $totalBastionPointsEarned = $campaignRules->CampaignCharacter->startingBastionPo
 $totalCreditsEarned = 0;
 $totalGoldSpent = 0;
 $totalBastionPointsSpent = 0;
+$isCreditWorthy = [
+    GamePlayer::BONUS_NORMAL,
+    GamePlayer::BONUS_BASTION
+];
+$isBastionWorthy = [
+    GamePlayer::BONUS_NORMAL,
+    GamePlayer::BONUS_BASTION,
+    GamePlayer::BONUS_DOUBLE_GOLD,
+    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
+];
+$isBonusBastionWorthy = [
+    GamePlayer::BONUS_BASTION,
+    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
+];
+$isGoldWorthy = [
+    GamePlayer::BONUS_NORMAL,
+    GamePlayer::BONUS_BASTION,
+    GamePlayer::BONUS_DOUBLE_GOLD,
+    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
+];
+$isDoubleGoldWorthy = [
+    GamePlayer::BONUS_DOUBLE_GOLD,
+    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
+];
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="campaign-character-view">
@@ -118,17 +142,32 @@ $totalBastionPointsSpent = 0;
                     <li>
                         Session #<?= $game->id ?> - <?= $game->name; ?> /
                         <small style="font-weight:bold;">
-                            <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
-                            <?php $totalCreditsEarned += $game->credit; ?>
+                            <?php if (in_array($gamePlayed->hasBonusPoints, $isCreditWorthy)): ?>
+                                <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
+                                <?php $totalCreditsEarned += $game->credit; ?>
+                            <?php else: ?>
+                                0 credits
+                            <?php endif; ?>
                         </small> /
                         <small style="font-weight:bold;color:#df8607;">
-                            <?= $game->goldPayoutPerPlayer; ?> gold
-                            <?php $totalGoldEarned += $game->goldPayoutPerPlayer; ?>
+                            <?php $gold = 0; ?>
+                            <?php if (in_array($gamePlayed->hasBonusPoints, $isGoldWorthy)): ?>
+                                <?php $gold += $game->goldPayoutPerPlayer; ?>
+                                <?php if (in_array($gamePlayed->hasBonusPoints, $isDoubleGoldWorthy)): ?>
+                                    <?php $gold += $game->goldPayoutPerPlayer; ?>
+                                <?php endif; ?>
+                                <?= $gold; ?> gold
+                                <?php $totalGoldEarned += $game->goldPayoutPerPlayer; ?>
+                            <?php else: ?>
+                                0 gold
+                            <?php endif; ?>
                         </small> /
                         <small style="font-weight:bold;">
                             <?php $bastionPoints = 0; ?>
-                            <?php $bastionPoints += $game->baseBastionPointsPerPlayer; ?>
-                            <?php if (!empty($gamePlayed->hasBonusPoints)): ?>
+                            <?php if (in_array($gamePlayed->hasBonusPoints, $isBastionWorthy)): ?>
+                                <?php $bastionPoints += $game->baseBastionPointsPerPlayer; ?>
+                            <?php endif; ?>
+                            <?php if (in_array($gamePlayed->hasBonusPoints, $isBonusBastionWorthy)): ?>
                                 <?php $bastionPoints += $game->bonusBastionPointsPerPlayer; ?>
                             <?php endif; ?>
                             <?= $bastionPoints; ?> bastion points

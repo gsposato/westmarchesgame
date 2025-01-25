@@ -70,7 +70,7 @@ class CampaignCharacterController extends Controller
         $query = CampaignCharacter::find()
             ->where(["campaignId" => $campaignId])
             ->andWhere(["type" => 1])
-            ->andWhere(["status" => 2]);
+            ->andWhere(["status" => CampaignCharacter::STATUS_ACTIVE]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [

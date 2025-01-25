@@ -11,6 +11,11 @@ use common\models\GamePoll;
 $campaignId = $_GET['campaignId'];
 $campaign = Campaign::findOne($campaignId);
 $rules = json_decode($campaign->rules);
+$defaultTimeDuration = $rules->Game->defaultTimeDuration ?? "4 hours";
+$defaultGoldPayoutPerPlayer = $rules->Game->defaultGoldPayoutPerPlayer ?? 400;
+$defaultBaseBastionPointsPerPlayer = $rules->Game->defaultBaseBastionPointsPerPlayer ?? 20;
+$defaultBonusBastionPointsPerPlayer = $rules->Game->defaultBonusBastionPointsPerPlayer ?? 5;
+$defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
 ?>
 
 <div class="game-form">
@@ -43,12 +48,17 @@ $rules = json_decode($campaign->rules);
             </em>
         </p>
     </small>
-    
-    <?= $form->field($model, 'timeDuration')->textInput(['maxlength' => true]) ?>
+
+    <?php $options = [
+            'maxlength' => true,
+            'value' => $model->timeDuration ?? $defaultTimeDuration
+        ];
+    ?>
+    <?= $form->field($model, 'timeDuration')->textInput($options) ?>
     <small>
         <p>
             <em>
-                Typically, it's <?= $rules->Game->defaultTimeDuration ?? "4 hours"; ?>
+                Typically, it's <?= $defaultTimeDuration; ?>
             </em>
         </p>
     </small>
@@ -62,38 +72,58 @@ $rules = json_decode($campaign->rules);
         </p>
     </small>
 
-    <?= $form->field($model, 'goldPayoutPerPlayer')->textInput(["type" => "number"]) ?>
+    <?php $options = [
+            'type' => 'number',
+            'value' => $model->goldPayoutPerPlayer ?? $defaultGoldPayoutPerPlayer
+        ];
+    ?>
+    <?= $form->field($model, 'goldPayoutPerPlayer')->textInput($options) ?>
     <small>
         <p>
             <em>
-                Typically, its <?= $rules->Game->defaultGoldPayoutPerPlayer ?? 400; ?>
+                Typically, its <?= $defaultGoldPayoutPerPlayer; ?>
             </em>
         </p>
     </small>
 
-    <?= $form->field($model, 'baseBastionPointsPerPlayer')->textInput(["type" => "number"]) ?>
+    <?php $options = [
+            'type' => 'number',
+            'value' => $model->baseBastionPointsPerPlayer ?? $defaultBaseBastionPointsPerPlayer
+        ];
+    ?>
+    <?= $form->field($model, 'baseBastionPointsPerPlayer')->textInput($options) ?>
     <small>
         <p>
             <em>
-                Typically, its <?= $rules->Game->defaultBaseBastionPointsPerPlayer ?? 20; ?>
+                Typically, its <?= $defaultBaseBastionPointsPerPlayer; ?>
             </em>
         </p>
     </small>
 
-    <?= $form->field($model, 'bonusBastionPointsPerPlayer')->textInput(["type" => "number"]) ?>
+    <?php $options = [
+            'type' => 'number',
+            'value' => $model->bonusBastionPointsPerPlayer ?? $defaultBonusBastionPointsPerPlayer
+        ];
+    ?>
+    <?= $form->field($model, 'bonusBastionPointsPerPlayer')->textInput($options) ?>
     <small>
         <p>
             <em>
-                Typically, its <?= $rules->Game->defaultBonusBastionPointsPerPlayer ?? 5; ?>
+                Typically, its <?= $defaultBonusBastionPointsPerPlayer; ?>
             </em>
         </p>
     </small>
 
-    <?= $form->field($model, 'credit')->textInput(["type"=>"number"]) ?>
+    <?php $options = [
+            'type' => 'number',
+            'value' => $model->credit ?? $defaultGameCreditPerPlayer
+        ];
+    ?>
+    <?= $form->field($model, 'credit')->textInput($options) ?>
     <small>
         <p>
             <em>
-                Typically, one game is worth <?= $rules->Game->defaultGameCreditPerPlayer ?? 1; ?> credit.
+                Typically, one game is worth <?= $defaultGameCreditPerPlayer; ?> credit.
             </em>
         </p>
     </small>

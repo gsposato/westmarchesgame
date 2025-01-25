@@ -90,6 +90,9 @@ class GameController extends Controller
             $gameEvent = GameEvent::find()
                 ->where(["gameId" => $game->id])
                 ->one();
+            if (empty($gameEvent->gamePollSlotId)) {
+                continue;
+            }
             $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
             if (empty($gamePollSlot)) {
                 continue;
@@ -109,7 +112,7 @@ class GameController extends Controller
             ->all();
         $new = CampaignCharacter::find()
             ->where([">=", "created", $after])
-            ->andWhere(["status" => 2])
+            ->andWhere(["status" => CampaignCharacter::STATUS_ACTIVE])
             ->all();
         return $this->render('roundup', [
             'games' => $games,
@@ -417,13 +420,8 @@ class GameController extends Controller
         if (empty($player)) {
             return $this->redirect([$url]);
         }
-        if (!empty($player->hasBonusPoints)) {
-            $player->hasBonusPoints = 0;
-            $player->save();
-            return $this->redirect([$url]);
-        }
-        $player->hasBonusPoints = 1;
-        $player->save();
+        $isHost = CampaignCharacter::isHostCharacter($id, $characterId);
+        $player->bonus($isHost);
         return $this->redirect([$url]);
     }
 

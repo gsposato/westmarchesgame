@@ -26,6 +26,12 @@ class GamePlayer extends NotarizedModel
     public const STATUS_ACTIVATED = 4;
     public const STATUS_COHOST = 5;
 
+    public const BONUS_NORMAL = 1;
+    public const BONUS_BASTION = 2;
+    public const BONUS_DOUBLE_GOLD = 3;
+    public const BONUS_DOUBLE_GOLD_BASTION = 4;
+    public const BONUS_NOTHING = 0;
+
     /**
      * {@inheritdoc}
      */
@@ -84,53 +90,47 @@ class GamePlayer extends NotarizedModel
     {
         $list = [];
         $players = [];
-        $gamePlayers = GamePlayer::find()
-            ->where(["gameId" => $gameId])
+        $campaignId = $_GET['campaignId'];
+        $characters = CampaignCharacter::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["status" => CampaignCharacter::STATUS_ACTIVE])
             ->all();
-        foreach ($gamePlayers as $gamePlayer) {
-            $campaignPlayer = CampaignPlayer::findOne($gamePlayer->userId);
-            if (!$campaignPlayer) {
-                continue;
-            }
-            if (!$campaignPlayer->isPlayer) {
-                continue;
-            }
-            if ($campaignPlayer->isHost) {
-                continue;
-            }
-            if ($campaignPlayer->isAdmin) {
-                continue;
-            }
-            if (empty($campaignPlayer->gameEventTimestamp)) {
-                $campaignPlayer->gameEventTimestamp = rand(1, 1000000);
-                $campaignPlayer->save();
-            }
-            if (empty($players[$campaignPlayer->gameEventTimestamp])) {
-                $players[$campaignPlayer->gameEventTimestamp] = $gamePlayer;
-            }
-            $list[] = $gamePlayer->id;
+        foreach ($characters as $character) {
+            CampaignCharacter::previous($character->id);
         }
-        ksort($players);
-        $admins = [];
-        foreach ($gamePlayers as $gamePlayer) {
-            $campaignPlayer = CampaignPlayer::findOne($gamePlayer->userId);
-            if (!$campaignPlayer) {
-                continue;
-            }
-            if (in_array($gamePlayer->id, $list)) {
-                continue;
-            }
-            if (empty($campaignPlayer->gameEventTimestamp)) {
-                $campaignPlayer->gameEventTimestamp = rand(1, 1000000);
-                $campaignPlayer->save();
-            }
-            if (empty($admins[$campaignPlayer->gameEventTimestamp])) {
-                $admins[$campaignPlayer->gameEventTimestamp] = $gamePlayer;
-            }
-            $admins[$campaignPlayer->gameEventTimestamp] = $gamePlayer;
+        $sql = <<<SQL
+SELECT
+    gp.*,
+    cp.campaignId,
+    cp.name AS campaignName,
+    cp.isPlayer,
+    cp.isHost,
+    cp.isAdmin,
+    cp.gameEventTimestamp,
+    cp.created AS campaignCreated,
+    cp.updated AS campaignUpdated
+FROM
+    game_player gp
+INNER JOIN
+    campaign_player cp
+ON
+    gp.userId = cp.id
+WHERE
+    cp.isPlayer = 1
+AND
+    gp.gameId = :gameId
+ORDER BY
+    cp.gameEventTimestamp ASC
+SQL;
+        $results = Yii::$app
+            ->db
+            ->createCommand($sql)
+            ->bindValue(":gameId", $gameId)
+            ->queryAll();
+        foreach ($results as $result) {
+            $players[] = GamePlayer::findOne($result["id"]);
         }
-        ksort($admins);
-        return array_merge($players, $admins);
+        return $players;
     }
 
     /**
@@ -179,6 +179,46 @@ class GamePlayer extends NotarizedModel
             case self::STATUS_COHOST: return self::STATUS_SCHEDULED;
             default:
                 throw new \Exception("Unknown Status [$current]\n");
+        }
+    }
+
+    /**
+     * Bonus
+     * @param boolean $isHost
+     */
+    public function bonus($isHost)
+    {
+        switch ($this->hasBonusPoints) {
+            case self::BONUS_NORMAL:
+                $this->hasBonusPoints = self::BONUS_BASTION;
+                $this->save();
+                break;
+            case self::BONUS_BASTION:
+                if ($isHost) {
+                    $this->hasBonusPoints = self::BONUS_DOUBLE_GOLD;
+                    $this->save();
+                    return;
+                }
+                $this->hasBonusPoints = self::BONUS_NOTHING;
+                $this->save();
+                break;
+            case self::BONUS_DOUBLE_GOLD:
+                if ($isHost) {
+                    $this->hasBonusPoints = self::BONUS_DOUBLE_GOLD_BASTION;
+                    $this->save();
+                    return;
+                }
+                $this->hasBonusPoints = self::BONUS_NOTHING;
+                $this->save();
+                break;
+            case self::BONUS_DOUBLE_GOLD_BASTION:
+                $this->hasBonusPoints = self::BONUS_NOTHING;
+                $this->save();
+                break;
+            case self::BONUS_NOTHING:
+                $this->hasBonusPoints = self::BONUS_NORMAL;
+                $this->save();
+                break;
         }
     }
 }
