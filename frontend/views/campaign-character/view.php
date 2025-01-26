@@ -20,10 +20,12 @@ $campaign = Campaign::findOne($id);
 $campaignRules = json_decode($campaign->rules);
 $purchases = Purchase::find()->where(["characterId" => $model->id])->all();
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
-$characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed);
-$totalGoldEarned = $campaignRules->CampaignCharacter->startingGold ?? 0;
-$totalBastionPointsEarned = $campaignRules->CampaignCharacter->startingBastionPoints ?? 0;
-$totalCreditsEarned = 0;
+$characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed, $model->startingCredit);
+$defaultStartingGold = $campaignRules->CampaignCharacter->startingGold ?? 100;
+$totalGoldEarned = $model->startingGold ?? $defaultStartingGold;
+$defaultstartingBastionPoints = $campaignRules->CampaignCharacter->startingBastionPoints ?? 25;
+$totalBastionPointsEarned = $model->startingBastionPoints ?? $defaultStartingBastionPoints;
+$totalCreditsEarned = $model->startingCredit ?? 0;
 $totalGoldSpent = 0;
 $totalBastionPointsSpent = 0;
 $isCreditWorthy = [
@@ -114,6 +116,10 @@ $isDoubleGoldWorthy = [
             'description:ntext',
             'bastionName:ntext',
             'bastionType:ntext',
+            'startingGold',
+            'startingBastionPoints',
+            'startingCredit',
+            'firstGamePlayed:datetime',
             ],
             $model->view()
         )
@@ -136,6 +142,9 @@ $isDoubleGoldWorthy = [
                 <ol>
                 <?php foreach ($gamesPlayed as $gamePlayed): ?>
                     <?php $game = Game::findOne($gamePlayed->gameId); ?>
+                    <?php if (empty($game)): ?>
+                        <?php continue; ?>
+                    <?php endif; ?>
                     <?php if (!$game->isEnded()): ?>
                         <?php continue; ?>
                     <?php endif; ?>

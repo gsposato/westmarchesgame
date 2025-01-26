@@ -7,6 +7,7 @@ use common\models\CampaignCharacter;
 /** @var yii\web\View $this */
 /** @var common\models\Purchase $model */
 
+$id = $_GET['campaignId'];
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Purchases', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -17,8 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Update', ['update?campaignId='.$id.'&id='.$model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete?campaignId='.$id.'&id='.$model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',

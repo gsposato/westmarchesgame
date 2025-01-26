@@ -2,7 +2,9 @@
 
 namespace frontend\controllers;
 
+use Yii;
 use common\models\CampaignCharacter;
+use common\models\CampaignPlayer;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -96,6 +98,14 @@ class CampaignCharacterController extends Controller
      */
     public function actionView($id, $campaignId)
     {
+        $model = $this->findModel($id);
+        $player = CampaignPlayer::findOne($model->playerId);
+        if (!empty($player->id)) {
+            if ($player->userId == Yii::$app->user->identity->id) {
+                $model->owner = $player->userId;
+                $model->save();
+            }
+        }
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);

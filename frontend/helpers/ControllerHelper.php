@@ -112,7 +112,7 @@ class ControllerHelper
     public static function createUserAction($statuscode)
     {
         $action = new UserAction();
-        $action->userId = Yii::$app->user->identity->id;
+        $action->userId = Yii::$app->user->identity->id ?? -1;
         $action->uri = $_SERVER['REQUEST_URI'];
         $action->unixtime = time();
         $action->statuscode = $statuscode;

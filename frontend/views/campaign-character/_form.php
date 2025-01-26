@@ -30,6 +30,25 @@ $campaignPlayerSelect = $campaignPlayer->select();
 
     <?= $form->field($model, 'bastionType')->textInput() ?>
 
+    <?= $form->field($model, 'startingGold')->textInput(['type' => 'number']) ?>
+
+    <?= $form->field($model, 'startingBastionPoints')->textInput(['type' => 'number']) ?>
+
+    <?= $form->field($model, 'startingCredit')->textInput(['type' => 'number']) ?>
+
+    <?php if (empty($model->firstGamePlayed)): ?>
+        <?= $form->field($model, 'firstGamePlayed')->textInput(['type' => 'datetime-local']) ?>
+    <?php else: ?>
+        <?php $firstGamePlayed = date('m/d/y H:i A', $model->firstGamePlayed); ?>
+        <?php $options = [
+                'type' => 'hidden',
+                'value' => $firstGamePlayed
+            ];
+        ?>
+        <?= $form->field($model, 'firstGamePlayed')->textInput($options) ?>
+        <input class="form-control" type="disabled" value="<?= $firstGamePlayed; ?>" disabled="disabled" />
+    <?php endif; ?>
+
     <br />
 
     <div class="form-group">

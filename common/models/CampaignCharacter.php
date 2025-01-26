@@ -16,6 +16,10 @@ use Yii;
  * @property string|null $description
  * @property string|null $bastionName
  * @property string|null $bastionType
+ * @property int $startingGold
+ * @property int $startingBastionPoints
+ * @property int $startingCredit
+ * @property int $firstGamePlayed
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -43,8 +47,8 @@ class CampaignCharacter extends NotarizedModel
     {
         return [
             [['campaignId', 'playerId', 'name', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'integer'],
-            [['description', 'bastionName', 'bastionType'], 'string'],
+            [['campaignId', 'type', 'status', 'startingGold', 'startingBastionPoints', 'startingCredit', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['description', 'bastionName', 'bastionType', 'firstGamePlayed'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -64,11 +68,24 @@ class CampaignCharacter extends NotarizedModel
             'description' => 'Description',
             'bastionName' => 'Bastion Name',
             'bastionType' => 'Bastion Type',
+            'startingGold' => 'Starting Gold',
+            'startingBastionPoints' => 'Starting Bastion Points',
+            'startingCredit' => 'Starting Credit',
+            'firstGamePlayed' => 'First Game Played',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',
             'updated' => 'Updated',
         ];
+    }
+
+    /**
+     * Before Save
+     */
+    public function beforeSave($insert)
+    {
+        $this->firstGamePlayed = strval(strtotime($this->firstGamePlayed));
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -126,8 +143,9 @@ class CampaignCharacter extends NotarizedModel
      * Character Advancement
      * @param integer $campaignId
      * @param integer $gamesPlayed
+     * @param integer $startingCredit
      */
-    public static function advancement($campaignId, $gamesPlayed)
+    public static function advancement($campaignId, $gamesPlayed, $startingCredit = 0)
     {
         $campaign = Campaign::findOne($campaignId);
         if (!$campaign) {
@@ -143,9 +161,12 @@ class CampaignCharacter extends NotarizedModel
         if (empty($rules->CampaignCharacter->GameLevelAdvancement)) {
             return 0;
         }
-        $credit = 0;
+        $credit = $startingCredit ?? 0;
         foreach ($gamesPlayed as $gamePlayed) {
             $game = Game::findOne($gamePlayed->gameId);
+            if (empty($game)) {
+                continue;
+            }
             if (!$game->isEnded()) {
                 continue;
             }
@@ -171,6 +192,8 @@ class CampaignCharacter extends NotarizedModel
      */
     public static function previous($characterId)
     {
+        $character = CampaignCharacter::findOne($characterId);
+        $firstGamePlayed = date("m/d/Y", $character->firstGamePlayed);
         $lastGamePlayed = GamePlayer::find()
             ->where(["characterId" => $characterId])
             ->andWhere(['or',
@@ -180,19 +203,19 @@ class CampaignCharacter extends NotarizedModel
             ->orderBy(["id" => SORT_DESC])
             ->one();
         if (empty($lastGamePlayed)) {
-            return;
+            return $firstGamePlayed;
         }
         $gameEvent = GameEvent::find()
             ->where(["gameId" => $lastGamePlayed->gameId])
             ->andWhere(["!=", "owner", $lastGamePlayed->userId])
             ->one();
         if (empty($gameEvent)) {
-            return;
+            return $firstGamePlayed;
         }
         $now = time();
         $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
         if (empty($gamePollSlot->unixtime)) {
-            return;
+            return $firstGamePlayed;
         }
         $campaignPlayer = CampaignPlayer::findOne($lastGamePlayed->userId);
         if (empty($campaignPlayer)) {
