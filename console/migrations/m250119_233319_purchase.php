@@ -15,6 +15,7 @@ create table purchase(
     name varchar(255) not null,
     campaignId int(11) not null,
     characterId int(11) not null,
+    gameId int(11) null,
     currency tinyint(1) not null,
     price int(11) not null,
     owner int(11) not null,

@@ -2,12 +2,15 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\Game;
 use common\models\Purchase;
 use common\models\CampaignCharacter;
 
 /** @var yii\web\View $this */
 /** @var common\models\Purchase $model */
 /** @var yii\widgets\ActiveForm $form */
+$game = new Game();
+$gameSelect = $game->select();
 $campaignCharacter = new CampaignCharacter();
 $campaignCharacterSelect = $campaignCharacter->select();
 ?>
@@ -19,6 +22,8 @@ $campaignCharacterSelect = $campaignCharacter->select();
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'characterId')->dropDownList($campaignCharacterSelect, ['prompt' => '']) ?>
+
+    <?= $form->field($model, 'gameId')->dropDownList($gameSelect, ['prompt' => '']) ?>
 
     <?= $form->field($model, 'currency')->dropDownList(Purchase::currency(), ['prompt' => '']) ?>
 

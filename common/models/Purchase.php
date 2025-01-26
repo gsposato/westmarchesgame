@@ -11,6 +11,7 @@ use Yii;
  * @property string $name
  * @property int $campaignId
  * @property int $characterId
+ * @property int $gameId
  * @property int $currency
  * @property int $price
  * @property int $owner
@@ -35,7 +36,7 @@ class Purchase extends NotarizedModel
     {
         return [
             [['name', 'campaignId', 'characterId', 'currency', 'price', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'characterId', 'currency', 'price', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'characterId', 'gameId', 'currency', 'price', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -50,6 +51,7 @@ class Purchase extends NotarizedModel
             'name' => 'Name',
             'campaignId' => 'Campaign ID',
             'characterId' => 'Character',
+            'gameId' => 'Game',
             'currency' => 'Currency',
             'price' => 'Price',
             'owner' => 'Owner',

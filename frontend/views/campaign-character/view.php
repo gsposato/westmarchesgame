@@ -203,18 +203,25 @@ $isDoubleGoldWorthy = [
                         <?php if ($purchase->currency == 1): ?>
                             <?php $color = "#df8607"; ?>
                             <?php $currency = "gold"; ?>
-                            <?php $totalGoldSpent += $purchase->price; ?>
+                            <?php if (empty($purchase->gameId)): ?>
+                                <?php $totalGoldSpent += $purchase->price; ?>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <?php if ($purchase->currency == 2): ?>
                             <?php $color = "#000"; ?>
                             <?php $currency = "bastion points"; ?>
-                            <?php $totalBastionPointsSpent += $purchase->price; ?>
+                            <?php if (empty($purchase->gameId)): ?>
+                                <?php $totalBastionPointsSpent += $purchase->price; ?>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <li>
                             <?= $purchase->name; ?> /
                             <small style="font-weight:bold;color:<?= $color; ?>;">
                                 <?= $purchase->price; ?> <?= $currency; ?>
                             </small>
+                            <?php if (!empty($purchase->gameId)): ?>
+                                / <small>Session #<?= $purchase->gameId; ?></small>
+                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
