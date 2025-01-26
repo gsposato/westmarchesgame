@@ -23,7 +23,7 @@ $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
 $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed, $model->startingCredit);
 $defaultStartingGold = $campaignRules->CampaignCharacter->startingGold ?? 100;
 $totalGoldEarned = $model->startingGold ?? $defaultStartingGold;
-$defaultstartingBastionPoints = $campaignRules->CampaignCharacter->startingBastionPoints ?? 25;
+$defaultStartingBastionPoints = $campaignRules->CampaignCharacter->startingBastionPoints ?? 25;
 $totalBastionPointsEarned = $model->startingBastionPoints ?? $defaultStartingBastionPoints;
 $totalCreditsEarned = $model->startingCredit ?? 0;
 $totalGoldSpent = 0;

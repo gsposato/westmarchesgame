@@ -3,6 +3,7 @@
 namespace common\models;
 
 use common\models\User;
+use frontend\helpers\ControllerHelper;
 use yii\helpers\ArrayHelper;
 
 use Yii;
@@ -72,6 +73,12 @@ class NotarizedModel extends \yii\db\ActiveRecord
     {
         $attr = $this->attributes;
         $userId = Yii::$app->user->identity->id ?? 1;
+        if (!empty($_GET['campaignId'])) {
+            $rank = ControllerHelper::getPlayerRank($_GET['campaignId']);
+            if ($rank == 'isAdmin') {
+                return true;
+            }
+        }
         $canHave["creator"] = array_key_exists("creator", $attr);
         $canHave["owner"] = array_key_exists("owner", $attr);
         $doesHave["creator"] = !empty($this->creator);

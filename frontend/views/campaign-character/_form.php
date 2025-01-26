@@ -40,13 +40,7 @@ $campaignPlayerSelect = $campaignPlayer->select();
         <?= $form->field($model, 'firstGamePlayed')->textInput(['type' => 'datetime-local']) ?>
     <?php else: ?>
         <?php $firstGamePlayed = date('m/d/y H:i A', $model->firstGamePlayed); ?>
-        <?php $options = [
-                'type' => 'hidden',
-                'value' => $firstGamePlayed
-            ];
-        ?>
-        <?= $form->field($model, 'firstGamePlayed')->textInput($options) ?>
-        <input class="form-control" type="disabled" value="<?= $firstGamePlayed; ?>" disabled="disabled" />
+        <?= $form->field($model, 'firstGamePlayed')->textInput(['value' => $firstGamePlayed]) ?>
     <?php endif; ?>
 
     <br />
