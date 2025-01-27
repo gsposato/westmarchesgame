@@ -11,6 +11,7 @@ $id = $_GET['campaignId'];
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Purchases', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$canModify = $model->canModify();
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="purchase-view">
@@ -18,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?php if ($canModify): ?>
         <?= Html::a('Update', ['update?campaignId='.$id.'&id='.$model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete?campaignId='.$id.'&id='.$model->id], [
             'class' => 'btn btn-danger',
@@ -26,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([
