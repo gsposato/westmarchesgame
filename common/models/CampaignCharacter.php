@@ -239,6 +239,14 @@ class CampaignCharacter extends NotarizedModel
         if (empty($character->playerId)) {
             return false;
         }
+        $gamePlayer = GamePlayer::find()
+            ->where(["gameId" => $gameId])
+            ->andWhere(["characterId" => $characterId])
+            ->andWhere(["status" => GamePlayer::STATUS_COHOST])
+            ->one();
+        if (!empty($gamePlayer)) {
+            return true;
+        }
         $player = CampaignPlayer::findOne($character->playerId);
         if (empty($player->userId)) {
             return false;
@@ -252,14 +260,6 @@ class CampaignCharacter extends NotarizedModel
             return false;
         }
         if ($user->id == $game->owner) {
-            return true;
-        }
-        $gamePlayer = GamePlayer::find()
-            ->where(["gameId" => $gameId])
-            ->andWhere(["characterId" => $characterId])
-            ->andWhere(["status" => GamePlayer::STATUS_COHOST])
-            ->one();
-        if (!empty($gamePlayer)) {
             return true;
         }
         return false;

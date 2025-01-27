@@ -149,7 +149,8 @@ $isDoubleGoldWorthy = [
                         <?php continue; ?>
                     <?php endif; ?>
                     <li>
-                        Session #<?= $game->id ?> - <?= $game->name; ?> /
+                        <?php $sessionId = Game::session($game->id); ?>
+                        Session #<?= $sessionId ?> - <?= $game->name; ?> /
                         <small style="font-weight:bold;">
                             <?php if (in_array($gamePlayed->hasBonusPoints, $isCreditWorthy)): ?>
                                 <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
@@ -229,7 +230,8 @@ $isDoubleGoldWorthy = [
                                 <?= $purchase->price; ?> <?= $currency; ?>
                             </small>
                             <?php if (!empty($purchase->gameId)): ?>
-                                / <small>Session #<?= $purchase->gameId; ?></small>
+                                <?php $sessionId = Game::session($purchase->gameId); ?>
+                                / <small>Session #<?= $sessionId; ?></small>
                             <?php endif; ?>
                         </li>
                     <?php endforeach; ?>

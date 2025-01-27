@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Game;
 
 /** @var yii\web\View $this */
 /** @var common\models\Game $model */
@@ -36,6 +37,13 @@ $canModify = $model->canModify();
             [
             'id',
             'campaignId',
+            [
+                'label' => 'Session ID',
+                'attribute' => 'id',
+                'value' => function($model) {
+                    return Game::session($model->id);
+                },
+            ],
             'name',
             'gameInviteLink:ntext',
             'voiceVenueLink:ntext',

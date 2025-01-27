@@ -28,7 +28,13 @@ $roundup = 'roundup?campaignId=' . $campaignId;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            'id',
+            [
+                'label' => 'Session ID',
+                'attribute' => 'id',
+                'value' => function($model) {
+                    return Game::session($model->id);
+                },
+            ],
             'name',
             //'levelRange',
             //'owner',

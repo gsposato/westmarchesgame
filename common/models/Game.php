@@ -103,4 +103,27 @@ class Game extends NotarizedModel
         }
         return false;
     }
+
+    /**
+     * Game Session
+     * @param integer $gameId
+     */
+    public static function session($gameId)
+    {
+        if (empty($_GET['campaignId'])) {
+            return 0;
+        }
+        $campaignId = $_GET['campaignId'];
+        $campaign = Campaign::findOne($campaignId);
+        if (empty($campaign->rules)) {
+            return 0;
+        }
+        $campaignRules = json_decode($campaign->rules);
+        $defaultStartingGame = $campaignRules->Game->startingGame ?? 0;
+        $gamesBefore = Game::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["<", "id", $gameId])
+            ->all();
+        return count($gamesBefore) + $defaultStartingGame + 1;
+    }
 }

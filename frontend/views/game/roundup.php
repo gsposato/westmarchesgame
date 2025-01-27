@@ -56,7 +56,8 @@ $before = $_GET["before"] ?? "";
         <div class="card-body" style="background-color:#333;color:#fff">
 <pre id="roundup-text" style="overflow-x:hidden;">
 <?php foreach ($games as $game): ?>
-<?= $game->id; ?>. <?= $game->name; ?> 
+<?php $sessionId = Game::session($game->id); ?>
+<?= $sessionId; ?>. <?= $game->name; ?> 
 <?php $gamePoll = GamePoll::find()->where(["gameId" => $game->id])->one(); ?>
 <?= $gamePoll->note; ?> 
 <?php $gameNotes = GameNote::find()->where(["gameId" => $game->id])->andWhere(["inGameSummary" => 2])->all(); ?>
