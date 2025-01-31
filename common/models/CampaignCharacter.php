@@ -193,6 +193,11 @@ class CampaignCharacter extends NotarizedModel
     public static function previous($characterId)
     {
         $character = CampaignCharacter::findOne($characterId);
+        if (empty($character)) {
+            return;
+        }
+        $campaignPlayer = CampaignPlayer::findOne($character->playerId) ?? new CampaignPlayer();
+        $firstGamePlayedTimestamp = $character->firstGamePlayed;
         $firstGamePlayed = date("m/d/Y", $character->firstGamePlayed);
         $lastGamePlayed = GamePlayer::find()
             ->where(["characterId" => $characterId])
@@ -203,6 +208,10 @@ class CampaignCharacter extends NotarizedModel
             ->orderBy(["id" => SORT_DESC])
             ->one();
         if (empty($lastGamePlayed)) {
+            if ($campaignPlayer->gameEventTimestamp < $firstGamePlayedTimestamp) {
+                $campaignPlayer->gameEventTimestamp = $firstGamePlayedTimestamp;
+                $campaignPlayer->save();
+            }
             return $firstGamePlayed;
         }
         $gameEvent = GameEvent::find()
@@ -210,16 +219,19 @@ class CampaignCharacter extends NotarizedModel
             ->andWhere(["!=", "owner", $lastGamePlayed->userId])
             ->one();
         if (empty($gameEvent)) {
+            if ($campaignPlayer->gameEventTimestamp < $firstGamePlayedTimestamp) {
+                $campaignPlayer->gameEventTimestamp = $firstGamePlayedTimestamp;
+                $campaignPlayer->save();
+            }
             return $firstGamePlayed;
         }
-        $now = time();
         $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
         if (empty($gamePollSlot->unixtime)) {
+            if ($campaignPlayer->gameEventTimestamp < $firstGamePlayedTimestamp) {
+                $campaignPlayer->gameEventTimestamp = $firstGamePlayedTimestamp;
+                $campaignPlayer->save();
+            }
             return $firstGamePlayed;
-        }
-        $campaignPlayer = CampaignPlayer::findOne($lastGamePlayed->userId);
-        if (empty($campaignPlayer)) {
-            return date("m/d/Y", $gamePollSlot->unixtime);
         }
         if ($campaignPlayer->gameEventTimestamp < $gamePollSlot->unixtime) {
             $campaignPlayer->gameEventTimestamp = $gamePollSlot->unixtime;

@@ -110,6 +110,9 @@ if (!empty($gameEvent)) {
                                 <?php $icon = $gamePlayer->statusIcon(); ?>
                                 <a href="<?= $url; ?>" class="btn <?= $color; ?>" style="margin:5px">
                                     <i class="fa <?= $icon; ?>"></i>&nbsp;<?= $gamePlayer->name(); ?>
+                                    <?php $cp = CampaignPlayer::findOne($gamePlayer->userId); ?>
+                                    <?= " • " . date("m/d/Y", $cp->gameEventTimestamp) . " • "; ?>
+                                    <?= $cp->played(); ?>
                                 </a>
                             <?php endforeach; ?>
                             <hr />
