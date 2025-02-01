@@ -92,20 +92,3 @@ $canModify = $model->canModify();
         ]) ?>
     </div>
 </div>
-<script type="text/javascript">
-function copyText(id) {
-  btn = "#"+id+"-btn";
-  try {
-      navigator.clipboard.writeText(document.getElementById(id).innerHtml);
-      alert("Text Copied!");
-      $(btn).removeClass("btn-primary");
-      $(btn).addClass("btn-success");
-      $(btn).html('<i class="fa fa-copy"></i>&nbsp;Copied!');
-  } catch (err) {
-      $(btn).removeClass("btn-primary");
-      $(btn).addClass("btn-danger");
-      $(btn).html('<i class="fa fa-copy"></i>&nbsp;Failed!');
-      console.log(err);
-  }
-}
-</script>

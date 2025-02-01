@@ -46,7 +46,7 @@ if (!empty($gameEvent)) {
     <?php $character = CampaignCharacter::findOne($gamePlayer->characterId); ?>
 <?php endif; ?>
 <?php $characterName = $character->name ?? ""; ?>
-<pre id="gamepoll-text" style="overflow-x:hidden;">
+<pre id="gamesummary-text" style="overflow-x:hidden;">
 **Session <?= Game::session($model->id); ?> - <?= $model->name; ?>**
 **Date:** <?= date("m/d/Y", $timestamp); ?> 
 **DM** <?= ucfirst($owner->name); ?> (<?= $characterName; ?>) 

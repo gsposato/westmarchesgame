@@ -24,3 +24,39 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 });
+
+
+function copyText(id) {
+  btn = "#"+id+"-btn";
+  txt = "#"+id;
+  try {
+      selectText(id);
+      document.execCommand('copy');
+      console.log("Text copied from ["+id+"]");
+      $(btn).removeClass("btn-primary");
+      $(btn).addClass("btn-success");
+      $(btn).html('<i class="fa fa-copy"></i>&nbsp;Copied!');
+  } catch (err) {
+      $(btn).removeClass("btn-primary");
+      $(btn).addClass("btn-danger");
+      $(btn).html('<i class="fa fa-copy"></i>&nbsp;Failed!');
+      console.log(err);
+  }
+}
+function selectText(nodeId) {
+    const node = document.getElementById(nodeId);
+
+    if (document.body.createTextRange) {
+        const range = document.body.createTextRange();
+        range.moveToElementText(node);
+        range.select();
+    } else if (window.getSelection) {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else {
+        console.warn("Could not select text in node: Unsupported browser.");
+    }
+}

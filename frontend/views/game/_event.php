@@ -54,7 +54,7 @@ if (!empty($gameEvent)) {
                     <div class="card-body" style="background-color:#333;color:#fff">
 <?php $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId); ?>
 <?php $timestamp = $slot->unixtime; ?>
-<pre id="gamepoll-text" style="overflow-x:hidden;">
+<pre id="gameevent-text" style="overflow-x:hidden;">
 **<?= $model->name; ?>**
 *Hosted by* @<?= $owner->name; ?> 
 <?php if (!empty($gamePlayers)): ?>
