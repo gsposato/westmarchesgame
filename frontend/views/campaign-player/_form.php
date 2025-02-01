@@ -3,11 +3,13 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
+use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\CampaignPlayer $model */
 /** @var yii\widgets\ActiveForm $form */
 $campaignId = $_GET['campaignId'];
+$userSelect = User::select();
 ?>
 
 <div class="campaign-player-form">
@@ -15,7 +17,7 @@ $campaignId = $_GET['campaignId'];
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'userId')->textInput() ?>
+    <?= $form->field($model, 'userId')->dropDownList($userSelect, ['prompt' => '']); ?>
 
     <br />
 

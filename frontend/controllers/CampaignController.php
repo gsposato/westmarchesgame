@@ -2,7 +2,9 @@
 
 namespace frontend\controllers;
 
+use Yii;
 use common\models\Campaign;
+use common\models\CampaignPlayer;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -61,6 +63,13 @@ class CampaignController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $cp = new CampaignPlayer();
+                $cp->campaignId = $model->id;
+                $cp->name = Yii::$app->user->identity->username;
+                $cp->userId = Yii::$app->user->identity->id;
+                $cp->isPlayer = 1;
+                $cp->isHost = 1;
+                $cp->isAdmin = 1;
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {

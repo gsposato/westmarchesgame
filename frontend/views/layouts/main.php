@@ -77,7 +77,7 @@ HTML;
             <?php if ($showNav): ?>
                 <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <?php endif; ?>
-            <?php if (!Yii::$app->user->isGuest): ?>
+            <?php if (!Yii::$app->user->isGuest && !$showNav): ?>
                 <form class="d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="/frontend/web/site/logout" method="post">
                     <?php $csrf = Yii::$app->request->getCsrfToken(); ?>
                     <input type="hidden" name="_csrf-frontend" value="<?= $csrf; ?>">
@@ -104,8 +104,17 @@ HTML;
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
+                        <div class="small">Logged in as</div>
                         <?= Yii::$app->user->identity->username ?? ""; ?>
+                        <?php if (!Yii::$app->user->isGuest): ?>
+                            <form class="d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="/frontend/web/site/logout" method="post">
+                                <?php $csrf = Yii::$app->request->getCsrfToken(); ?>
+                                <input type="hidden" name="_csrf-frontend" value="<?= $csrf; ?>">
+                                <button class="dropdown-item" type="submit" style="color:white;">
+                                    <i class="fas fa-sign-out"></i>&nbsp;Logout&nbsp;&nbsp;
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </nav>
             </div>

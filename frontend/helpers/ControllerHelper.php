@@ -89,6 +89,9 @@ class ControllerHelper
             ->where(["campaignId" => $campaignId])
             ->andWhere(["userId" => $userId])
             ->one();
+        if (empty($player)) {
+            return '';
+        }
         $ranks = [
             'isAdmin',
             'isHost',
