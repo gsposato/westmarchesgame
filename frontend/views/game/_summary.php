@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\Game;
 use common\models\GameNote;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
@@ -46,7 +47,7 @@ if (!empty($gameEvent)) {
 <?php endif; ?>
 <?php $characterName = $character->name ?? ""; ?>
 <pre id="gamepoll-text" style="overflow-x:hidden;">
-**Session <?= $model->id; ?> - <?= $model->name; ?>**
+**Session <?= Game::session($model->id); ?> - <?= $model->name; ?>**
 **Date:** <?= date("m/d/Y", $timestamp); ?> 
 **DM** <?= ucfirst($owner->name); ?> (<?= $characterName; ?>) 
 <?php if (!empty($gamePlayers)): ?>
