@@ -107,9 +107,9 @@ class CampaignPlayerController extends Controller
     public function actionUpdate($id, $campaignId)
     {
         $model = $this->findModel($id);
-
+        $rank = ControllerHelper::getPlayerRank($campaignId);
         $userId = Yii::$app->user->identity->id ?? 1;
-        if ($userId == $model->userId) {
+        if ($userId == $model->userId && $rank != 'isAdmin') {
             $forbiddenException = 'This account is not authorized to view the requested page.';
             ControllerHelper::updateUserAction(403);
             throw new ForbiddenHttpException($forbiddenException);
