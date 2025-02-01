@@ -130,12 +130,13 @@ class CampaignCharacter extends NotarizedModel
             $gamesPlayed = GamePlayer::find()
                 ->where(["characterId" => $character->id])
                 ->all();
-            $advancement = self::advancement($campaignId, $gamesPlayed);
+            $advancement = self::advancement($campaignId, $gamesPlayed, $character->startingCredit);
             if (empty($levels[$advancement])) {
                 $levels[$advancement] = 0;
             }
             $levels[$advancement]++;
         }
+        ksort($levels);
         return $levels;
     }
 
