@@ -9,6 +9,7 @@ use common\models\GamePollSlot;
 use common\models\GameEvent;
 use common\models\GamePlayer;
 use common\models\CampaignCharacter;
+use common\models\CampaignPlayer;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -435,9 +436,15 @@ class GameController extends Controller
         if (empty($game)) {
             return;
         }
+        $owner = CampaignPlayer::find()
+            ->where(["userId" => $game->owner])
+            ->one();
+        if (empty($owner)) {
+            return;
+        }
         $player = new GamePlayer();
         $exists = GamePlayer::find()
-            ->where(["userId" => $game->owner])
+            ->where(["userId" => $owner->id])
             ->andWhere(["gameId" => $id])
             ->one();
         if (!empty($exists)) {
@@ -445,7 +452,7 @@ class GameController extends Controller
         }
         $player->gameId = $id;
         $player->characterId = -1;
-        $player->userId = $game->owner;
+        $player->userId = $owner->id;
         $player->status = GamePlayer::STATUS_SCHEDULED;
         $player->save();
     }
