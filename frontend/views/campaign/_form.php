@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\Campaign $model */
@@ -16,6 +17,14 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'rules')->textarea(['rows' => 6]) ?>
 
     <br />
+
+    <?php if ($model->canNotarize()): ?>
+        <?php $userSelect = User::select(); ?>
+        <?= $form->field($model, 'owner')->dropDownList($userSelect, ['prompt' => '']); ?>
+        <input type="hidden" name="notarizeKey" value="<?= $model->getNotarizeKey(); ?>" />
+        <br />
+    <?php endif; ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

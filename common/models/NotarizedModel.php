@@ -18,7 +18,8 @@ class NotarizedModel extends \yii\db\ActiveRecord
      */
     public function beforeValidate()
     {
-        $this->notarize();
+        $asAdmin = ($this->canNotarize() && $this->hasNotarizeKey());
+        $this->notarize($asAdmin);
         return parent::beforeValidate();
     }
 
@@ -35,13 +36,16 @@ class NotarizedModel extends \yii\db\ActiveRecord
     /**
      * Notarize
      */
-    public function notarize()
+    public function notarize($asAdmin = false)
     {
         $now = time();
         $userId = Yii::$app->user->identity->id ?? 1;
         $this->updated = $now;
         if (empty($this->created)) {
             $this->created = $now;
+        }
+        if ($asAdmin) {
+            return;
         }
         $attr = $this->attributes;
         $canHave = array_key_exists("creator", $attr);
@@ -153,5 +157,52 @@ class NotarizedModel extends \yii\db\ActiveRecord
             return $user->username;
         }
         return $this->owner;
+    }
+
+    /**
+     * Can Notarize
+     */
+    public function canNotarize()
+    {
+        $rank = "";
+        $userId = Yii::$app->user->identity->id ?? 1;
+        if (!empty($_GET['campaignId'])) {
+            $rank = ControllerHelper::getPlayerRank($_GET['campaignId']);
+        }
+        if ($rank != 'isAdmin') {
+            return false;
+        }
+        if (empty(Yii::$app->params['notarizeKey'])) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Has Notarize Key
+     */
+    public function hasNotarizeKey()
+    {
+        if (empty(Yii::$app->params['notarizeKey'])) {
+            return false;
+        }
+        $notarizeKey = Yii::$app->params['notarizeKey'];
+        if (!empty($_POST['notarizeKey'])) {
+            if ($_POST['notarizeKey'] == $notarizeKey) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get Notarize Key
+     */
+    public function getNotarizeKey()
+    {
+        if (empty(Yii::$app->params['notarizeKey'])) {
+            return "";
+        }
+        return Yii::$app->params['notarizeKey'];
     }
 }

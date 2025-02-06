@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\User;
 use common\models\Campaign;
 use common\models\GamePoll;
 
@@ -142,6 +143,13 @@ $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
     <?php endif; ?>
 
     <br />
+
+    <?php if ($model->canNotarize()): ?>
+        <?php $userSelect = User::select(); ?>
+        <?= $form->field($model, 'owner')->dropDownList($userSelect, ['prompt' => '']); ?>
+        <input type="hidden" name="notarizeKey" value="<?= $model->getNotarizeKey(); ?>" />
+        <br />
+    <?php endif; ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

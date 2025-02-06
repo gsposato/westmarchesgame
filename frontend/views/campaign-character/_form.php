@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\CampaignCharacter;
 use common\models\CampaignPlayer;
+use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\CampaignCharacter $model */
@@ -44,6 +45,13 @@ $campaignPlayerSelect = $campaignPlayer->select();
     <?php endif; ?>
 
     <br />
+
+    <?php if ($model->canNotarize()): ?>
+        <?php $userSelect = User::select(); ?>
+        <?= $form->field($model, 'owner')->dropDownList($userSelect, ['prompt' => '']); ?>
+        <input type="hidden" name="notarizeKey" value="<?= $model->getNotarizeKey(); ?>" />
+        <br />
+    <?php endif; ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
