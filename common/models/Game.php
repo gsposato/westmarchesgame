@@ -110,6 +110,7 @@ class Game extends NotarizedModel
      */
     public static function session($gameId)
     {
+        $unknown = '<i class="fa fa-question-circle" aria-hidden="true"></i>';
         if (empty($_GET['campaignId'])) {
             return 0;
         }
@@ -118,12 +119,49 @@ class Game extends NotarizedModel
         if (empty($campaign->rules)) {
             return 0;
         }
+        $gameEvent = GameEvent::find()->where(["gameId" => $gameId])->one();
+        if (!$gameEvent) {
+            return $unknown;
+        }
+        $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
+        if (!$slot) {
+            return $unknown;
+        }
+        $timestamp = $slot->unixtime;
         $campaignRules = json_decode($campaign->rules);
         $defaultStartingGame = $campaignRules->Game->startingGame ?? 0;
         $gamesBefore = Game::find()
             ->where(["campaignId" => $campaignId])
             ->andWhere(["<", "id", $gameId])
             ->all();
+        $gamesBeforeSql = <<<SQL
+SELECT ge.*, gps.unixtime
+FROM game_event ge
+JOIN game_poll_slot gps ON ge.gamePollSlotId = gps.id
+WHERE gps.unixtime < :timestamp
+ORDER BY gps.unixtime;
+SQL;
+        $gamesBefore = Yii::$app
+            ->db
+            ->createCommand($gamesBeforeSql)
+            ->bindValue(":timestamp", $timestamp)
+            ->queryAll();
         return count($gamesBefore) + $defaultStartingGame + 1;
+    }
+
+    /**
+     * Event
+     */
+    public static function event($gameId)
+    {
+        $gameEvent = GameEvent::find()->where(["gameId" => $gameId])->one();
+        if (!$gameEvent) {
+            return '';
+        }
+        $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
+        if (!$slot) {
+            return '';
+        }
+        return date("M j, Y h:i:s A ", $slot->unixtime);
     }
 }

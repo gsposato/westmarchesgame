@@ -40,11 +40,20 @@ $canModify = $model->canModify();
             [
                 'label' => 'Session ID',
                 'attribute' => 'id',
+                'format' => 'raw',
                 'value' => function($model) {
                     return Game::session($model->id);
                 },
             ],
             'name',
+            [
+                'label' => 'Event Timestamp',
+                'attribute' => '',
+                'format' => 'raw',
+                'value' => function($model) {
+                    return Game::event($model->id);
+                },
+            ],
             'gameInviteLink:ntext',
             'voiceVenueLink:ntext',
             'timeDuration',

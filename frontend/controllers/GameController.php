@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use Yii;
 use common\models\Game;
 use common\models\GameNote;
 use common\models\GamePoll;
@@ -84,27 +85,25 @@ class GameController extends Controller
             $before = $now;
         }
         $games = array();
-        $allGames = Game::find()
-            ->where(["campaignId" => $campaignId])
-            ->all();
-        foreach ($allGames as $game) {
-            $gameEvent = GameEvent::find()
-                ->where(["gameId" => $game->id])
-                ->one();
-            if (empty($gameEvent->gamePollSlotId)) {
-                continue;
+        $gamesRoundupSql = <<<SQL
+SELECT ge.*, gps.unixtime
+FROM game_event ge
+JOIN game_poll_slot gps ON ge.gamePollSlotId = gps.id
+WHERE gps.unixtime > :after
+AND gps.unixtime < :before
+ORDER BY gps.unixtime;
+SQL;
+        $gamesRoundup = Yii::$app
+            ->db
+            ->createCommand($gamesRoundupSql)
+            ->bindValue(":after", $after)
+            ->bindValue(":before", $before)
+            ->queryAll();
+        foreach ($gamesRoundup as $gameEvent) {
+            $game = Game::findOne($gameEvent["gameId"]);
+            if ($game) {
+                array_push($games, $game);
             }
-            $gamePollSlot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
-            if (empty($gamePollSlot)) {
-                continue;
-            }
-            if ($gamePollSlot->unixtime <= $after) {
-                continue;
-            }
-            if ($gamePollSlot->unixtime >= $before) {
-                continue;
-            }
-            array_push($games, $game);
         }
         $levels = CampaignCharacter::levels($campaignId);
         $retired = CampaignCharacter::find()
@@ -152,7 +151,6 @@ class GameController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);

@@ -1,6 +1,8 @@
 <?php
 
 use common\models\Game;
+use common\models\GameEvent;
+use common\models\GamePollSlot;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -31,6 +33,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
             [
                 'label' => 'Session ID',
                 'attribute' => 'id',
+                'format' => 'raw',
                 'value' => function($model) {
                     return Game::session($model->id);
                 },
@@ -38,6 +41,14 @@ $roundup = 'roundup?campaignId=' . $campaignId;
             'name',
             //'levelRange',
             //'owner',
+            [
+                'label' => 'Event Timestamp',
+                'attribute' => '',
+                'format' => 'raw',
+                'value' => function($model) {
+                    return Game::event($model->id);
+                },
+            ],
             'updated:datetime',
             [
                 'label' => '',

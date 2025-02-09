@@ -44,24 +44,24 @@ class NotarizedModel extends \yii\db\ActiveRecord
         if (empty($this->created)) {
             $this->created = $now;
         }
-        if ($asAdmin) {
-            return;
-        }
         $attr = $this->attributes;
         $canHave = array_key_exists("creator", $attr);
         $doesNotHave = empty($this->creator);
         if ($canHave && $doesNotHave) {
             $this->creator = $userId;
         }
-        $canHave = array_key_exists("owner", $attr);
-        $doesNotHave = empty($this->owner);
-        if ($canHave && $doesNotHave) {
-            $this->owner = $userId;
-        }
         $canHave = array_key_exists("campaignId", $attr);
         $doesNotHave = empty($this->campaignId);
         if ($canHave && $doesNotHave) {
             $this->campaignId = $_GET['campaignId'];
+        }
+        if ($asAdmin) {
+            return;
+        }
+        $canHave = array_key_exists("owner", $attr);
+        $doesNotHave = empty($this->owner);
+        if ($canHave && $doesNotHave) {
+            $this->owner = $userId;
         }
         $canHave = array_key_exists("timezone", $attr);
         $doesNotHave = empty($this->timezone);
