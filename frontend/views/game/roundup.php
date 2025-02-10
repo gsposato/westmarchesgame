@@ -67,10 +67,12 @@ Highlights:
 <?php endforeach; ?> 
 <?php endforeach; ?> 
 
+<?php if (!empty($levels)): ?>
 **Current Level of PCs**
 <?php foreach ($levels as $key => $value) :?>
 Total Level <?= $key; ?> PCs = <?= $value; ?> 
 <?php endforeach; ?>
+<?php endif; ?>
 
 **New PCs**
 <?php foreach ($new as $character): ?>

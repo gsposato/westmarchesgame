@@ -117,7 +117,7 @@ class Game extends NotarizedModel
         $campaignId = $_GET['campaignId'];
         $campaign = Campaign::findOne($campaignId);
         if (empty($campaign->rules)) {
-            return 0;
+            return $unknown;
         }
         $gameEvent = GameEvent::find()->where(["gameId" => $gameId])->one();
         if (!$gameEvent) {
@@ -146,7 +146,18 @@ SQL;
             ->createCommand($gamesBeforeSql)
             ->bindValue(":timestamp", $timestamp)
             ->queryAll();
-        return count($gamesBefore) + $defaultStartingGame + 1;
+        $gamesBeforeNumber = 0;
+        foreach ($gamesBefore as $gameBefore) {
+            if (empty($gameBefore["gameId"])) {
+                continue;
+            }
+            $game = Game::findOne($gameBefore["gameId"]);
+            if ($game->campaignId != $_GET["campaignId"]) {
+                continue;
+            }
+            $gamesBeforeNumber++;
+        }
+        return $gamesBeforeNumber + $defaultStartingGame + 1;
     }
 
     /**

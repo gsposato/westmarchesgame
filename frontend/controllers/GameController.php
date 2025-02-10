@@ -101,18 +101,24 @@ SQL;
             ->queryAll();
         foreach ($gamesRoundup as $gameEvent) {
             $game = Game::findOne($gameEvent["gameId"]);
-            if ($game) {
-                array_push($games, $game);
+            if (!$game) {
+                continue;
             }
+            if ($game->campaignId != $campaignId) {
+                continue;
+            }
+            array_push($games, $game);
         }
         $levels = CampaignCharacter::levels($campaignId);
         $retired = CampaignCharacter::find()
             ->where([">=", "updated", $after])
             ->andWhere(["status" => 3])
+            ->andWhere(["campaignId" => $campaignId])
             ->all();
         $new = CampaignCharacter::find()
             ->where([">=", "created", $after])
             ->andWhere(["status" => CampaignCharacter::STATUS_ACTIVE])
+            ->andWhere(["campaignId" => $campaignId])
             ->all();
         return $this->render('roundup', [
             'games' => $games,
