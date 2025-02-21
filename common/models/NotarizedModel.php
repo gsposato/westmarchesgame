@@ -39,16 +39,25 @@ class NotarizedModel extends \yii\db\ActiveRecord
     public function notarize($asAdmin = false)
     {
         $now = time();
-        $userId = Yii::$app->user->identity->id ?? 1;
+        $creatorId = Yii::$app->user->identity->id ?? 1;
+        $ownerId = Yii::$app->user->identity->id ?? 1;
         $this->updated = $now;
         if (empty($this->created)) {
             $this->created = $now;
         }
         $attr = $this->attributes;
+        $canHave = array_key_exists("gameId", $attr);
+        $doesHave = !empty($this->gameId);
+        if ($canHave && $doesHave) {
+            $game = Game::findOne($this->gameId);
+            if (!empty($game->owner)) {
+                $ownerId = $game->owner;
+            }
+        }
         $canHave = array_key_exists("creator", $attr);
         $doesNotHave = empty($this->creator);
         if ($canHave && $doesNotHave) {
-            $this->creator = $userId;
+            $this->creator = $creatorId;
         }
         $canHave = array_key_exists("campaignId", $attr);
         $doesNotHave = empty($this->campaignId);
@@ -61,7 +70,7 @@ class NotarizedModel extends \yii\db\ActiveRecord
         $canHave = array_key_exists("owner", $attr);
         $doesNotHave = empty($this->owner);
         if ($canHave && $doesNotHave) {
-            $this->owner = $userId;
+            $this->owner = $ownerId;
         }
         $canHave = array_key_exists("timezone", $attr);
         $doesNotHave = empty($this->timezone);
