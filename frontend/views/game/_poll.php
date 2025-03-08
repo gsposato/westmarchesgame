@@ -49,7 +49,6 @@ if (!empty($gamePoll->id)) {
 **<?= $model->name; ?>**
 DM @<?= $owner->name; ?> 
 Game Invite Link: <?= $model->gameInviteLink; ?> 
-Gold Per Player: <?= $model->goldPayoutPerPlayer; ?> 
 Levels: <?= $model->levelRange; ?> 
 Duration: <?= $model->timeDuration; ?> 
 

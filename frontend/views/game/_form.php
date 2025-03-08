@@ -17,6 +17,13 @@ $defaultGoldPayoutPerPlayer = $rules->Game->defaultGoldPayoutPerPlayer ?? 400;
 $defaultBaseBastionPointsPerPlayer = $rules->Game->defaultBaseBastionPointsPerPlayer ?? 20;
 $defaultBonusBastionPointsPerPlayer = $rules->Game->defaultBonusBastionPointsPerPlayer ?? 5;
 $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
+
+$defaultTimeDurationTooltip = $rules->Game->defaultTimeDurationTooltip ?? "";
+$defaultGoldPayoutPerPlayerTooltip = $rules->Game->defaultGoldPayoutPerPlayerTooltip ?? "";
+$defaultBaseBastionPointsPerPlayerTooltip = $rules->Game->defaultBaseBastionPointsPerPlayerTooltip ?? "";
+$defaultBonusBastionPointsPerPlayerTooltip = $rules->Game->defaultBonusBastionPointsPerPlayerTooltip ?? "";
+$defaultGameCreditPerPlayerTooltip = $rules->Game->defaultGameCreditPerPlayerTooltip ?? "";
+
 ?>
 
 <div class="game-form">
@@ -59,7 +66,11 @@ $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
     <small>
         <p>
             <em>
-                Typically, it's <?= $defaultTimeDuration; ?>
+                <?php if (!empty($defaultTimeDurationTooltip)): ?>
+                    <?= $defaultTimeDurationTooltip; ?>
+                <?php else: ?>
+                    Typically, it's <?= $defaultTimeDuration; ?>
+                <?php endif; ?>
             </em>
         </p>
     </small>
@@ -82,7 +93,11 @@ $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
     <small>
         <p>
             <em>
-                Typically, its <?= $defaultGoldPayoutPerPlayer; ?>
+                <?php if (!empty($defaultGoldPayoutPerPlayerTooltip)): ?>
+                    <?= $defaultGoldPayoutPerPlayerTooltip; ?>
+                <?php else: ?>
+                    Typically, its <?= $defaultGoldPayoutPerPlayer; ?>
+                <?php endif; ?>
             </em>
         </p>
     </small>
@@ -96,7 +111,11 @@ $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
     <small>
         <p>
             <em>
-                Typically, its <?= $defaultBaseBastionPointsPerPlayer; ?>
+                <?php if (!empty($defaultBaseBastionPointsPerPlayerTooltip)): ?>
+                    <?= $defaultBaseBastionPointsPerPlayerTooltip; ?>
+                <?php else: ?>
+                    Typically, its <?= $defaultBaseBastionPointsPerPlayer; ?>
+                <?php endif; ?>
             </em>
         </p>
     </small>
@@ -110,7 +129,11 @@ $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
     <small>
         <p>
             <em>
-                Typically, its <?= $defaultBonusBastionPointsPerPlayer; ?>
+                <?php if (!empty($defaultBonusBastionPointsPerPlayerTooltip)): ?>
+                    <?= $defaultBonusBastionPointsPerPlayerTooltip; ?>
+                <?php else: ?>
+                    Typically, its <?= $defaultBonusBastionPointsPerPlayer; ?>
+                <?php endif; ?>
             </em>
         </p>
     </small>
@@ -124,7 +147,11 @@ $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
     <small>
         <p>
             <em>
-                Typically, one game is worth <?= $defaultGameCreditPerPlayer; ?> credit.
+                <?php if (!empty($defaultGameCreditPerPlayerTooltip)): ?>
+                    <?= $defaultGameCreditPerPlayerTooltip; ?>
+                <?php else: ?>
+                    Typically, one game is worth <?= $defaultGameCreditPerPlayer; ?> credit.
+                <?php endif; ?>
             </em>
         </p>
     </small>
