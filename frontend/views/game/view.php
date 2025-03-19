@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\Game;
+use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\Game $model */
@@ -62,6 +63,16 @@ $canModify = $model->canModify();
             'baseBastionPointsPerPlayer',
             'bonusBastionPointsPerPlayer',
             'credit',
+            [
+                'attribute' => 'host',
+                'value' => function ($model) {
+                    $user = User::findOne($model->host);
+                    if (!empty($user->username)) {
+                        return $user->username;
+                    }
+                    return $model->host;
+                },
+            ],
         ],
         $model->view()
         )

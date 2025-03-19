@@ -12,7 +12,7 @@ use common\models\CampaignPlayer;
 use common\models\CampaignCharacter;
 
 $id = $_GET['campaignId'];
-$owner = CampaignPlayer::find()->where(["userId" => $model->owner])->one();
+$owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
 $delete = '/frontend/web/game/deletenotes?campaignId=' . $id . '&id=' . $model->id;
 $createGameNote = '/frontend/web/game/note?campaignId=' . $id . '&id=' . $model->id;
 $gamePoll = GamePoll::find()->where(["gameId" => $model->id])->one();

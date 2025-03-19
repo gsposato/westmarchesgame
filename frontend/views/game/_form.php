@@ -17,13 +17,12 @@ $defaultGoldPayoutPerPlayer = $rules->Game->defaultGoldPayoutPerPlayer ?? 400;
 $defaultBaseBastionPointsPerPlayer = $rules->Game->defaultBaseBastionPointsPerPlayer ?? 20;
 $defaultBonusBastionPointsPerPlayer = $rules->Game->defaultBonusBastionPointsPerPlayer ?? 5;
 $defaultGameCreditPerPlayer = $rules->Game->defaultGameCreditPerPlayer ?? 1;
-
 $defaultTimeDurationTooltip = $rules->Game->defaultTimeDurationTooltip ?? "";
 $defaultGoldPayoutPerPlayerTooltip = $rules->Game->defaultGoldPayoutPerPlayerTooltip ?? "";
 $defaultBaseBastionPointsPerPlayerTooltip = $rules->Game->defaultBaseBastionPointsPerPlayerTooltip ?? "";
 $defaultBonusBastionPointsPerPlayerTooltip = $rules->Game->defaultBonusBastionPointsPerPlayerTooltip ?? "";
 $defaultGameCreditPerPlayerTooltip = $rules->Game->defaultGameCreditPerPlayerTooltip ?? "";
-
+$userSelect = User::select();
 ?>
 
 <div class="game-form">
@@ -171,8 +170,13 @@ $defaultGameCreditPerPlayerTooltip = $rules->Game->defaultGameCreditPerPlayerToo
 
     <br />
 
+    <?= $form->field($model, 'host')->dropDownList($userSelect, ['prompt' => '']); ?>
+    <em>Typically, this is you.  Sometimes, it's not.</em>
+
+    <br />
+    <br />
+
     <?php if ($model->canNotarize()): ?>
-        <?php $userSelect = User::select(); ?>
         <?= $form->field($model, 'owner')->dropDownList($userSelect, ['prompt' => '']); ?>
         <input type="hidden" name="notarizeKey" value="<?= $model->getNotarizeKey(); ?>" />
         <br />

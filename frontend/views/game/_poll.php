@@ -7,7 +7,7 @@ use common\models\GamePollSlot;
 use common\models\CampaignPlayer;
 
 $id = $_GET['campaignId'];
-$owner = CampaignPlayer::find()->where(["userId" => $model->owner])->one();
+$owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
 $createGamePoll = '/frontend/web/game/poll?campaignId=' . $id . '&id=' . $model->id;
 $createGamePollSlot = '#';
 $deleteGamePollSlot = '#';

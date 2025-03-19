@@ -441,7 +441,7 @@ SQL;
             return;
         }
         $owner = CampaignPlayer::find()
-            ->where(["userId" => $game->owner])
+            ->where(["userId" => $game->host()])
             ->one();
         if (empty($owner)) {
             return;

@@ -9,7 +9,7 @@ use common\models\GamePlayer;
 use common\models\CampaignPlayer;
 
 $id = $_GET['campaignId'];
-$owner = CampaignPlayer::find()->where(["userId" => $model->owner])->one();
+$owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
 $createGameEvent = '/frontend/web/game/event?campaignId=' . $id . '&id=' . $model->id;
 $createGamePlayer = '/frontend/web/game/player?campaignId=' . $id . '&id=' . $model->id;
 $changeGamePlayerStatus = '/frontend/web/game/playerstatus?campaignId=' . $id . '&id=' . $model->id;

@@ -18,6 +18,7 @@ use Yii;
  * @property int|null $baseBastionPointsPerPlayer
  * @property int|null $bonusBastionPointsPerPlayer
  * @property int $credit
+ * @property int $host
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -40,7 +41,7 @@ class Game extends NotarizedModel
     {
         return [
             [['campaignId', 'name', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'credit', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'credit', 'host', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['gameInviteLink', 'voiceVenueLink'], 'string'],
             [['name', 'levelRange', 'timeDuration'], 'string', 'max' => 255],
         ];
@@ -63,6 +64,7 @@ class Game extends NotarizedModel
             'baseBastionPointsPerPlayer' => 'Base Bastion Points Per Player',
             'bonusBastionPointsPerPlayer' => 'Bonus Bastion Points Per Player',
             'credit' => 'Credit',
+            'host' => 'Host',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',
@@ -174,5 +176,16 @@ SQL;
             return '';
         }
         return date("M j, Y h:i:s A ", $slot->unixtime);
+    }
+
+    /**
+     * Get Host
+     */
+    public function host()
+    {
+        if (!empty($this->host)) {
+            return $this->host;
+        }
+        return $this->owner;
     }
 }

@@ -269,10 +269,10 @@ class CampaignCharacter extends NotarizedModel
             return false;
         }
         $game = Game::findOne($gameId);
-        if (empty($game->owner)) {
+        if (empty($game->host())) {
             return false;
         }
-        if ($user->id == $game->owner) {
+        if ($user->id == $game->host()) {
             return true;
         }
         return false;

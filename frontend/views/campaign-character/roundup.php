@@ -86,7 +86,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                         if (empty($game)) {
                             continue;
                         }
-                        $user = User::findOne($game->owner);
+                        $user = User::findOne($game->host());
                         if (empty($user)) {
                             continue;
                         }

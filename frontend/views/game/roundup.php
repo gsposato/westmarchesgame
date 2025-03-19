@@ -3,6 +3,8 @@
 use common\models\Game;
 use common\models\GamePoll;
 use common\models\GameNote;
+use common\models\GamePlayer;
+use common\models\CampaignPlayer;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -58,6 +60,19 @@ $before = $_GET["before"] ?? "";
 <?php foreach ($games as $game): ?>
 <?php $sessionId = Game::session($game->id); ?>
 <?= $sessionId; ?>. <?= $game->name; ?> 
+<?php $owner = CampaignPlayer::find()->where(["userId" => $game->host()])->one(); ?>
+**DM** <?= ucfirst($owner->name); ?> 
+<?php $gamePlayers = array(); ?>
+<?php $gamePlayers = GamePlayer::organize($game->id); ?>
+<?php if (!empty($gamePlayers)): ?>
+<?php foreach ($gamePlayers as $gamePlayer): ?>
+<?php if ($gamePlayer->status == GamePlayer::STATUS_COHOST): ?>
+<?php if (!empty($gamePlayer->characterId)): ?>
+<?php endif; ?>
+*CoDM* <?= ucfirst($gamePlayer->name()); ?> 
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
 <?php $gamePoll = GamePoll::find()->where(["gameId" => $game->id])->one(); ?>
 <?= $gamePoll->note; ?> 
 <?php $gameNotes = GameNote::find()->where(["gameId" => $game->id])->andWhere(["inGameSummary" => 2])->all(); ?>
