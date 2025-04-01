@@ -21,6 +21,11 @@ if (!empty($gameEvent)) {
             <div class="card">
                 <div class="card-header">
                     <b>Game Character</b>
+                    <span style="float:right;">
+                        <small style="color:#888">
+                            Name • Level
+                        </small>
+                    </span>
                 </div>
                 <div class="card-body">
                         <p>Choose the characters receiving <i>something</i> for this game:</p>
@@ -31,13 +36,16 @@ if (!empty($gameEvent)) {
                             <?php $characters = CampaignCharacter::find()->where($where)->all(); ?>
                                 <?php foreach ($characters as $character): ?>
                                 <?php $url = $addRemoveCharacter . "&characterId=" . $character->id; ?>
+                                <?php $ch = $character; ?>
+                                <?php $gp = GamePlayer::find()->where(["characterId" => $ch->id])->all(); ?>
+                                <?php $ca = CampaignCharacter::advancement($id, $gp, $ch->startingCredit); ?>
                                 <?php if ($gamePlayer->characterId == $character->id): ?>
                                     <a href="<?= $url; ?>" class="btn btn-success" style="margin:5px">
-                                        <i class="fa fa-check"></i>&nbsp;<?= $character->name; ?>
+                                        <i class="fa fa-check"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>
                                 <?php else: ?>
                                     <a href="<?= $url; ?>" class="btn btn-secondary" style="margin:5px">
-                                        <i class="fa fa-minus"></i>&nbsp;<?= $character->name; ?>
+                                        <i class="fa fa-check"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>
                                 <?php endif; ?>
                             <?php endforeach; ?>
