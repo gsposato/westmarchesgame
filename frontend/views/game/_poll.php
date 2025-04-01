@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
 use common\models\CampaignPlayer;
+use frontend\helpers\ControllerHelper;
 
 $id = $_GET['campaignId'];
 $owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
@@ -57,6 +58,11 @@ Duration: <?= $model->timeDuration; ?>
 <?php foreach ($gamePollSlots as $gamePollSlot): ?>
 &lt;t:<?= $gamePollSlot->unixtime; ?>:F&gt;
 <?php endforeach; ?>
+
+---
+Check your character's level and bastion points:
+&lt;<?= ControllerHelper::url(); ?>/frontend/web/campaign-character/roundup?campaignId=<?= $id; ?>&gt;
+---
 </pre>
                     </div>
                     <div class="card-footer">

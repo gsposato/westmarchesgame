@@ -143,4 +143,13 @@ class ControllerHelper
         $action->save();
     }
 
+    /**
+     * Get URL
+     */
+    public static function url()
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $domain = $_SERVER['HTTP_HOST'];
+        return $protocol . $domain;
+    }
 }
