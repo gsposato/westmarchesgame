@@ -85,6 +85,10 @@ class NotarizedModel extends \yii\db\ActiveRecord
     public function canModify()
     {
         $attr = $this->attributes;
+        $sapi = php_sapi_name();
+        if ($sapi != "cli" && Yii::$app->user->isGuest) {
+            return false;
+        }
         $userId = Yii::$app->user->identity->id ?? 1;
         if (!empty($_GET['campaignId'])) {
             $rank = ControllerHelper::getPlayerRank($_GET['campaignId']);

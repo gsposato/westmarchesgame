@@ -40,6 +40,16 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                     return $model->playerId;
                 }
             ],
+            [
+                'label' => 'Name',
+                'attribute' => 'name',
+                'format' => 'raw',
+                'value' => function($model) {
+                    $campaignId = $_GET['campaignId'];
+                    $view = '/frontend/web/campaign-character/view?campaignId=' . $campaignId . '&id=';
+                    return '<a href="' . $view . $model->id . '">' . $model->name . '</a>';
+                }
+            ],
             'name',
             [
                 'label' => 'Games Played',

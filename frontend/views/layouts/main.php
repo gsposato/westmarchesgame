@@ -87,7 +87,7 @@ HTML;
                 </form>
             <?php endif; ?>
         </nav>
-        <?php if ($showNav): ?>
+        <?php if (!Yii::$app->user->isGuest && $showNav): ?>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">

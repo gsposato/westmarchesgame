@@ -16,8 +16,12 @@ class ControllerHelper
     /**
      * Default Controller Behaviors
      */
-    public static function behaviors()
+    public static function behaviors($canGuestView = false)
     {
+        $roles = ['@'];
+        if ($canGuestView) {
+            $roles = ['@', '?'];
+        }
         return [
                 'access' => [
                     'class' => AccessControl::class,
@@ -26,7 +30,7 @@ class ControllerHelper
                         [
                             'actions' => ['index', 'view', 'create', 'update', 'delete'],
                             'allow' => true,
-                            'roles' => ['@'],
+                            'roles' => $roles,
                         ]
                     ]
                 ],

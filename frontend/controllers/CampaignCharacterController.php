@@ -23,7 +23,7 @@ class CampaignCharacterController extends Controller
     {
         return array_merge(
             parent::behaviors(),
-            ControllerHelper::behaviors()
+            ControllerHelper::behaviors($canGuestView = true)
         );
     }
 
@@ -100,7 +100,7 @@ class CampaignCharacterController extends Controller
     {
         $model = $this->findModel($id);
         $player = CampaignPlayer::findOne($model->playerId);
-        if (!empty($player->id)) {
+        if (!empty($player->id) && !Yii::$app->user->isGuest) {
             if ($player->userId == Yii::$app->user->identity->id) {
                 $model->owner = $player->userId;
                 $model->save();
