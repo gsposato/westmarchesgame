@@ -324,7 +324,7 @@ class CampaignCharacter extends NotarizedModel
                 $bastionPointsSpent += $purchase->price;
             }
         }
-        return $bastionPointsEarned /*- $bastionPointsSpent*/;
+        return $bastionPointsEarned - $bastionPointsSpent;
     }
 
 }
