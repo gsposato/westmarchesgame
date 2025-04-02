@@ -49,7 +49,7 @@ if (!empty($gameEvent)) {
                                 <?php else: ?>
                                     <?php $cl = 'class="btn btn-secondary"'; ?>
                                     <a href="<?= $url; ?>" <?= $cl; ?> <?= $ti; ?> <?= $st; ?>>
-                                        <i class="fa fa-check"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
+                                        <i class="fa fa-minus"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>
                                 <?php endif; ?>
                             <?php endforeach; ?>

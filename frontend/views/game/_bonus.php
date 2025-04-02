@@ -29,26 +29,27 @@ if (!empty($gameEvent)) {
                             <?php if (empty($character)): ?>
                                 <?php continue; ?>
                             <?php endif; ?>
+                            <?php $ti = 'title="'.$character->description.'"'; ?>
                             <?php $url = $addRemoveBonus . "&characterId=" . $character->id; ?>
                             <?php $bonus = $gamePlayer->hasBonusPoints; ?>
                             <?php if ($bonus == GamePlayer::BONUS_NORMAL): ?>
-                                <a href="<?= $url; ?>" class="btn btn-success" style="margin:5px">
+                                <a href="<?= $url; ?>" class="btn btn-success" style="margin:5px" <?= $ti; ?>>
                                     <i class="fa fa-check"></i>&nbsp;<?= $character->name; ?>
                                 </a>
                             <?php elseif($bonus == GamePlayer::BONUS_BASTION): ?>
-                                <a href="<?= $url; ?>" class="btn btn-primary" style="margin:5px">
+                                <a href="<?= $url; ?>" class="btn btn-primary" style="margin:5px" <?= $ti; ?>>
                                     <i class="fa fa-house"></i>&nbsp;<?= $character->name; ?>
                                 </a>
                             <?php elseif($bonus == GamePlayer::BONUS_DOUBLE_GOLD): ?>
-                                <a href="<?= $url; ?>" class="btn btn-warning" style="margin:5px">
+                                <a href="<?= $url; ?>" class="btn btn-warning" style="margin:5px" <?= $ti; ?>>
                                     <i class="fa fa-coins"></i>&nbsp;<?= $character->name; ?>
                                 </a>
                             <?php elseif($bonus == GamePlayer::BONUS_DOUBLE_GOLD_BASTION): ?>
-                                <a href="<?= $url; ?>" class="btn btn-danger" style="margin:5px">
+                                <a href="<?= $url; ?>" class="btn btn-danger" style="margin:5px" <?= $ti; ?>>
                                     <i class="fa fa-flag"></i>&nbsp;<?= $character->name; ?>
                                 </a>
                             <?php else: ?>
-                                <a href="<?= $url; ?>" class="btn btn-secondary" style="margin:5px">
+                                <a href="<?= $url; ?>" class="btn btn-secondary" style="margin:5px" <?= $ti; ?>>
                                     <i class="fa fa-minus"></i>&nbsp;<?= $character->name; ?>
                                 </a>
                             <?php endif; ?>
