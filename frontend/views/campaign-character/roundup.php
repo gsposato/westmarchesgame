@@ -25,6 +25,8 @@ $roundup = 'roundup?campaignId=' . $campaignId;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>Click on a character's name for more information about them.</p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
@@ -50,16 +52,12 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                     return '<a href="' . $view . $model->id . '">' . $model->name . '</a>';
                 }
             ],
-            'name',
             [
-                'label' => 'Games Played',
+                'label' => 'Bastion Points',
                 'attribute' => '',
                 'format' => 'text',
                 'value' => function($model) {
-                    $gamesPlayed = GamePlayer::find()
-                        ->where(["characterId" => $model->id])
-                        ->all();
-                    return count($gamesPlayed) + ($model->startingCredit ?? 0);
+                    return $model->getRemainingBastionPoints();
                 }
             ],
             [
@@ -72,6 +70,33 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                         ->where(["characterId" => $model->id])
                         ->all();
                     return CampaignCharacter::advancement($campaignId, $gamesPlayed, $model->startingCredit);
+                }
+            ],
+            [
+                'label' => 'Games Played',
+                'attribute' => '',
+                'format' => 'text',
+                'value' => function($model) {
+                    $now = time();
+                    $gamesPlayed = GamePlayer::find()
+                        ->where(["characterId" => $model->id])
+                        ->all();
+                    $countGamesPlayed = 0;
+                    foreach ($gamesPlayed as $gamePlayed) {
+                        $gameEvent = GameEvent::find()->where(["gameId" => $gamePlayed->gameId])->one();
+                        if (empty($gameEvent)) {
+                            continue;
+                        }
+                        $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
+                        if (empty($slot)) {
+                            continue;
+                        }
+                        if ($slot->unixtime > $now) {
+                            continue;
+                        }
+                        $countGamesPlayed++;
+                    }
+                    return $countGamesPlayed + ($model->startingCredit ?? 0);
                 }
             ],
             [

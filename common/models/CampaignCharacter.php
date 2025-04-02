@@ -277,4 +277,54 @@ class CampaignCharacter extends NotarizedModel
         }
         return false;
     }
+
+    /**
+     * Get Remaining Bastion Points
+     */
+    public function getRemainingBastionPoints()
+    {
+        $campaign = Campaign::findOne($_GET['campaignId']);
+        $campaignRules = json_decode($campaign->rules);
+        $defaultStartingBastionPoints = $campaignRules->CampaignCharacter->startingBastionPoints ?? 25;
+        $totalBastionPointsEarned = $this->startingBastionPoints ?? $defaultStartingBastionPoints;
+        $isBastionWorthy = [
+            GamePlayer::BONUS_NORMAL,
+            GamePlayer::BONUS_BASTION,
+            GamePlayer::BONUS_DOUBLE_GOLD,
+            GamePlayer::BONUS_DOUBLE_GOLD_BASTION
+        ];
+        $isBonusBastionWorthy = [
+            GamePlayer::BONUS_BASTION,
+            GamePlayer::BONUS_DOUBLE_GOLD_BASTION
+        ];
+        $bastionPointsEarned = $totalBastionPointsEarned;
+        $gamesPlayed = GamePlayer::find()->where(["characterId" => $this->id])->all();
+        foreach ($gamesPlayed as $gamePlayed) {
+            $game = Game::findOne($gamePlayed->gameId);
+            if (empty($game)) {
+                continue;
+            }
+            if (!$game->isEnded()) {
+                continue;
+            }
+            if (in_array($gamePlayed->hasBonusPoints, $isBastionWorthy)) {
+                $bastionPointsEarned += $game->baseBastionPointsPerPlayer;
+            }
+            if (in_array($gamePlayed->hasBonusPoints, $isBonusBastionWorthy)) {
+                $bastionPointsEarned += $game->bonusBastionPointsPerPlayer;
+            }
+        }
+        $bastionPointsSpent = 0;
+        $purchases = Purchase::find()->where(["characterId" => $this->id])->all();
+        foreach ($purchases as $purchase) {
+            if ($purchase->currency != 2) {
+                continue;
+            }
+            if (empty($purchase->gameId)) {
+                $bastionPointsSpent += $purchase->price;
+            }
+        }
+        return $bastionPointsEarned /*- $bastionPointsSpent*/;
+    }
+
 }
