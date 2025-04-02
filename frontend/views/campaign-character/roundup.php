@@ -27,6 +27,12 @@ $roundup = 'roundup?campaignId=' . $campaignId;
 
     <p>Click on a character's name for more information about them.</p>
 
+    <?php foreach ($alerts as $type => $message): ?>
+        <div class="alert alert-<?= $type; ?>">
+            <?= $message; ?>
+        </div>
+    <?php endforeach; ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [

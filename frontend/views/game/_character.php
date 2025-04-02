@@ -39,12 +39,16 @@ if (!empty($gameEvent)) {
                                 <?php $ch = $character; ?>
                                 <?php $gp = GamePlayer::find()->where(["characterId" => $ch->id])->all(); ?>
                                 <?php $ca = CampaignCharacter::advancement($id, $gp, $ch->startingCredit); ?>
+                                <?php $ti = 'title="'.$ch->description.'"'; ?>
+                                <?php $st = 'style="margin:5px"'; ?>
                                 <?php if ($gamePlayer->characterId == $character->id): ?>
-                                    <a href="<?= $url; ?>" class="btn btn-success" style="margin:5px">
+                                    <?php $cl = 'class="btn btn-success"'; ?>
+                                    <a href="<?= $url; ?>" <?= $cl; ?> <?= $ti; ?> <?= $st; ?>>
                                         <i class="fa fa-check"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>
                                 <?php else: ?>
-                                    <a href="<?= $url; ?>" class="btn btn-secondary" style="margin:5px">
+                                    <?php $cl = 'class="btn btn-secondary"'; ?>
+                                    <a href="<?= $url; ?>" <?= $cl; ?> <?= $ti; ?> <?= $st; ?>>
                                         <i class="fa fa-check"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>
                                 <?php endif; ?>

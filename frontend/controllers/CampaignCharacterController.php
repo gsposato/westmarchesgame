@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use Yii;
+use common\models\Campaign;
 use common\models\CampaignCharacter;
 use common\models\CampaignPlayer;
 use yii\data\ActiveDataProvider;
@@ -85,7 +86,12 @@ class CampaignCharacterController extends Controller
             ],
         ]);
 
+        $campaign = Campaign::findOne($campaignId);
+        $campaignRules = json_decode($campaign->rules);
+        $alerts = $campaignRules->CampaignCharacter->alerts ?? array();
+
         return $this->render('roundup', [
+            'alerts' => $alerts,
             'dataProvider' => $dataProvider,
         ]);
     }
