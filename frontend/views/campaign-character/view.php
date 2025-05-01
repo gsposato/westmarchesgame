@@ -20,7 +20,7 @@ $campaign = Campaign::findOne($id);
 $campaignRules = json_decode($campaign->rules);
 $purchases = Purchase::find()->where(["characterId" => $model->id])->all();
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
-$characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed, $model->startingCredit);
+$characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed, $model);
 $defaultStartingGold = $campaignRules->CampaignCharacter->startingGold ?? 100;
 $totalGoldEarned = $model->startingGold ?? $defaultStartingGold;
 $defaultStartingBastionPoints = $campaignRules->CampaignCharacter->startingBastionPoints ?? 25;

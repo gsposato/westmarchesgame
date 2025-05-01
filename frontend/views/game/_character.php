@@ -38,7 +38,7 @@ if (!empty($gameEvent)) {
                                 <?php $url = $addRemoveCharacter . "&characterId=" . $character->id; ?>
                                 <?php $ch = $character; ?>
                                 <?php $gp = GamePlayer::find()->where(["characterId" => $ch->id])->all(); ?>
-                                <?php $ca = CampaignCharacter::advancement($id, $gp, $ch->startingCredit); ?>
+                                <?php $ca = CampaignCharacter::advancement($id, $gp, $ch); ?>
                                 <?php $ti = 'title="'.$ch->description.'"'; ?>
                                 <?php $st = 'style="margin:5px"'; ?>
                                 <?php if ($gamePlayer->characterId == $character->id): ?>

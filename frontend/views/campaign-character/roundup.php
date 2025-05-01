@@ -75,7 +75,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                     $gamesPlayed = GamePlayer::find()
                         ->where(["characterId" => $model->id])
                         ->all();
-                    return CampaignCharacter::advancement($campaignId, $gamesPlayed, $model->startingCredit);
+                    return CampaignCharacter::advancement($campaignId, $gamesPlayed, $model);
                 }
             ],
             [

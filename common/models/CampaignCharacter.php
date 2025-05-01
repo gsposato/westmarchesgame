@@ -130,7 +130,7 @@ class CampaignCharacter extends NotarizedModel
             $gamesPlayed = GamePlayer::find()
                 ->where(["characterId" => $character->id])
                 ->all();
-            $advancement = self::advancement($campaignId, $gamesPlayed, $character->startingCredit);
+            $advancement = self::advancement($campaignId, $gamesPlayed, $character);
             if (empty($levels[$advancement])) {
                 $levels[$advancement] = 0;
             }
@@ -143,10 +143,10 @@ class CampaignCharacter extends NotarizedModel
     /**
      * Character Advancement
      * @param integer $campaignId
-     * @param integer $gamesPlayed
-     * @param integer $startingCredit
+     * @param object $gamesPlayed
+     * @param object $character
      */
-    public static function advancement($campaignId, $gamesPlayed, $startingCredit = 0)
+    public static function advancement($campaignId, $gamesPlayed, $character)
     {
         $campaign = Campaign::findOne($campaignId);
         if (!$campaign) {
@@ -162,7 +162,7 @@ class CampaignCharacter extends NotarizedModel
         if (empty($rules->CampaignCharacter->GameLevelAdvancement)) {
             return 0;
         }
-        $credit = $startingCredit ?? 0;
+        $credit = $character->startingCredit ?? 0;
         foreach ($gamesPlayed as $gamePlayed) {
             $game = Game::findOne($gamePlayed->gameId);
             if (empty($game)) {
@@ -173,6 +173,20 @@ class CampaignCharacter extends NotarizedModel
             }
             if (!$game) {
                 $credit += 1;
+                continue;
+            }
+            if (empty($character->id)) {
+                $credit += $game->credit;
+                continue;
+            }
+            $gamePlayer = GamePlayer::find()
+                ->where(["gameId" => $gamePlayed->gameId])
+                ->andWhere(["characterId" => $character->id])
+                ->one();
+            if (empty($gamePlayer)) {
+                continue;
+            }
+            if (empty($gamePlayer->hasBonusPoints)) {
                 continue;
             }
             $credit += $game->credit;
