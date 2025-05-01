@@ -24,6 +24,11 @@ $campaignCharacterSelect = $campaignCharacter->select();
 
     <?= $form->field($model, 'characterId')->dropDownList($campaignCharacterSelect, ['prompt' => '']) ?>
 
+        <br/ >
+        <div class="alert alert-warning">
+            If this purchase was awarded <b>freely</b> in a game, choose the game here.  <b>Otherwise leave blank</b>.
+        </div>
+
     <?= $form->field($model, 'gameId')->dropDownList($gameSelect, ['prompt' => '']) ?>
 
     <?= $form->field($model, 'currency')->dropDownList(Purchase::currency(), ['prompt' => '']) ?>
