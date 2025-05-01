@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
 use common\models\CampaignPlayer;
+use common\widgets\Alert;
 use frontend\helpers\ControllerHelper;
 
 $id = $_GET['campaignId'];
@@ -76,6 +77,7 @@ Check your character's level and bastion points:
                         <hr />
                         <?php $gamePollSlot = new GamePollSlot(); ?>
                         <?php $form = ActiveForm::begin(["action" => $createGamePollSlot]); ?>
+                            <?= Alert::widget() ?>
                             <?php $textInput = ["type" => "datetime-local"]; ?>
                             <?= $form->field($gamePollSlot, 'humantime')->textInput($textInput) ?>
                             <div class="form-group" style="padding-top:15px;padding-bottom:15px;">

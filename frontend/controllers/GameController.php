@@ -240,6 +240,13 @@ SQL;
         $slot->load($this->request->post());
         $slot->unixtime = strtotime($slot->humantime);
         $slot->gamePollId = $poll->id;
+        $exists = GamePollSlot::find()->where(["unixtime" => $slot->unixtime])->one();
+        if ($exists) {
+            $date = date("m/d/Y h:i a", $slot->unixtime);
+            $msg = 'The timestamp <b>'.$date.'</b> is unavailable.  Try one minute ahead.';
+            Yii::$app->getSession()->setFlash('danger', $msg);
+            return $this->redirect([$url]);
+        }
         $slot->save();
         return $this->redirect([$url]);
     }
