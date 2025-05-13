@@ -13,6 +13,8 @@ use yii\bootstrap5\NavBar;
 
 AppAsset::register($this);
 $showNav = false;
+$showHeader = true;
+$showFooter = true;
 $sel = new stdclass();
 $uri = $_SERVER['REQUEST_URI'];
 $uris = Yii::$app->params['navigation'];
@@ -26,6 +28,11 @@ if (!empty($uris)) {
             $name = Campaign::getName($id);
         }
     }
+}
+if (str_contains($uri, "map/map")) {
+    $showNav = false;
+    $showHeader = false;
+    $showFooter = false;
 }
 $date = date('Y');
 $appName = Yii::$app->name;
@@ -72,6 +79,7 @@ HTML;
 <body class="sb-nav-fixed">
 <?php $this->beginBody() ?>
 
+        <?php if ($showHeader): ?>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand ps-3" href="/"><?= Yii::$app->name; ?></a>
             <?php if ($showNav): ?>
@@ -87,6 +95,7 @@ HTML;
                 </form>
             <?php endif; ?>
         </nav>
+        <?php endif; ?>
         <?php if (!Yii::$app->user->isGuest && $showNav): ?>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
@@ -129,19 +138,25 @@ HTML;
                         <?= Alert::widget() ?>
                         <?= $content ?>
                     </div>
-                    <?= $footer; ?>
+                    <?php if ($showFooter): ?>
+                        <?= $footer; ?>
+                    <?php endif; ?>
                 </main>
             </div>
             <?php else: ?>
                 <main role="main" class="flex-shrink-0">
                     <div class="container">
+                        <?php if ($showHeader): ?>
                         <?= Breadcrumbs::widget([
                             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                         ]) ?>
+                        <?php endif; ?>
                         <?= Alert::widget() ?>
                         <?= $content ?>
                     </div>
-                    <?= $footer; ?>
+                    <?php if ($showFooter): ?>
+                        <?= $footer; ?>
+                    <?php endif; ?>
                 </main>
         <?php endif; ?>
 <?php $this->endBody() ?>

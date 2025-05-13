@@ -10,6 +10,7 @@ return [
         'announcements' => '/frontend/web/campaign-announcement',
         'documents' => '/frontend/web/campaign-document',
         'games' => '/frontend/web/game',
+        'maps' => '/frontend/web/map',
         'players' => '/frontend/web/campaign-player',
         'characters' => '/frontend/web/campaign-character',
         'purchases' => '/frontend/web/purchase',
