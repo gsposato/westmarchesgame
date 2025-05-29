@@ -15,6 +15,7 @@ return [
         'characters' => '/frontend/web/campaign-character',
         'purchases' => '/frontend/web/purchase',
         'complaints' => '/frontend/web/player-complaint',
+        'triggers' => '/frontend/web/player-trigger',
         'rules' => '/frontend/web/campaign/view',
     ]
 ];

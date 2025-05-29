@@ -91,6 +91,13 @@ $canModify = $model->canModify();
         ]) ?>
     </div>
     <br />
+    <div id="gametrigger">
+        <?= $this->render('_trigger', [
+            'model' => $model,
+            'canModify' => $canModify
+        ]) ?>
+    </div>
+    <br />
     <div id="gamecharacter">
         <?= $this->render('_character', [
             'model' => $model,
