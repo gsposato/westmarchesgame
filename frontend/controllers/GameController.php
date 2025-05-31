@@ -172,7 +172,6 @@ SQL;
     public function actionUpdate($id, $campaignId)
     {
         $model = $this->findModel($id);
-
         if (!empty($_POST["GamePoll"]["note"])) {
             $gamePoll = GamePoll::find()->where(["gameId" => $id])->one();
             if (!empty($gamePoll)) {
@@ -180,15 +179,35 @@ SQL;
                 $gamePoll->save();
             }
         }
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        $isPost = $this->request->isPost;
+        $isLoaded = $model->load($this->request->post());
+        $isSaved = $model->save();
+        if ($isPost && $isLoaded && $isSaved) {
             $url = 'view?campaignId='.$campaignId.'&id='.$id;
             return $this->redirect([$url]);
         }
-
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Remove Game Event
+     * @param integer $id
+     * @param integer $campaignId
+     */
+    public function actionRemovegameevent($id, $campaignId)
+    {
+        $gameEvent = GameEvent::find()->where(["gameId" => $id])->one();
+        if (empty($gameEvent)) {
+            $url = 'view?campaignId='.$campaignId.'&id='.$id;
+            return $this->redirect([$url]);
+        }
+        if ($gameEvent->canModify()) {
+            $gameEvent->delete();
+        }
+        $url = 'view?campaignId='.$campaignId.'&id='.$id;
+        return $this->redirect([$url]);
     }
 
     /**

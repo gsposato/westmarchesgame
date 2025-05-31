@@ -188,4 +188,27 @@ $userSelect = User::select();
 
     <?php ActiveForm::end(); ?>
 
+    <br />
+    <hr />
+    <p>Save your changes above before using the buttons below.</p>
+    <hr />
+    <br />
+
+
+    <div class="card text-white bg-dark">
+        <div class="card-header">
+            <b><i class="fa fa-cog"></i>&nbsp;Advanced Game Properties</b>
+        </div>
+        <div class="card-body">
+            <b>Remove Game Event</b>
+            <p>Removing the Game Event allows you to reschedule your game.</p>
+            <?php $url = "/frontend/web/game"; ?>
+            <?php $url .= "/removegameevent?campaignId=".$campaignId; ?>
+            <?php $url .= "&id=".$model->id; ?>
+            <a href="<?= $url; ?>" class="btn btn-danger">Remove Game Event</a>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+
 </div>
