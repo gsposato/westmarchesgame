@@ -28,6 +28,9 @@ if (!empty($gameEvent)) {
 }
 if (!empty($gamePlayers)) {
     foreach ($gamePlayers as $player) {
+        if ($player->status == GamePlayer::STATUS_DROPOUT) {
+            continue;
+        }
         $myTriggers = PlayerTrigger::find()->where(["playerId" => $player->userId])->all();
         foreach ($myTriggers as $trigger) {
             array_push($triggers, $trigger);
