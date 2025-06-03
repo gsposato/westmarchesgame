@@ -129,6 +129,21 @@ SQL;
     }
 
     /**
+     * Lists all Game models.
+     *
+     * @return string
+     */
+    public function actionCalendar($campaignId)
+    {
+        $games = Game::find()
+            ->where(["campaignId" => $campaignId])
+            ->all();
+        return $this->render('calendar', [
+            'games' => $games,
+        ]);
+    }
+
+    /**
      * Displays a single Game model.
      * @param int $id ID
      * @return string

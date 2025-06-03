@@ -16,6 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 $campaignId = $_GET['campaignId'];
 $create = 'create?campaignId=' . $campaignId;
 $roundup = 'roundup?campaignId=' . $campaignId;
+$calendar = 'calendar?campaignId=' . $campaignId;
+$cal = '<i class="fa fa-calendar"></i>&nbsp;Calendar';
 ?>
 <div class="game-index">
 
@@ -24,6 +26,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
     <p>
         <?= Html::a('Create Game', [$create], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Roundup', [$roundup], ['class' => 'btn btn-secondary']) ?>
+        <?= Html::a($cal, [$calendar], ['class' => 'btn btn-secondary']) ?>
     </p>
 
 

@@ -164,8 +164,10 @@ SQL;
 
     /**
      * Event
+     * @param integer $gameId
+     * @param string $format
      */
-    public static function event($gameId)
+    public static function event($gameId, $format = "")
     {
         $gameEvent = GameEvent::find()->where(["gameId" => $gameId])->one();
         if (!$gameEvent) {
@@ -175,7 +177,10 @@ SQL;
         if (!$slot) {
             return '';
         }
-        return date("M j, Y h:i:s A ", $slot->unixtime);
+        if (empty($format)) {
+            return date("M j, Y h:i:s A ", $slot->unixtime);
+        }
+        return date($format, $slot->unixtime);
     }
 
     /**

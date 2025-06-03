@@ -73,6 +73,12 @@ HTML;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
+  <?php if (date('n') == 6): ?>
+  background: linear-gradient(90deg, red, orange, yellow, green, cyan, indigo, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  <?php endif; ?>
 }
 </style>
 </head>
