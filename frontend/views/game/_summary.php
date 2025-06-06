@@ -38,7 +38,7 @@ if (!empty($gameEvent)) {
                             <i class="fa fa-copy"></i>&nbsp;Copy
                         </button>
                     </div>
-                    <div class="card-body" style="background-color:#333;color:#fff">
+                    <div class="card-body" style="background-color:#333;color:#fff!important;">
 <?php $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId); ?>
 <?php $timestamp = $slot->unixtime; ?>
 <?php $gamePlayer = GamePlayer::find()->where(["gameId" => $model->id, "userId" => $owner->id])->one(); ?>
@@ -46,7 +46,7 @@ if (!empty($gameEvent)) {
     <?php $character = CampaignCharacter::findOne($gamePlayer->characterId); ?>
 <?php endif; ?>
 <?php $characterName = $character->name ?? ""; ?>
-<pre id="gamesummary-text" style="overflow-x:hidden;">
+<pre id="gamesummary-text" style="overflow-x:hidden;color#fff !important;">
 **Session <?= Game::session($model->id); ?> - <?= $model->name; ?>**
 **Date:** <?= date("m/d/Y", $timestamp); ?> 
 **DM** <?= ucfirst($owner->name); ?> (<?= $characterName; ?>) 

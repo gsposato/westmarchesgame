@@ -43,7 +43,11 @@ if (!empty($gamePlayers)) {
                 <div class="card">
                     <div class="card-header">
                         <b>Game Triggers</b>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseGameTrigger" aria-expanded="false" aria-controls="collapseGameTrigger" style="float:right;">
+Show/Hide
+  </button>
                     </div>
+                    <div class="collapse" id="collapseGameTrigger">
                     <div class="card-body">
                         <?php if (empty($gamePlayers)): ?>
                             No Players Added.  Add Players to see Triggers.
@@ -80,6 +84,7 @@ if (!empty($gamePlayers)) {
                             </small>
                             &nbsp;
                             <?php endif; ?>
+                    </div>
                     </div>
                 </div>
         <?php endif; ?>
