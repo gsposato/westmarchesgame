@@ -8,6 +8,9 @@ use common\models\CampaignCharacter;
 use common\models\CampaignPlayer;
 use common\models\GamePlayer;
 use common\models\Game;
+use common\models\Equipment;
+use common\models\EquipmentGoal;
+use common\models\EquipmentGoalRequirement as Egr;
 
 /** @var yii\web\View $this */
 /** @var common\models\CampaignCharacter $model */
@@ -52,6 +55,9 @@ $isDoubleGoldWorthy = [
     GamePlayer::BONUS_DOUBLE_GOLD,
     GamePlayer::BONUS_DOUBLE_GOLD_BASTION
 ];
+$character = $model;
+$state = Equipment::stateSelect();
+$equips = Equipment::find()->where(["characterId" => $character->id])->all();
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="campaign-character-view">
@@ -126,6 +132,51 @@ $isDoubleGoldWorthy = [
     ]) ?>
 
 </div>
+            <?php if (!empty($equips)): ?>
+            <br />
+            <div class="card">
+                <div class="card-header">
+                    <b>Equipment</b>
+                </div>
+                <div class="card-body">
+                    <?php foreach($equips as $equip): ?>
+                        <div class="alert alert-warning">
+                            <h6><i class="fa fa-shield"></i>&nbsp;<?= $equip->name ?? ""; ?></h6>
+                            <p><?= $equip->description; ?></p>
+                            <p><b>Goal:</b> <?= $state[$equip->state+1] ?? "None"; ?></p>
+                            <?php $where = []; ?>
+                            <?php $where["equipmentId"] = $equip->id; ?>
+                            <?php if (!empty($state[$equip->state+1])): ?>
+                                <?php $where["name"] = $state[$equip->state+1]; ?>
+                            <?php else: ?>
+                                <?php $where["name"] = $state[$equip->state]; ?>
+                            <?php endif; ?>
+                            <?php $goals = EquipmentGoal::find()->where($where)->all(); ?>
+                            <?php foreach ($goals as $goal): ?>
+                                <p><?= $goal->description; ?></p>
+                                <?php $wh = []; ?>
+                                <?php $wh["equipmentGoalId"] = $goal->id; ?> 
+                                <?php $reqs = Egr::find()->where($wh)->all(); ?>
+                                <?php foreach ($reqs as $req): ?>
+                                    <p>
+                                        <i class="fa fa-flag"></i>&nbsp;<?= $req->name; ?> / 
+                                        <?= $req->progress; ?>%
+                                    </p>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endforeach; ?> 
+                </div>
+                <div class="card-footer">
+                    <small style="color:#888">
+                        <i class="fa fa-shield"></i>&nbsp;Equipment Name&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="fa fa-flag"></i>&nbsp;Goal Requirement&nbsp;&nbsp;&nbsp;&nbsp;
+                    </small>
+                    <br />
+                </div>
+            </div>
+            <br />
+            <?php endif; ?>
 
             <br />
 

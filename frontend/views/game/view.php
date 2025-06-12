@@ -105,6 +105,13 @@ $canModify = $model->canModify();
         ]) ?>
     </div>
     <br />
+    <div id="gameequipment">
+        <?= $this->render('_equipment', [
+            'model' => $model,
+            'canModify' => $canModify
+        ]) ?>
+    </div>
+    <br />
     <div id="gamesummary">
         <?= $this->render('_summary', [
             'model' => $model,

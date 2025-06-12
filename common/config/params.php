@@ -13,6 +13,7 @@ return [
         'maps' => '/frontend/web/map',
         'players' => '/frontend/web/campaign-player',
         'characters' => '/frontend/web/campaign-character',
+        'equipments' => '/frontend/web/equipment',
         'purchases' => '/frontend/web/purchase',
         'complaints' => '/frontend/web/player-complaint',
         'triggers' => '/frontend/web/player-trigger',
