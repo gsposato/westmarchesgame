@@ -68,7 +68,6 @@ $canModify = $model->canModify();
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            'id',
             'name',
             [
                 'label' => 'Progress',

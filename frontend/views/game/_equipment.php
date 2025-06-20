@@ -42,7 +42,7 @@ Show/Hide
                                     <?php $chId = $character->id; ?>
                                     <?php $equips = Equipment::find()->where(["characterId" => $chId])->all(); ?>
                                     <?php if (empty($equips)): ?>
-                                        <p>No Equipment <i>goals</i> were Found.</p>
+                                        <p>No Equipment found for <b><?= $character->name; ?></b></p>
                                     <?php endif; ?>
                                     <?php foreach($equips as $equip): ?>
                                         <?php if (empty($state[$equip->state+1])): ?>

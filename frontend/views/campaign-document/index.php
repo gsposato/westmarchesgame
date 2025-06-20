@@ -26,7 +26,6 @@ $create = 'create?campaignId=' . $campaignId;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            'id',
             [
                 'label' => 'Name',
                 'attribute' => 'name',
