@@ -40,10 +40,12 @@ class EquipmentController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($campaignId)
     {
+        $query = Equipment::find()
+            ->where(["campaignId" => $campaignId]);
         $dataProvider = new ActiveDataProvider([
-            'query' => Equipment::find(),
+            'query' => $query,
             'pagination' => [
                 'pageSize' => 50
             ],

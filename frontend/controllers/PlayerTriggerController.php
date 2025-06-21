@@ -30,10 +30,12 @@ class PlayerTriggerController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($campaignId)
     {
+        $query = PlayerTrigger::find()
+            ->where(["campaignId" => $campaignId]);
         $dataProvider = new ActiveDataProvider([
-            'query' => PlayerTrigger::find(),
+            'query' => $query,
             'pagination' => [
                 'pageSize' => 50
             ],

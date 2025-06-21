@@ -40,10 +40,12 @@ class MapController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($campaignId)
     {
+        $query = Map::find()
+            ->where(["campaignId" => $campaignId]);
         $dataProvider = new ActiveDataProvider([
-            'query' => Map::find(),
+            'query' => $query,
             'pagination' => [
                 'pageSize' => 50
             ],
