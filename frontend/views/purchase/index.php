@@ -46,11 +46,9 @@ $create = 'create?campaignId=' . $campaignId;
                 'attribute' => 'currency',
                 'format' => 'text',
                 'value' => function($model) {
-                    if ($model->currency == 1) {
-                        return "Gold";
-                    }
-                    if ($model->currency == 2) {
-                        return "Bastion Points";
+                    $currency = $model->currency();
+                    if (!empty($currency[$model->currency])) {
+                        return ucwords($currency[$model->currency]);
                     }
                     return $model->currency;
                 }

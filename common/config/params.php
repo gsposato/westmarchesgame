@@ -15,6 +15,7 @@ return [
         'characters' => '/frontend/web/campaign-character',
         'equipments' => '/frontend/web/equipment',
         'purchases' => '/frontend/web/purchase',
+        'currencies' => '/frontend/web/currency',
         'complaints' => '/frontend/web/player-complaint',
         'triggers' => '/frontend/web/player-trigger',
         'rules' => '/frontend/web/campaign/view',

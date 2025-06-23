@@ -66,9 +66,18 @@ class Purchase extends NotarizedModel
      */
     public static function currency()
     {
-        return [
+        $list =  [
             1 => "Gold",
-            2 => "Bastion Points"
+            2 => "Bastion Points",
         ];
+        $state = count($list);
+        $currencies = Currency::find()->where(["campaignId" => $_GET['campaignId']])->all();
+        foreach ($currencies as $currency) {
+            if ($currency->id > 0 && $currency->id < 3) {
+                continue;
+            }
+            $list[$currency->id] = $currency->name;
+        }
+        return $list;
     }
 }
