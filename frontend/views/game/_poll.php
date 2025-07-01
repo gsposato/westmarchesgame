@@ -61,8 +61,7 @@ Duration: <?= $model->timeDuration; ?>
 <?php endforeach; ?>
 
 ---
-Check your character's level and bastion points:
-&lt;<?= ControllerHelper::url(); ?>/frontend/web/campaign-character/roundup?campaignId=<?= $id; ?>&gt;
+[Check your character's level and bastion points](<?= ControllerHelper::url(); ?>/frontend/web/campaign-character/roundup?campaignId=<?= $id; ?>)
 ---
 </pre>
                     </div>

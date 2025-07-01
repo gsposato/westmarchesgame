@@ -76,7 +76,7 @@ class Purchase extends NotarizedModel
             if ($currency->id > 0 && $currency->id < 3) {
                 continue;
             }
-            $list[$currency->id] = $currency->name;
+            $list[$currency->id] = ucwords($currency->name);
         }
         return $list;
     }

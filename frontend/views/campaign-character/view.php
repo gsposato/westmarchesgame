@@ -268,7 +268,7 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
 
             <div class="card">
                 <div class="card-header">
-                    <b>Purchase History</b>
+                    <b>Transaction History</b>
                     <b style="float: right;">
                         <button class="btn btn-secondary">
                             Character Level: <?= $characterAdvancement; ?>
@@ -332,8 +332,8 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                 </ul>
                 </div>
                 <div class="card-footer">
-                    Total Gold Spent: <b style="color:#df8607"><?= $totalGoldSpent; ?></b> /
-                    Total Bastion Points Spent: <b><?= $totalBastionPointsSpent; ?></b>
+                    Total Gold Spent: <b style="color:#df8607"><?= $totals["gold"] ?? 0; ?></b> /
+                    Total Bastion Points Spent: <b><?= $totals["bastion points"] ?? 0; ?></b>
                     <?php foreach ($currencies as $currency): ?>
                          / Total <?= ucwords($currency->name); ?> Spent:
                         <b style="color:<?= $currency->color; ?>">
