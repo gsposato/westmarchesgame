@@ -91,7 +91,8 @@ class NotarizedModel extends \yii\db\ActiveRecord
     {
         $attr = $this->attributes;
         $sapi = php_sapi_name();
-        if ($sapi != "cli" && Yii::$app->user->isGuest) {
+        $isGuestAllowed = !empty($_POST['challenge']);
+        if ($sapi != "cli" && Yii::$app->user->isGuest && !$isGuestAllowed) {
             return false;
         }
         $userId = Yii::$app->user->identity->id ?? 1;

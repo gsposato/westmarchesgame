@@ -3,37 +3,36 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\CampaignPlayer;
-use common\models\CampaignCharacter;
+use common\models\Ticket;
 use common\models\User;
 
 /** @var yii\web\View $this */
-/** @var common\models\PlayerComplaint $model */
+/** @var common\models\Ticket $model */
 /** @var yii\widgets\ActiveForm $form */
 $campaignPlayer = new CampaignPlayer();
 $campaignPlayerSelect = $campaignPlayer->select();
 ?>
 
-<div class="player-complaint-form">
+<div class="ticket-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->dropDownList($campaignPlayerSelect, ['prompt' => '']); ?>
 
-    <?= $form->field($model, 'gameId')->textInput() ?>
-
-    <?= $form->field($model, 'reportingPlayerId')->dropDownList($campaignPlayerSelect, ['prompt' => '']); ?>
-
-    <?= $form->field($model, 'reportingCharacterId')->dropDownList($campaignCharacterSelect, ['prompt' => '']) ?>
-
-    <?= $form->field($model, 'offendingPlayerId')->dropDownList($campaignPlayerSelect, ['prompt' => '']); ?>
-
-    <?= $form->field($model, 'offendingCharacterId')->dropDownList($campaignCharacterSelect, ['prompt' => '']) ?>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <?= $form->field($model, 'status')->dropDownList(Ticket::status(), ['prompt' =>'']); ?>
+    <?php endif; ?>
 
     <?= $form->field($model, 'note')->textarea(['rows' => 6]) ?>
 
-    <br />
+    <?php if (Yii::$app->user->isGuest): ?>
+        <div class="form-group">
+            <label class="control-label" for="campaigndocument-name">Campaign Name</label>
+            <input type="text" id="challenge" class="form-control" name="challenge" />
+        </div>
+    <?php endif; ?>
 
-    <?php if ($model->canNotarize()): ?>
+    <?php if (!Yii::$app->user->isGuest && $model->canNotarize()): ?>
         <?php $userSelect = User::select(); ?>
         <?= $form->field($model, 'owner')->dropDownList($userSelect, ['prompt' => '']); ?>
         <input type="hidden" name="notarizeKey" value="<?= $model->getNotarizeKey(); ?>" />

@@ -2,6 +2,12 @@
 return [
     'adminEmail' => 'no-reply@westmarchesgame.com',
     'supportEmail' => 'no-reply@westmarchesgame.com',
+    /*
+    'supportEmails' => [
+        'no-reply' => 'no-reply@westmarchesgame.com',
+        'yes-reply' => 'yes-reply@westmarchesgame.com'
+    ],
+    */
     'senderEmail' => 'no-reply@westmarchesgame.com',
     'senderName' => 'No Reply',
     'user.passwordResetTokenExpire' => 3600,
@@ -18,6 +24,7 @@ return [
         'currencies' => '/frontend/web/currency',
         //'complaints' => '/frontend/web/player-complaint',
         'triggers' => '/frontend/web/player-trigger',
+        'tickets' => '/frontend/web/ticket',
         'rules' => '/frontend/web/campaign/view',
     ]
 ];
