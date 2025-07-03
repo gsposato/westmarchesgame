@@ -71,6 +71,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
+                'label' => 'Is Support',
+                'attribute' => 'isSupport',
+                'format' => 'text',
+                'value' => function($model) {
+                    if (empty($model->isSupport)) {
+                        return 'False';
+                    }
+                    return 'True';
+                },
+            ],
+            [
+                'label' => 'Is Subscribed',
+                'attribute' => 'isSubscribed',
+                'format' => 'text',
+                'value' => function($model) {
+                    if (empty($model->isSubscribed)) {
+                        return 'False';
+                    }
+                    return 'True';
+                },
+            ],
+            [
                 'label' => 'Is Admin',
                 'attribute' => 'isAdmin',
                 'format' => 'text',

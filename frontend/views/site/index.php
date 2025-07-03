@@ -1,17 +1,19 @@
 <?php
 
+use common\widgets\Alert;
+
 /** @var yii\web\View $this */
 
 $this->title = Yii::$app->name;
 ?>
 <div class="site-index">
-    <div class="p-5 mb-4 bg-transparent rounded-3">
+    <div class="mb-4 bg-transparent rounded-3">
         <div class="container-fluid py-5 text-center">
             <h3 class="display-4 gothic">Campaigns</h3>
             <h1><i class="fa fa-chevron-down"></i></h1>
         </div>
     </div>
-
+    <?= Alert::widget() ?>
     <div class="body-content">
 
         <div class="row">

@@ -17,7 +17,6 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
-
 use common\models\Campaign;
 
 /**
@@ -321,5 +320,47 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    /**
+     * Unsubscribe
+     * @param string $token
+     */
+    public function actionUnsubscribe($token="")
+    {
+        if (empty($token)) {
+            return $this->goHome();
+        }
+        $json = json_decode(base64_decode($token));
+        $keys = [
+            "campaignId",
+            "campaignPlayerId",
+            "unixtimestamp"
+        ];
+        foreach ($keys as $key) {
+            if (empty($json->{$key})) {
+                return $this->goHome();
+            }
+        }
+        $twentyFourHoursAgo = time() - 86400;
+        if ($json->unixtimestamp < $twentyFourHoursAgo) {
+            return $this->goHome();
+        }
+        $player = CampaignPlayer::find()
+            ->where(["campaignid" => $json->campaignId])
+            ->andWhere(["id" => $json->campaignPlayerId])
+            ->one();
+        if (!$player) {
+            return false;
+        }
+        $player->isSubscribed = 0;
+        $player->save();
+        $campaign = Campaign::findOne($json->campaignId);
+        $msg = "Successfully unsubscribed from campaign.";
+        if (!empty($campaign->name)) {
+            $msg = "Successfully unsubscribed from campaign <b>{$campaign->name}</b>.";
+        }
+        Yii::$app->session->setFlash('success', $msg);
+        return $this->goHome();
     }
 }

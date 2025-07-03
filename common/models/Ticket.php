@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use frontend\helpers\ControllerHelper;
 
 /**
  * This is the model class for table "ticket".
@@ -78,5 +79,31 @@ class Ticket extends NotarizedModel
             self::STATUS_ACTIVE => "info",
             self::STATUS_CLOSED => "danger"
         ];
+    }
+
+    /**
+     * Can Modify
+     */
+    public function canModify()
+    {
+        $campaignId = $_GET['campaignId'] ?? 1;
+        $isSupportRole = ControllerHelper::isSupportRole($campaignId);
+        if ($isSupportRole) {
+            return true;
+        }
+        return parent::canModify();
+    }
+
+    /**
+     * Can Notarize
+     */
+    public function canNotarize()
+    {
+        $campaignId = $_GET['campaignId'] ?? 1;
+        $isSupportRole = ControllerHelper::isSupportRole($campaignId);
+        if ($isSupportRole) {
+            return true;
+        }
+        return parent::canNotarize();
     }
 }

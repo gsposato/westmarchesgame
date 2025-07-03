@@ -4,8 +4,10 @@ namespace frontend\controllers;
 
 use Yii;
 use common\models\Campaign;
+use common\models\CampaignPlayer;
 use common\models\Ticket;
 use common\models\TicketComment;
+use common\models\User;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -68,7 +70,10 @@ class TicketController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['/']);
         }
-        $comments = TicketComment::find()->where(["ticketId" => $id])->all();
+        $comments = TicketComment::find()
+            ->where(["ticketId" => $id])
+            ->orderBy(["id" => SORT_DESC])
+            ->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
             'comments' => $comments
@@ -106,7 +111,7 @@ class TicketController extends Controller
         if ($isLoaded && $isSaved) {
             $msg = "Successfully Created Ticket #".$model->id;
             Yii::$app->getSession()->setFlash('success', $msg);
-            $this->sendAdminEmail($model);
+            $this->sendSubscriberEmail($model);
             $model = new Ticket();
             $model->loadDefaultValues();
             return $this->render('create', [
@@ -203,33 +208,75 @@ class TicketController extends Controller
     }
 
     /**
-     * Send Admin Email
+     * Send Subscriber Email
+     * @param Object $model
      */
-    protected function sendAdminEmail($model)
+    protected function sendSubscriberEmail($model)
     {
-        if (empty(Yii::$app->params['supportEmails'])) {
+        $now = time();
+        $subscribers = CampaignPlayer::find()
+            ->where(["campaignId" => $model->campaignId])
+            ->andWhere(["isSubscribed" => 1])
+            ->all();
+        if (empty($subscribers)) {
             return;
         }
-        foreach (Yii::$app->params['supportEmails'] as $supportEmailAlias => $supportEmailEndpoint) {
+        foreach ($subscribers as $subscriber) {
+        if (empty($subscriber->userId)) {
+            continue;
+        }
+        $user = User::findOne($subscriber->userId);
+        if (empty($user->email)) {
+            continue;
+        }
+        $campaign = Campaign::findOne($model->campaignId);
+        $campaign = $campaign->name ?? $model->campaignId;
+        $unsubscribe = $this->unsubscribe($subscriber->id, $model->campaignId, $now);
         try {
             $result = Yii::$app
                 ->mailer
                 ->compose(
                     ['html' => 'newTicket-html', 'text' => 'newTicket-text'],
+                    ['campaign' => $campaign, 'unsubscribe' => $unsubscribe]
                 )
                 ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-                ->setTo($supportEmailEndpoint)
+                ->setTo($user->email)
                 ->setSubject('Ticket created at ' . Yii::$app->name)
                 ->send();
             } catch (\Exception $e) {
                 $result = $e->getMessage();
             }
+            $note = "The following happened while trying to send an email to " . $subscriber->name . ": ";
+            $note .= print_r($result, $return = true);
+            if ($result === true) {
+                $note = $subscriber->name . " was sent an email notification.";
+            }
             $comment = new TicketComment();
-            $comment->note = $supportEmailAlias . ": ";
-            $comment->note .= print_r($result, $return = true);
-            $comment->campaignId = $_GET['campaignId'];
+            $comment->note = $note;
+            $comment->campaignId = $model->campaignId;
             $comment->ticketId = $model->id;
             $comment->save();
         }
+    }
+
+    /**
+     * Unsubscribe
+     * @param integer $subscriberId
+     * @param integer $campaignId
+     * @param integer $now
+     */
+    protected function unsubscribe($subscriberId, $campaignId, $now)
+    {
+        $id = $_GET['campaignId'];
+        $now = time();
+        $arr["campaignId"] = $campaignId;
+        $arr["campaignPlayerId"] = $subscriberId;
+        $arr["unixtimestamp"] = $now;
+        $json = json_encode($arr);
+        $token = base64_encode($json);
+        $unsubscribe = (empty($_SERVER['HTTPS']) ? 'http' : 'https');
+        $unsubscribe .= "://$_SERVER[HTTP_HOST]/frontend/web/site/unsubscribe";
+        $url = $unsubscribe . "?token=" . $token;
+        return $url;
     }
 }

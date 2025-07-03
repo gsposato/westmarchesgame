@@ -2,19 +2,17 @@
 
 namespace frontend\controllers;
 
-use Yii;
-use common\models\CampaignPlayer;
+use common\models\TicketComment;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use frontend\helpers\ControllerHelper;
 
 /**
- * CampaignPlayerController implements the CRUD actions for CampaignPlayer model.
+ * TicketCommentController implements the CRUD actions for TicketComment model.
  */
-class CampaignPlayerController extends Controller
+class TicketCommentController extends Controller
 {
     /**
      * @inheritDoc
@@ -37,16 +35,14 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Lists all CampaignPlayer models.
+     * Lists all TicketComment models.
      *
      * @return string
      */
-    public function actionIndex($campaignId)
+    public function actionIndex()
     {
-        $query = CampaignPlayer::find()
-            ->where(["campaignId" => $campaignId]);
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => TicketComment::find(),
             'pagination' => [
                 'pageSize' => 50
             ],
@@ -63,7 +59,7 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Displays a single CampaignPlayer model.
+     * Displays a single TicketComment model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -76,29 +72,28 @@ class CampaignPlayerController extends Controller
     }
 
     /**
-     * Creates a new CampaignPlayer model.
+     * Creates a new TicketComment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate($campaignId)
+    public function actionCreate($campaignId, $ticketId)
     {
-        $model = new CampaignPlayer();
-
+        $model = new TicketComment();
+        $model->ticketId = $ticketId;
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index', 'campaignId' => $campaignId]);
+                return $this->redirect(['/ticket/view?campaignId='.$campaignId.'&id='.$ticketId]);
             }
         } else {
             $model->loadDefaultValues();
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Updates an existing CampaignPlayer model.
+     * Updates an existing TicketComment model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -107,34 +102,18 @@ class CampaignPlayerController extends Controller
     public function actionUpdate($id, $campaignId)
     {
         $model = $this->findModel($id);
-        $rank = ControllerHelper::getPlayerRank($campaignId);
-        $userId = Yii::$app->user->identity->id ?? 1;
-        if (!empty($_POST['CampaignPlayer']['gameEventTimestamp'])) {
-            $model->gameEventTimestamp = strtotime($_POST['CampaignPlayer']['gameEventTimestamp']);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view?campaignId='.$campaignId.'&id='.$model->id]);
         }
-        if (!empty($_POST['CampaignPlayer']['gameEventNumber'])) {
-            $model->gameEventNumber = $_POST['CampaignPlayer']['gameEventNumber'];
-        }
-        if ($this->request->isPost && $userId == $model->userId && $rank != 'isAdmin') {
-            $model->isSubscribed = $_POST['CampaignPlayer']['isSubscribed'];
-            $model->save();
-            return $this->redirect(['index', 'campaignId' => $campaignId]);
-        }
-        else if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'campaignId' => $campaignId]);
-        }
-        if ($userId == $model->userId && $rank != 'isAdmin') {
-            return $this->render('update-self', [
-                'model' => $model,
-            ]);
-        }
+
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing CampaignPlayer model.
+     * Deletes an existing TicketComment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -142,31 +121,25 @@ class CampaignPlayerController extends Controller
      */
     public function actionDelete($id, $campaignId)
     {
-        $userId = Yii::$app->user->identity->id ?? 1;
-        if ($userId == $model->userId) {
-            ControllerHelper::updateUserAction(403);
-            $forbiddenException = 'This account is not authorized to view the requested page.';
-            throw new ForbiddenHttpException($forbiddenException);
-        }
-
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index', 'campaignId' => $campaignId]);
+        $model = $this->findModel($id);
+        $ticketId = $model->ticketId;
+        $model->delete();
+        return $this->redirect(['/ticket/view?campaignId='.$campaignId.'&id='.$ticketId]);
     }
 
     /**
-     * Finds the CampaignPlayer model based on its primary key value.
+     * Finds the TicketComment model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return CampaignPlayer the loaded model
+     * @return TicketComment the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = CampaignPlayer::findOne(['id' => $id])) !== null) {
+        if (($model = TicketComment::findOne(['id' => $id])) !== null) {
             return $model;
         }
-        ControllerHelper::updateUserAction(404);
+
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

@@ -110,6 +110,23 @@ class ControllerHelper
     }
 
     /**
+     * Is Support Role
+     * @param integer $campaignId
+     */
+    public static function isSupportRole($campaignId)
+    {
+        $userId = Yii::$app->user->identity->id ?? 1;
+        $player = CampaignPlayer::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["userId" => $userId])
+            ->one();
+        if (empty($player->isSupport)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Create User Action
      * @param integer $statuscode
      */

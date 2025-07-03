@@ -5,4 +5,6 @@
 
 ?>
 Hello,
-A new ticket has been created.
+A new ticket has been created for campaign <?= $campaign; ?>.
+---
+Unsubscribe: <?= $unsubscribe; ?>

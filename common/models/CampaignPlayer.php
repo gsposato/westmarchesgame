@@ -13,6 +13,8 @@ use Yii;
  * @property int|null $userId
  * @property int $isPlayer
  * @property int $isHost
+ * @property int $isSupport
+ * @property int $isSubscribed
  * @property int $isAdmin
  * @property int $created
  * @property int $updated
@@ -36,7 +38,7 @@ class CampaignPlayer extends NotarizedModel
     {
         return [
             [['campaignId', 'created', 'updated'], 'required'],
-            [['campaignId', 'userId', 'isPlayer', 'isHost', 'isAdmin', 'created', 'updated'], 'integer'],
+            [['campaignId', 'userId', 'isPlayer', 'isHost', 'isAdmin', 'isSupport', 'isSubscribed', 'created', 'updated'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -53,6 +55,8 @@ class CampaignPlayer extends NotarizedModel
             'userId' => 'User ID',
             'isPlayer' => 'Is Player',
             'isHost' => 'Is Host',
+            'isSupport' => 'Is Support',
+            'isSubscribed' => 'Is Subscribed',
             'isAdmin' => 'Is Admin',
             'created' => 'Created',
             'updated' => 'Updated',

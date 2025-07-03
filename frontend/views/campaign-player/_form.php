@@ -47,6 +47,30 @@ $userSelect = User::select();
 
     <div class="card">
         <div class="card-header">
+        Is Support
+        </div>
+        <div class="card-body">
+            <?= $form->field($model, 'isSupport')->radio(['label' => 'True', 'value' => 1, 'uncheck' => null]) ?> 
+            <?= $form->field($model, 'isSupport')->radio(['label' => 'False', 'value' => 0, 'uncheck' => null]) ?> 
+        </div>
+    </div>
+
+    <br />
+
+    <div class="card">
+        <div class="card-header">
+        Is Subscribed
+        </div>
+        <div class="card-body">
+            <?= $form->field($model, 'isSubscribed')->radio(['label' => 'True', 'value' => 1, 'uncheck' => null]) ?> 
+            <?= $form->field($model, 'isSubscribed')->radio(['label' => 'False', 'value' => 0, 'uncheck' => null]) ?> 
+        </div>
+    </div>
+
+    <br />
+
+    <div class="card">
+        <div class="card-header">
         Is Admin
         </div>
         <div class="card-body">

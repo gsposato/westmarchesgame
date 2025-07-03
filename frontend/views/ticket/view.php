@@ -12,6 +12,7 @@ use yii\widgets\DetailView;
 $id = $_GET['campaignId'];
 $update = "update?campaignId=".$id."&id=".$model->id; 
 $delete = "delete?campaignId=".$id."&id=".$model->id; 
+$create = "/ticket-comment/create?campaignId=".$id."&ticketId=".$model->id;
 $this->title = "Ticket #".$model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -70,14 +71,23 @@ $canModify = $model->canModify();
         $model->view())
     ]) ?>
 
+    <p>
+        <?php $str = "<i class='fa fa-comment'></i>&nbsp;Create Comment"; ?>
+        <?= Html::a($str, [$create], ['class' => 'btn btn-success']) ?>
+    </p>
+
     <?php foreach ($comments as $comment): ?>
+        <?php $owner = User::findOne($comment->owner); ?>
         <br />
         <div class="card">
             <div class="card-header">
-                <i class="fa fa-comment">&nbsp;</i>
+                <i class="fa fa-user">&nbsp;</i>&nbsp;<?= $owner->username ?? ""; ?>
             </div>
             <div class="card-body">
                 <p><?= $comment->note; ?></p>
+            </div>
+            <div class="card-footer">
+                <i class="fa fa-clock">&nbsp;</i>&nbsp;<?= date("m/d/Y h:i A", $comment->updated); ?>
             </div>
         </div>
     <?php endforeach; ?>

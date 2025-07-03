@@ -2,12 +2,6 @@
 return [
     'adminEmail' => 'no-reply@westmarchesgame.com',
     'supportEmail' => 'no-reply@westmarchesgame.com',
-    /*
-    'supportEmails' => [
-        'no-reply' => 'no-reply@westmarchesgame.com',
-        'yes-reply' => 'yes-reply@westmarchesgame.com'
-    ],
-    */
     'senderEmail' => 'no-reply@westmarchesgame.com',
     'senderName' => 'No Reply',
     'user.passwordResetTokenExpire' => 3600,
