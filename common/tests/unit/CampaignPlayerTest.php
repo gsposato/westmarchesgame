@@ -61,6 +61,6 @@ class CampaignPlayerTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($player);
         $player->delete();
         $player = CampaignPlayer::find()->one();
-        $this->assertEmpty($player);
+        $this->assertNotEmpty($player);
     }
 }

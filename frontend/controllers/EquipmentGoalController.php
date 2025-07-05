@@ -68,7 +68,8 @@ class EquipmentGoalController extends Controller
     public function actionView($id, $campaignId)
     {
         $goals = EquipmentGoalRequirement::find()
-            ->where(["equipmentGoalId" => $id]);
+            ->where(["equipmentGoalId" => $id])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $goals,
             'pagination' => [

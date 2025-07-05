@@ -60,6 +60,6 @@ class EquipmentGoalRequirementTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($req);
         $req->delete();
         $req = EquipmentGoalRequirement::find()->one();
-        $this->assertEmpty($req);
+        $this->assertNotEmpty($req);
     }
 }

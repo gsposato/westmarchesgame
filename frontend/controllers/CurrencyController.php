@@ -42,7 +42,8 @@ class CurrencyController extends Controller
     public function actionIndex($campaignId)
     {
         $query = Currency::find()
-            ->where(["campaignId" => $campaignId]);
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [

@@ -58,7 +58,7 @@ class GameTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($game);
         $game->delete();
         $game = Game::find()->one();
-        $this->assertEmpty($game);
+        $this->assertNotEmpty($game);
     }
 
     public function testDurationInSeconds()

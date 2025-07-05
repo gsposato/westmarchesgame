@@ -58,6 +58,6 @@ class GameEventTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($gameEvent);
         $gameEvent->delete();
         $gameEvent = GameEvent::find()->one();
-        $this->assertEmpty($gameEvent);
+        $this->assertNotEmpty($gameEvent);
     }
 }

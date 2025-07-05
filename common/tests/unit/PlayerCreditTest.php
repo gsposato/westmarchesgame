@@ -63,6 +63,6 @@ class PlayerCreditTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($credit);
         $credit->delete();
         $credit = PlayerCredit::find()->one();
-        $this->assertEmpty($credit);
+        $this->assertNotEmpty($credit);
     }
 }

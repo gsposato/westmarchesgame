@@ -59,6 +59,6 @@ class GamePlayerTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($gamePlayer);
         $gamePlayer->delete();
         $gamePlayer = GamePlayer::find()->one();
-        $this->assertEmpty($gamePlayer);
+        $this->assertNotEmpty($gamePlayer);
     }
 }

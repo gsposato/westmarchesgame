@@ -57,6 +57,6 @@ class CampaignAnnouncementTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($document);
         $document->delete();
         $document = CampaignAnnouncement::find()->one();
-        $this->assertEmpty($document);
+        $this->assertNotEmpty($document);
     }
 }

@@ -43,7 +43,8 @@ class MapController extends Controller
     public function actionIndex($campaignId)
     {
         $query = Map::find()
-            ->where(["campaignId" => $campaignId]);
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -70,7 +71,8 @@ class MapController extends Controller
     public function actionView($id, $campaignId)
     {
         $markers = MapMarker::find()
-            ->where(["mapId" => $id]);
+            ->where(["mapId" => $id])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $markers,
             'pagination' => [

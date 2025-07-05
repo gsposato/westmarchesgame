@@ -58,6 +58,6 @@ class CampaignDocumentTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($document);
         $document->delete();
         $document = CampaignDocument::find()->one();
-        $this->assertEmpty($document);
+        $this->assertNotEmpty($document);
     }
 }

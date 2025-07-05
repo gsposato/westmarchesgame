@@ -56,7 +56,7 @@ class CampaignTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($campaign);
         $campaign->delete();
         $campaign = Campaign::find()->one();
-        $this->assertEmpty($campaign);
+        $this->assertNotEmpty($campaign);
     }
 
     public function testGetName()

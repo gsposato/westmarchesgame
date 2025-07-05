@@ -60,6 +60,6 @@ class GameNoteTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($gameNote);
         $gameNote->delete();
         $gameNote = GameNote::find()->one();
-        $this->assertEmpty($gameNote);
+        $this->assertNotEmpty($gameNote);
     }
 }

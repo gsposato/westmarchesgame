@@ -59,6 +59,6 @@ class CurrencyTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($currency);
         $currency->delete();
         $currency = Currency::find()->one();
-        $this->assertEmpty($currency);
+        $this->assertNotEmpty($currency);
     }
 }

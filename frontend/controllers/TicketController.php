@@ -41,7 +41,8 @@ class TicketController extends Controller
             return $this->redirect(['/']);
         }
         $query = Ticket::find()
-            ->where(["campaignId" => $campaignId]);
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -72,6 +73,7 @@ class TicketController extends Controller
         }
         $comments = TicketComment::find()
             ->where(["ticketId" => $id])
+            ->andWhere(["deleted" => 0])
             ->orderBy(["id" => SORT_DESC])
             ->all();
         return $this->render('view', [

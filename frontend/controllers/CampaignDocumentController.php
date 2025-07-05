@@ -179,16 +179,19 @@ class CampaignDocumentController extends Controller
             case 'isPlayer':
                 $query = CampaignDocument::find()
                     ->where(["campaignId" => $campaignId])
+                    ->andWhere(["deleted" => 0])
                     ->andWhere(["PlayerVisible" => 1]);
                 break;
             case 'isHost':
                 $query = CampaignDocument::find()
                     ->where(["campaignId" => $campaignId])
+                    ->andWhere(["deleted" => 0])
                     ->andWhere(["HostVisible" => 1]);
                 break;
             case 'isAdmin':
                 $query = CampaignDocument::find()
-                    ->where(["campaignId" => $campaignId]);
+                    ->where(["campaignId" => $campaignId])
+                    ->andWhere(["deleted" => 0]);
                 break;
             default:
                 ControllerHelper::updateUserAction(403);

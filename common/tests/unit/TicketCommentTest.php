@@ -58,6 +58,6 @@ class TicketCommentTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($comment);
         $comment->delete();
         $comment = TicketComment::find()->one();
-        $this->assertEmpty($comment);
+        $this->assertNotEmpty($comment);
     }
 }

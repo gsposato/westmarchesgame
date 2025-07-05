@@ -60,6 +60,6 @@ class PlayerTriggerTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($trigger);
         $trigger->delete();
         $trigger = PlayerTrigger::find()->one();
-        $this->assertEmpty($trigger);
+        $this->assertNotEmpty($trigger);
     }
 }

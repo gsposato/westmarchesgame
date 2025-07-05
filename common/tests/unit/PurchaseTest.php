@@ -60,6 +60,6 @@ class PurchaseTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($purchase);
         $purchase->delete();
         $purchase = Purchase::find()->one();
-        $this->assertEmpty($purchase);
+        $this->assertNotEmpty($purchase);
     }
 }

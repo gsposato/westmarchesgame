@@ -57,6 +57,6 @@ class GameSummaryTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($gameSummary);
         $gameSummary->delete();
         $gameSummary = GameSummary::find()->one();
-        $this->assertEmpty($gameSummary);
+        $this->assertNotEmpty($gameSummary);
     }
 }

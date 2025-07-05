@@ -61,6 +61,6 @@ class MapMarkerTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($mapMarker);
         $mapMarker->delete();
         $mapMarker = MapMarker::find()->one();
-        $this->assertEmpty($mapMarker);
+        $this->assertNotEmpty($mapMarker);
     }
 }

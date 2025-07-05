@@ -41,7 +41,8 @@ class CampaignAnnouncementController extends Controller
     public function actionIndex($campaignId)
     {
         $query = CampaignAnnouncement::find()
-            ->where(["campaignId" => $campaignId]);
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["deleted" => 0]);
         ControllerHelper::canView($campaignId);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

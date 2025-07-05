@@ -43,7 +43,8 @@ class EquipmentController extends Controller
     public function actionIndex($campaignId)
     {
         $query = Equipment::find()
-            ->where(["campaignId" => $campaignId]);
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -70,7 +71,8 @@ class EquipmentController extends Controller
     public function actionView($id, $campaignId)
     {
         $goals = EquipmentGoal::find()
-            ->where(["equipmentId" => $id]);
+            ->where(["equipmentId" => $id])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $goals,
             'pagination' => [

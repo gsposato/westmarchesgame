@@ -63,4 +63,13 @@ class PlayerCredit extends NotarizedModel
             'updated' => 'Updated',
         ];
     }
+
+    /**
+     * Delete
+     * @desc override default delete behavior
+     */
+    public function delete()
+    {
+        return;
+    }
 }

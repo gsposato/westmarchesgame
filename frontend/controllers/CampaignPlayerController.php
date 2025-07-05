@@ -44,7 +44,8 @@ class CampaignPlayerController extends Controller
     public function actionIndex($campaignId)
     {
         $query = CampaignPlayer::find()
-            ->where(["campaignId" => $campaignId]);
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -143,14 +144,13 @@ class CampaignPlayerController extends Controller
     public function actionDelete($id, $campaignId)
     {
         $userId = Yii::$app->user->identity->id ?? 1;
+        $model = $this->findModel($id);
         if ($userId == $model->userId) {
             ControllerHelper::updateUserAction(403);
             $forbiddenException = 'This account is not authorized to view the requested page.';
             throw new ForbiddenHttpException($forbiddenException);
         }
-
-        $this->findModel($id)->delete();
-
+        $model->delete();
         return $this->redirect(['index', 'campaignId' => $campaignId]);
     }
 

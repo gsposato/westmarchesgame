@@ -224,4 +224,14 @@ class NotarizedModel extends \yii\db\ActiveRecord
         }
         return Yii::$app->params['notarizeKey'];
     }
+
+    /**
+     * Delete
+     * @desc override default delete behavior
+     */
+    public function delete()
+    {
+        $this->deleted = time();
+        $this->save();
+    }
 }

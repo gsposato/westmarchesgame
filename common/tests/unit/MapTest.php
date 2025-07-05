@@ -61,6 +61,6 @@ class MapTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($map);
         $map->delete();
         $map = Map::find()->one();
-        $this->assertEmpty($map);
+        $this->assertNotEmpty($map);
     }
 }

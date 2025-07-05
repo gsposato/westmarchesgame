@@ -60,7 +60,7 @@ class EquipmentTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($equipment);
         $equipment->delete();
         $equipment = Equipment::find()->one();
-        $this->assertEmpty($equipment);
+        $this->assertNotEmpty($equipment);
     }
 
 }

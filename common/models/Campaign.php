@@ -76,7 +76,9 @@ class Campaign extends NotarizedModel
         if (empty($user)) {
             return;
         }
-        $campaigns = Campaign::find()->all();
+        $campaigns = Campaign::find()
+            ->where(["deleted" => 0])
+            ->all();
         $myCampaigns = array();
         foreach ($campaigns as $campaign) {
             if ($user->id == $campaign->owner) {

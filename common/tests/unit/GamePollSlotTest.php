@@ -61,6 +61,6 @@ class GamePollSlotTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($gamePollSlot);
         $gamePollSlot->delete();
         $gamePollSlot = GamePollSlot::find()->one();
-        $this->assertEmpty($gamePollSlot);
+        $this->assertNotEmpty($gamePollSlot);
     }
 }

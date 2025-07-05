@@ -62,6 +62,6 @@ class PlayerComplaintTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($complaint);
         $complaint->delete();
         $complaint = PlayerComplaint::find()->one();
-        $this->assertEmpty($complaint);
+        $this->assertNotEmpty($complaint);
     }
 }

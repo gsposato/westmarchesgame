@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Campaign Characters', 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 $campaign = Campaign::findOne($id);
 $campaignRules = json_decode($campaign->rules);
-$purchases = Purchase::find()->where(["characterId" => $model->id])->all();
+$purchases = Purchase::find()->where(["characterId" => $model->id])->andWhere(["deleted" => 0])->all();
 $currencies = Currency::find()->where(["campaignId" => $id])->all();
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
 $characterAdvancement = CampaignCharacter::advancement($id, $gamesPlayed, $model);

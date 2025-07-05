@@ -60,6 +60,6 @@ class CampaignCharacterTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($char);
         $char->delete();
         $char = CampaignCharacter::find()->one();
-        $this->assertEmpty($char);
+        $this->assertNotEmpty($char);
     }
 }

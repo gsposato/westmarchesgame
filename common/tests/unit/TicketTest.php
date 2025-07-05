@@ -59,6 +59,6 @@ class TicketTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($ticket);
         $ticket->delete();
         $ticket = Ticket::find()->one();
-        $this->assertEmpty($ticket);
+        $this->assertNotEmpty($ticket);
     }
 }
