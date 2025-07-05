@@ -255,6 +255,10 @@ class TicketController extends Controller
             $comment->note = $note;
             $comment->campaignId = $model->campaignId;
             $comment->ticketId = $model->id;
+            $comment->owner = $model->owner;
+            $comment->creator = $model->creator;
+            $comment->created = $model->created;
+            $comment->updated = $model->updated;
             $comment->save();
         }
     }
