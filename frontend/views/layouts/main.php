@@ -17,14 +17,24 @@ $showHeader = true;
 $showFooter = true;
 $sel = new stdclass();
 $uri = $_SERVER['REQUEST_URI'];
-$uris = Yii::$app->params['navigation'];
+$id = "";
+if (!empty($_GET['campaignId'])) {
+    $id = $_GET['campaignId'];
+}
+if (empty($id) && !empty($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (!empty($id)) {
+    $campaign = Campaign::findOne($id);
+    $campaignRules = json_decode($campaign->rules);
+}
+$uris = $campaignRules->Navigation ?? Yii::$app->params['navigation'];
 if (!empty($uris)) {
     foreach ($uris as $key => $value) {
         $sel->{$key} = "";
         if (str_contains($uri, $value)) {
             $showNav = true;
             $sel->{$key} = "nav-link-selected";
-            $id = $_GET['campaignId'] ?? $_GET['id'];
             $name = Campaign::getName($id);
         }
     }
