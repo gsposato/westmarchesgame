@@ -239,7 +239,7 @@ class TicketController extends Controller
                     ['html' => 'newTicket-html', 'text' => 'newTicket-text'],
                     ['campaign' => $campaign, 'unsubscribe' => $unsubscribe]
                 )
-                ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+                ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
                 ->setTo($user->email)
                 ->setSubject('Ticket created at ' . Yii::$app->name)
                 ->send();
