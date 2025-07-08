@@ -189,7 +189,7 @@ class CampaignCharacter extends NotarizedModel
             if (empty($gamePlayer->hasBonusPoints)) {
                 continue;
             }
-            $credit += $game->credit;
+            $credit += ($game->credit * self::multiplier($rules, "credit", $gamePlayer->hasBonusPoints));
         }
         $currentAdvancement = $rules->CampaignCharacter->startingLevel;
         foreach ($rules->CampaignCharacter->GameLevelAdvancement as $games => $advancement) {
@@ -199,6 +199,47 @@ class CampaignCharacter extends NotarizedModel
             $currentAdvancement = $advancement;
         }
         return $currentAdvancement;
+    }
+
+    /**
+     * Multiplier
+     * @param object $rules
+     * @param string $key
+     * @param integer $value
+     */
+    public static function multiplier($rules, $key, $value)
+    {
+        if (empty($rules)) {
+            return 1;
+        }
+        if (empty($rules->GameBonus)) {
+            return 1;
+        }
+        $bonuses = $rules->GameBonus;
+        $counter = 0;
+        foreach ($bonuses as $bonus) {
+            $counter++;
+            if ($counter != $value) {
+                continue;
+            }
+            foreach ($bonus as $bonusAttribute => $bonusValue) {
+                if ($bonusAttribute != "rewards") {
+                    continue;
+                }
+                if (empty($bonusValue)) {
+                    continue;
+                }
+                foreach ($bonusValue as $rewardName => $rewardValue) {
+                    if (empty($rewardValue)) {
+                        continue;
+                    }
+                    if ($key == $rewardName) {
+                        return $rewardValue;
+                    }
+                }
+            }
+        }
+        return 1;
     }
 
     /**

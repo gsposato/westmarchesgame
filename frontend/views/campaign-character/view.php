@@ -33,30 +33,36 @@ $totalBastionPointsEarned = $model->startingBastionPoints ?? $defaultStartingBas
 $totalCreditsEarned = $model->startingCredit ?? 0;
 $totalGoldSpent = 0;
 $totalBastionPointsSpent = 0;
-$isCreditWorthy = [
-    GamePlayer::BONUS_NORMAL,
-    GamePlayer::BONUS_BASTION
-];
-$isBastionWorthy = [
-    GamePlayer::BONUS_NORMAL,
-    GamePlayer::BONUS_BASTION,
-    GamePlayer::BONUS_DOUBLE_GOLD,
-    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
-];
-$isBonusBastionWorthy = [
-    GamePlayer::BONUS_BASTION,
-    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
-];
-$isGoldWorthy = [
-    GamePlayer::BONUS_NORMAL,
-    GamePlayer::BONUS_BASTION,
-    GamePlayer::BONUS_DOUBLE_GOLD,
-    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
-];
-$isDoubleGoldWorthy = [
-    GamePlayer::BONUS_DOUBLE_GOLD,
-    GamePlayer::BONUS_DOUBLE_GOLD_BASTION
-];
+$isCreditWorthy = [];
+$isBastionWorthy = [];
+$isBonusBastionWorthy = [];
+$isGoldWorthy = [];
+$isDoubleGoldWorthy = [];
+$bonuses = GamePlayer::bonuses();
+$counter = 0;
+foreach ($bonuses as $name => $bonus) {
+    $counter++;
+    foreach ($bonus as $bonusAttribute => $bonusValue) {
+        if ($bonusAttribute != "rewards") {
+            continue;
+        }
+        if (empty($bonusValue)) {
+            continue;
+        }
+        foreach ($bonusValue as $rewardName => $rewardValue) {
+            if (empty($rewardValue)) {
+                continue;
+            }
+            switch ($rewardName) {
+                case "credit": $isCreditWorthy[$counter] = $rewardValue; break;
+                case "bastion points": $isBastionWorthy[$counter] = $rewardValue; break;
+                case "bonus bastion points": $isBonusBastionWorthy[$counter] = $rewardValue; break;
+                case "gold": $isGoldWorthy[$counter] = $rewardValue; break;
+                default: // do nothing
+            }
+        }
+    }
+}
 $character = $model;
 $state = Equipment::stateSelect();
 $equips = Equipment::find()->where(["characterId" => $character->id])->all();
@@ -206,33 +212,35 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                         <?php $sessionId = Game::session($game->id); ?>
                         Session #<?= $sessionId ?> - <?= $game->name; ?> /
                         <small style="font-weight:bold;">
-                            <?php if (in_array($gamePlayed->hasBonusPoints, $isCreditWorthy)): ?>
-                                <?= $game->credit; ?> credit<?= $game->credit == 1 ? "" : "s"; ?>
-                                <?php $totalCreditsEarned += $game->credit; ?>
+                            <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isCreditWorthy)): ?>
+                                <?php $multiplier = $isCreditWorthy[$gamePlayed->hasBonusPoints]; ?>
+                                <?php $credit = ($game->credit * $multiplier); ?>
+                                <?= $credit; ?> credit<?= $credit == 1 ? "" : "s"; ?>
+                                <?php $totalCreditsEarned += $credit; ?>
                             <?php else: ?>
                                 0 credits
                             <?php endif; ?>
                         </small> /
                         <small style="font-weight:bold;color:#df8607;">
                             <?php $gold = 0; ?>
-                            <?php if (in_array($gamePlayed->hasBonusPoints, $isGoldWorthy)): ?>
-                                <?php $gold += $game->goldPayoutPerPlayer; ?>
-                                <?php if (in_array($gamePlayed->hasBonusPoints, $isDoubleGoldWorthy)): ?>
-                                    <?php $gold += $game->goldPayoutPerPlayer; ?>
-                                <?php endif; ?>
+                            <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isGoldWorthy)): ?>
+                                <?php $multiplier = $isGoldWorthy[$gamePlayed->hasBonusPoints]; ?>
+                                <?php $gold += ($game->goldPayoutPerPlayer * $multiplier); ?>
                                 <?= $gold; ?> gold
-                                <?php $totalGoldEarned += $game->goldPayoutPerPlayer; ?>
+                                <?php $totalGoldEarned += $gold; ?>
                             <?php else: ?>
                                 0 gold
                             <?php endif; ?>
                         </small> /
                         <small style="font-weight:bold;">
                             <?php $bastionPoints = 0; ?>
-                            <?php if (in_array($gamePlayed->hasBonusPoints, $isBastionWorthy)): ?>
-                                <?php $bastionPoints += $game->baseBastionPointsPerPlayer; ?>
+                            <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isBastionWorthy)): ?>
+                                <?php $multiplier = $isBastionWorthy[$gamePlayed->hasBonusPoints]; ?>
+                                <?php $bastionPoints += ($game->baseBastionPointsPerPlayer * $multiplier); ?>
                             <?php endif; ?>
-                            <?php if (in_array($gamePlayed->hasBonusPoints, $isBonusBastionWorthy)): ?>
-                                <?php $bastionPoints += $game->bonusBastionPointsPerPlayer; ?>
+                            <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isBonusBastionWorthy)): ?>
+                                <?php $multiplier = $isBonusBastionWorthy[$gamePlayed->hasBonusPoints]; ?>
+                                <?php $bastionPoints += ($game->bonusBastionPointsPerPlayer * $multiplier); ?>
                             <?php endif; ?>
                             <?= $bastionPoints; ?> bastion points
                             <?php $totalBastionPointsEarned += $bastionPoints; ?>

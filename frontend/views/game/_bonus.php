@@ -31,77 +31,55 @@ if (!empty($gameEvent)) {
                             <?php endif; ?>
                             <?php $ti = 'title="'.$character->description.'"'; ?>
                             <?php $url = $addRemoveBonus . "&characterId=" . $character->id; ?>
-                            <?php $bonus = $gamePlayer->hasBonusPoints; ?>
-                            <?php if ($bonus == GamePlayer::BONUS_NORMAL): ?>
-                                <a href="<?= $url; ?>" class="btn btn-success" style="margin:5px" <?= $ti; ?>>
-                                    <i class="fa fa-check"></i>&nbsp;<?= $character->name; ?>
-                                </a>
-                            <?php elseif($bonus == GamePlayer::BONUS_BASTION): ?>
-                                <a href="<?= $url; ?>" class="btn btn-primary" style="margin:5px" <?= $ti; ?>>
-                                    <i class="fa fa-house"></i>&nbsp;<?= $character->name; ?>
-                                </a>
-                            <?php elseif($bonus == GamePlayer::BONUS_DOUBLE_GOLD): ?>
-                                <a href="<?= $url; ?>" class="btn btn-warning" style="margin:5px" <?= $ti; ?>>
-                                    <i class="fa fa-coins"></i>&nbsp;<?= $character->name; ?>
-                                </a>
-                            <?php elseif($bonus == GamePlayer::BONUS_DOUBLE_GOLD_BASTION): ?>
-                                <a href="<?= $url; ?>" class="btn btn-danger" style="margin:5px" <?= $ti; ?>>
-                                    <i class="fa fa-flag"></i>&nbsp;<?= $character->name; ?>
-                                </a>
-                            <?php else: ?>
-                                <a href="<?= $url; ?>" class="btn btn-secondary" style="margin:5px" <?= $ti; ?>>
-                                    <i class="fa fa-minus"></i>&nbsp;<?= $character->name; ?>
-                                </a>
-                            <?php endif; ?>
+                            <?php $isHost = CampaignCharacter::isHostCharacter($model->id, $character->id); ?>
+                            <?php $bonus = $gamePlayer->bonus($isHost, $view = true); ?>
+                            <?php $alert = $bonus["alert"]; ?>
+                            <?php $icon = $bonus["icon"]; ?>
+                            <a href="<?= $url; ?>" class="btn btn-<?= $alert; ?>" style="margin:5px" <?= $ti; ?>>
+                                <i class="fa <?= $icon; ?>"></i>&nbsp;<?= $character->name; ?>
+                            </a>
                         <?php endforeach; ?>
                 </div>
+                <?php $bonuses = GamePlayer::bonuses(); ?>
                 <div class="card-footer">
-
-                            <small style="color:#888">
-                                <i class="fa fa-check"></i>&nbsp;Normal Bonus&nbsp;&nbsp;&nbsp;&nbsp;
-                                <i class="fa fa-house"></i>&nbsp;Bastion Bonus&nbsp;&nbsp;&nbsp;&nbsp;
-                                <i class="fa fa-coins"></i>&nbsp;Double Gold Bonus&nbsp;&nbsp;&nbsp;&nbsp;
-                                <i class="fa fa-flag"></i>&nbsp;Double Gold Bastion Bonus&nbsp;&nbsp;&nbsp;&nbsp;
-                                <i class="fa fa-minus"></i>&nbsp;Nothing&nbsp;&nbsp;&nbsp;&nbsp;
-                            </small>
-                            <br />
+                    <small style="color:#888">
+                        <?php foreach ($bonuses as $name => $details): ?>
+                            <?php $icon = $details->icon; ?>
+                            <i class="fa <?= $icon; ?>"></i>&nbsp;<?= $name; ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <?php endforeach; ?>
+                    </small>
+                    <br />
                 </div>
             </div>
-
             <br />
-
             <div class="card">
                 <div class="card-body">
                     <ul>
-                        <li>
-                            <b class="text-success">Normal Bonus</b>
+                        <?php foreach ($bonuses as $name => $details): ?>
+                            <li>
+                                <b class="text-<?= $details->alert; ?>">
+                                    <i class="fa <?= $details->icon; ?>"></i>&nbsp;<?= $name; ?>
+                                </b>
+                                <br />
+                                <?php foreach ($details->roles as $key => $value): ?>
+                                    <?php if ($value): ?>
+                                        <span class="badge badge-<?= $details->alert; ?>"><?= $key; ?></span>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                                <?php foreach ($details->rewards as $key => $value): ?>
+                                    <span class="badge badge-dark">
+                                        <?php if ($value == 0): ?>
+                                            no&nbsp;<?= $key; ?>
+                                        <?php elseif ($value == 1): ?>
+                                            game&nbsp;<?= $key; ?>
+                                        <?php else: ?>
+                                            <?= $value; ?>x&nbsp;game&nbsp;<?= $key; ?>
+                                        <?php endif; ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </li>
                             <br />
-                            The <i>Normal Bonus</i> will be this game's <b>Gold Payout Per Player</b>, this game's <b>Base Bastion Points Per Player</b>, and this game's <b>Credit</b>.
-                        </li>
-                        <br />
-                        <li>
-                            <b class="text-primary">Bastion Bonus</b>
-                            <br />
-                            The <i>Bastion Bonus</i> will be this game's <b>Gold Payout Per Player</b>, this game's <b>Base Bastion Points Per Player</b>, this game's <b>Bonus Bastion Points Per Player</b>, and this game's <b>Credit</b>.
-                        </li>
-                        <br />
-                        <li>
-                            <b style="color: #df8607;">Double Gold Bonus</b>
-                            <br />
-                            If the chosen character is a Host Character (HC), the <i>Double Gold Bonus</i> will be this game's <b>Gold Payout Per Player</b>, <u>doubled</u>.  Plus this game's <b>Base Bastion Points Per Player</b>.  The <i>Double Gold Bonus</i> is not available for a Player Character (PC).
-                        </li>
-                        <br />
-                        <li>
-                            <b class="text-danger">Double Gold Bastion Bonus</b>
-                            <br />
-                            If the chosen character is a Host Character (HC), the <i>Double Gold Bastion Bonus</i> will be this game's <b>Gold Payout Per Player</b>, <u>doubled</u>.  Plus this game's <b>Base Bastion Points Per Player</b> and this game's <b>Bonus Bastion Points Per Player</b>.  The <i>Double Gold Bastion Bonus</i> is not available for a Player Character (PC).
-                        </li>
-                        <br />
-                        <li>
-                            <b style="color:#666;">Nothing</b>
-                            <br />
-                            No bonuses are awarded to the chosen character.
-                        </li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
             </div>

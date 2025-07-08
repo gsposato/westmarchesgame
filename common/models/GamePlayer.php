@@ -26,11 +26,82 @@ class GamePlayer extends NotarizedModel
     public const STATUS_ACTIVATED = 4;
     public const STATUS_COHOST = 5;
 
-    public const BONUS_NORMAL = 1;
-    public const BONUS_BASTION = 2;
-    public const BONUS_DOUBLE_GOLD = 3;
-    public const BONUS_DOUBLE_GOLD_BASTION = 4;
-    public const BONUS_NOTHING = 0;
+    public const ROLE_HOST = "HC";
+    public const ROLE_PLAYER = "PC";
+
+    public const GAME_BONUS = [
+        "Normal Bonus" => [
+            "alert" => "success",
+            "icon" => "fa-check",
+            "roles" => [
+                "PC" => 1,
+                "HC" => 1
+            ],
+            "rewards" => [
+                "credit" => 1,
+                "bastion points" => 1,
+                "bonus bastion points" => 0,
+                "gold" => 1
+            ]
+        ],
+        "Bastion Bonus" => [
+            "alert" => "primary",
+            "icon" => "fa-house",
+            "roles" => [
+                "PC" => 1,
+                "HC" => 1
+            ],
+            "rewards" => [
+                "credit" => 1,
+                "bastion points" => 1,
+                "bonus bastion points" => 1,
+                "gold" => 1
+            ]
+        ],
+        "Double Gold Bonus" => [
+            "alert" => "warning",
+            "icon" => "fa-coins",
+            "roles" => [
+                "PC" => 0,
+                "HC" => 1
+            ],
+            "rewards" => [
+                "credit" => 0,
+                "bastion points" => 1,
+                "bonus bastion points" => 0,
+                "gold" => 2
+            ]
+        ],
+        "Double Gold Bastion Bonus" => [
+            "alert" => "danger",
+            "icon" => "fa-flag",
+            "roles" => [
+                "PC" => 0,
+                "HC" => 1
+            ],
+            "rewards" => [
+                "credit" => 0,
+                "bastion points" => 1,
+                "bonus bastion points" => 1,
+                "gold" => 2
+            ]
+        ],
+        "Nothing" => [
+            "alert" => "secondary",
+            "icon" => "fa-minus",
+            "roles" => [
+                "PC" => 1,
+                "HC" => 1
+            ],
+            "rewards" => [
+                "credit" => 0,
+                "bastion points" => 0,
+                "bonus bastion points" => 0,
+                "gold" => 0
+            ]
+        ]
+    ];
+
 
     /**
      * {@inheritdoc}
@@ -185,41 +256,96 @@ SQL;
     /**
      * Bonus
      * @param boolean $isHost
+     * @param boolean $view
      */
-    public function bonus($isHost)
+    public function bonus($isHost, $view = false)
     {
-        switch ($this->hasBonusPoints) {
-            case self::BONUS_NORMAL:
-                $this->hasBonusPoints = self::BONUS_BASTION;
-                $this->save();
+        $emptyButton = [
+            "name" => "Nothing",
+            "alert" => "secondary",
+            "icon" => "fa-minus"
+        ];
+        $counter = 0;
+        $gameBonus = self::bonuses();
+        $hasBonusPointsOriginal = $this->hasBonusPoints;
+        foreach ($gameBonus as $gameBonusName => $gameBonusDetails) {
+            $counter++;
+            $button = [
+                "name" => $gameBonusName,
+                "alert" => $gameBonusDetails->alert,
+                "icon" => $gameBonusDetails->icon
+            ];
+            if ($counter == 1) {
+                $firstbutton = $button;
+            }
+            $bonusAvailable = $this->bonusAvailable($isHost, $gameBonusDetails->roles);
+            if ($this->hasBonusPoints <= $counter && $bonusAvailable && $view) {
                 break;
-            case self::BONUS_BASTION:
-                if ($isHost) {
-                    $this->hasBonusPoints = self::BONUS_DOUBLE_GOLD;
-                    $this->save();
-                    return;
-                }
-                $this->hasBonusPoints = self::BONUS_NOTHING;
-                $this->save();
+            }
+            if ($this->hasBonusPoints < $counter && $bonusAvailable) {
                 break;
-            case self::BONUS_DOUBLE_GOLD:
-                if ($isHost) {
-                    $this->hasBonusPoints = self::BONUS_DOUBLE_GOLD_BASTION;
-                    $this->save();
-                    return;
-                }
-                $this->hasBonusPoints = self::BONUS_NOTHING;
-                $this->save();
-                break;
-            case self::BONUS_DOUBLE_GOLD_BASTION:
-                $this->hasBonusPoints = self::BONUS_NOTHING;
-                $this->save();
-                break;
-            case self::BONUS_NOTHING:
-                $this->hasBonusPoints = self::BONUS_NORMAL;
-                $this->save();
-                break;
+            }
         }
+        $gameBonusArr = (array) $gameBonus;
+        if ($view) {
+            if (empty($hasBonusPointsOriginal)) {
+                return $emptyButton;
+            }
+            return $button;
+        }
+        $this->hasBonusPoints = $counter;
+        if ($hasBonusPointsOriginal >= count($gameBonusArr)) {
+            $this->hasBonusPoints = 1;
+        }
+        $this->save();
     }
 
+    /**
+     * Bonuses
+     */
+    public static function bonuses()
+    {
+        $campaign = Campaign::findOne($_GET['campaignId'] ?? 0);
+        $default = json_decode(json_encode(self::GAME_BONUS));
+        if (!$campaign) {
+            return $default;
+        }
+        $rules = json_decode($campaign->rules);
+        if (empty($rules)) {
+            return $default;
+        }
+        if (empty($rules->GameBonus)) {
+            return $default;
+        }
+        return $rules->GameBonus;
+    }
+
+    /**
+     * Bonus Available
+     * @param boolean $isHost
+     * @param object $roles
+     */
+    protected function bonusAvailable($isHost, $roles)
+    {
+        if (empty($roles)) {
+            return false;
+        }
+        foreach ($roles as $key => $value) {
+            if ($isHost) {
+                if ($key != self::ROLE_HOST) {
+                    continue;
+                }
+                if (!$value) {
+                    return false;
+                }
+            }
+            if ($key != self::ROLE_PLAYER) {
+                continue;
+            }
+            if (!$value) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
