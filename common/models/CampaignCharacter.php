@@ -209,13 +209,7 @@ class CampaignCharacter extends NotarizedModel
      */
     public static function multiplier($rules, $key, $value)
     {
-        if (empty($rules)) {
-            return 1;
-        }
-        if (empty($rules->GameBonus)) {
-            return 1;
-        }
-        $bonuses = $rules->GameBonus;
+        $bonuses = $rules->GameBonus ?? GamePlayer::GAME_BONUS;
         $counter = 0;
         foreach ($bonuses as $bonus) {
             $counter++;
@@ -239,7 +233,7 @@ class CampaignCharacter extends NotarizedModel
                 }
             }
         }
-        return 1;
+        return 0;
     }
 
     /**
@@ -338,20 +332,12 @@ class CampaignCharacter extends NotarizedModel
      */
     public function getRemainingBastionPoints()
     {
+        $bp = "bastion points";
+        $bbp = "bonus bastion points";
         $campaign = Campaign::findOne($_GET['campaignId']);
-        $campaignRules = json_decode($campaign->rules);
-        $defaultStartingBastionPoints = $campaignRules->CampaignCharacter->startingBastionPoints ?? 25;
+        $rules = json_decode($campaign->rules);
+        $defaultStartingBastionPoints = $rules->CampaignCharacter->startingBastionPoints ?? 25;
         $totalBastionPointsEarned = $this->startingBastionPoints ?? $defaultStartingBastionPoints;
-        $isBastionWorthy = [
-            GamePlayer::BONUS_NORMAL,
-            GamePlayer::BONUS_BASTION,
-            GamePlayer::BONUS_DOUBLE_GOLD,
-            GamePlayer::BONUS_DOUBLE_GOLD_BASTION
-        ];
-        $isBonusBastionWorthy = [
-            GamePlayer::BONUS_BASTION,
-            GamePlayer::BONUS_DOUBLE_GOLD_BASTION
-        ];
         $bastionPointsEarned = $totalBastionPointsEarned;
         $gamesPlayed = GamePlayer::find()->where(["characterId" => $this->id])->all();
         foreach ($gamesPlayed as $gamePlayed) {
@@ -362,12 +348,9 @@ class CampaignCharacter extends NotarizedModel
             if (!$game->isEnded()) {
                 continue;
             }
-            if (in_array($gamePlayed->hasBonusPoints, $isBastionWorthy)) {
-                $bastionPointsEarned += $game->baseBastionPointsPerPlayer;
-            }
-            if (in_array($gamePlayed->hasBonusPoints, $isBonusBastionWorthy)) {
-                $bastionPointsEarned += $game->bonusBastionPointsPerPlayer;
-            }
+            $hbp = $gamePlayed->hasBonusPoints;
+            $bastionPointsEarned += $game->baseBastionPointsPerPlayer * self::multiplier($rules, $bp, $hbp);
+            $bastionPointsEarned += $game->bonusBastionPointsPerPlayer * self::multiplier($rules, $bbp, $hbp);
         }
         $bastionPointsSpent = 0;
         $purchases = Purchase::find()->where(["characterId" => $this->id])->all();
