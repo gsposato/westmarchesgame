@@ -424,7 +424,7 @@ SQL;
         $model->load($this->request->post());
         $model->gameId = $id;
         $model->pinned = 0;
-        $model->save();
+        $notes = $this->handleMultipleNotes($model);
         return $this->redirect([$url]);
     }
 
@@ -517,5 +517,30 @@ SQL;
         }
         ControllerHelper::updateUserAction(404);
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * Handle Multiple Notes
+     * @param Object $model
+     */
+    protected function handleMultipleNotes($model)
+    {
+        $input = $model->note;
+        $normalized = preg_replace("/\r\n|\r/", "\n", $input);
+        $lines = explode("\n", $normalized);
+        foreach ($lines as $line) {
+            $note = new GameNote();
+            foreach ($model as $key => $value) {
+                $note->{$key} = $value;
+            }
+            if (empty($note->inGamePoll)) {
+                $note->inGamePoll = 0;
+            }
+            if (empty($note->inGameEvent)) {
+                $note->inGameEvent = 0;
+            }
+            $note->note = $line;
+            $note->save();
+        }
     }
 }

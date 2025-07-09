@@ -84,14 +84,14 @@ if (!empty($gameEvent)) {
 
 **Loot**
 <?php foreach ($gameNote as $loot): ?>
-<?php if ($loot->inGameSummary == 1): ?>
+<?php if ($loot->inGameSummary == 1 && empty($loot->deleted)): ?>
 <?= $loot->note; ?> 
 <?php endif; ?>
 <?php endforeach; ?> 
 
 **Highlights**
 <?php foreach ($gameNote as $highlight): ?>
-<?php if ($highlight->inGameSummary == 2): ?>
+<?php if ($highlight->inGameSummary == 2 && empty($highlight->deleted)): ?>
 <?= $highlight->note; ?> 
 <?php endif; ?>
 <?php endforeach; ?> 
@@ -100,7 +100,7 @@ if (!empty($gameEvent)) {
                     <div class="card-footer">
                         <?php $gameNote = new GameNote(); ?>
                         <?php $form = ActiveForm::begin(["action" => $createGameNote]); ?>
-                            <?= $form->field($gameNote, 'note')->textInput(); ?>
+                            <?= $form->field($gameNote, 'note')->textarea(["rows" => "6"]); ?>
                             <?php $options = ['label' => 'as Loot', 'value' => '1', 'uncheck' => null]; ?>
                             <?= $form->field($gameNote, 'inGameSummary')->radio($options) ?> 
                             <?php $options = ['label' => 'as Highlight', 'value' => '2', 'uncheck' => null]; ?>

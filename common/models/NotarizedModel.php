@@ -77,6 +77,11 @@ class NotarizedModel extends \yii\db\ActiveRecord
         if ($canHave && $doesNotHave) {
             $this->owner = $ownerId;
         }
+        $canHave = array_key_exists("deleted", $attr);
+        $doesNotHave = empty($this->deleted);
+        if ($canHave && $doesNotHave) {
+            $this->deleted = 0;
+        }
         $canHave = array_key_exists("timezone", $attr);
         $doesNotHave = empty($this->timezone);
         if ($canHave && $doesNotHave) {
