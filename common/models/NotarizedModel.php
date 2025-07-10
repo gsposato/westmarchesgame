@@ -234,8 +234,11 @@ class NotarizedModel extends \yii\db\ActiveRecord
      * Delete
      * @desc override default delete behavior
      */
-    public function delete()
+    public function delete($hard = false)
     {
+        if ($hard) {
+            return parent::delete();
+        }
         $this->deleted = time();
         $this->save();
     }

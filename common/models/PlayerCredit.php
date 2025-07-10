@@ -68,7 +68,7 @@ class PlayerCredit extends NotarizedModel
      * Delete
      * @desc override default delete behavior
      */
-    public function delete()
+    public function delete($hard = false)
     {
         return;
     }

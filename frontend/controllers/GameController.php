@@ -220,7 +220,7 @@ SQL;
             return $this->redirect([$url]);
         }
         if ($gameEvent->canModify()) {
-            $gameEvent->delete();
+            $gameEvent->delete($hard = true);
         }
         $url = 'view?campaignId='.$campaignId.'&id='.$id;
         return $this->redirect([$url]);
