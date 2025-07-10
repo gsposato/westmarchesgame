@@ -12,6 +12,7 @@ use common\models\GamePoll;
 $campaignId = $_GET['campaignId'];
 $campaign = Campaign::findOne($campaignId);
 $rules = json_decode($campaign->rules);
+$categories = $model->categories($rules, $select = true);
 $defaultTimeDuration = $rules->Game->defaultTimeDuration ?? "4 hours";
 $defaultGoldPayoutPerPlayer = $rules->Game->defaultGoldPayoutPerPlayer ?? 400;
 $defaultBaseBastionPointsPerPlayer = $rules->Game->defaultBaseBastionPointsPerPlayer ?? 20;
@@ -37,6 +38,17 @@ $userSelect = User::select();
             </em>
         </p>
     </small>
+
+    <?php if (!empty($categories)): ?>
+        <?= $form->field($model, 'category')->dropDownList($categories, ['prompt' => '']) ?>
+        <small>
+            <p>
+                <em>
+                    Typically, leave category on the default selection.
+                </em>
+            </p>
+        </small>
+    <?php endif; ?>
 
     <?= $form->field($model, 'gameInviteLink')->textInput() ?>
     <small>

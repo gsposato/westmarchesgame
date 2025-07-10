@@ -41,7 +41,7 @@ class Game extends NotarizedModel
     {
         return [
             [['campaignId', 'name', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'credit', 'host', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'credit', 'host', 'owner', 'creator', 'created', 'updated', 'category'], 'integer'],
             [['gameInviteLink', 'voiceVenueLink'], 'string'],
             [['name', 'levelRange', 'timeDuration'], 'string', 'max' => 255],
         ];
@@ -121,6 +121,16 @@ class Game extends NotarizedModel
         if (empty($campaign->rules)) {
             return $unknown;
         }
+        $game = Game::findOne($gameId);
+        if (!$game) {
+            return $unknown;
+        }
+        if ($game->category != 1) {
+            $rules = json_decode($campaign->rules);
+            $icon = $game->categories($rules, "icon", $game->category);
+            $unknown = '<i class="fa '.$icon.'" aria-hidden="true"></i>';
+            return $unknown;
+        }
         $gameEvent = GameEvent::find()->where(["gameId" => $gameId])->one();
         if (!$gameEvent) {
             return $unknown;
@@ -132,10 +142,6 @@ class Game extends NotarizedModel
         $timestamp = $slot->unixtime;
         $campaignRules = json_decode($campaign->rules);
         $defaultStartingGame = $campaignRules->Game->startingGame ?? 0;
-        $gamesBefore = Game::find()
-            ->where(["campaignId" => $campaignId])
-            ->andWhere(["<", "id", $gameId])
-            ->all();
         $gamesBeforeSql = <<<SQL
 SELECT ge.*, gps.unixtime
 FROM game_event ge
@@ -155,6 +161,12 @@ SQL;
             }
             $game = Game::findOne($gameBefore["gameId"]);
             if ($game->campaignId != $_GET["campaignId"]) {
+                continue;
+            }
+            if (!empty($game->deleted)) {
+                continue;
+            }
+            if ($game->category != 1) {
                 continue;
             }
             $gamesBeforeNumber++;
@@ -192,5 +204,39 @@ SQL;
             return $this->host;
         }
         return $this->owner;
+    }
+
+    /**
+     * Categories
+     * @param object $rules
+     * @param string $type
+     * @param integer $value
+     */
+    public function categories($rules, $type, $value = 0)
+    {
+        if (empty($rules->GameCategory)) {
+            if (!empty($value)) {
+                return $value;
+            }
+            return;
+        }
+        $arr = [];
+        $counter = 0;
+        $categories = $rules->GameCategory;
+        foreach ($categories as $name => $attributes) {
+            $counter++;
+            if ($type == "select") {
+                $arr[$counter] = $name;
+            }
+            if ($type == "name" && !empty($value)) {
+                if ($counter == $value) {
+                    return $name;
+                }
+            }
+            if ($counter == $value) {
+                return $attributes->{$type};
+            }
+        }
+        return $arr;
     }
 }

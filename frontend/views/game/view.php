@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Campaign;
 use common\models\Game;
 use common\models\User;
 
@@ -48,11 +49,21 @@ $canModify = $model->canModify();
             ],
             'name',
             [
-                'label' => 'Event Timestamp',
+                'label' => 'Category',
+                'attribute' => 'category',
+                'format' => 'raw',
+                'value' => function($model) {
+                    $campaign = Campaign::findOne($_GET['campaignId']);
+                    $rules = json_decode($campaign->rules);
+                    return $model->categories($rules, "name", $model->category);
+                },
+            ],
+            [
+                'label' => 'event timestamp',
                 'attribute' => '',
                 'format' => 'raw',
                 'value' => function($model) {
-                    return Game::event($model->id);
+                    return game::event($model->id);
                 },
             ],
             'gameInviteLink:ntext',
