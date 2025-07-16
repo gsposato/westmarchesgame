@@ -66,7 +66,23 @@ $canModify = $model->canModify();
                     return $html;
                 },
             ],
-            'note:ntext',
+            [
+                'label' => 'Note',
+                'attribute' => 'note',
+                'format' => 'raw',
+                'value' => function($model) {
+                    $json = json_decode($model->note);
+                    if (!empty($json)) {
+                        $html = "";
+                        foreach ($json as $key => $value) {
+                            $html .= "<b>".ucwords($key)."</b><br />";
+                            $html .= $value . "<br /><br />";
+                        }
+                        return $html;
+                    }
+                    return $model->note;
+                },
+            ],
         ],
         $model->view())
     ]) ?>

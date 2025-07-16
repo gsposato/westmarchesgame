@@ -3,11 +3,8 @@
 namespace frontend\controllers;
 
 use Yii;
-use common\models\Campaign;
-use common\models\CampaignPlayer;
+use common\models\Form;
 use common\models\Ticket;
-use common\models\TicketComment;
-use common\models\User;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -15,9 +12,9 @@ use yii\filters\VerbFilter;
 use frontend\helpers\ControllerHelper;
 
 /**
- * TicketController implements the CRUD actions for Ticket model.
+ * FormController implements the CRUD actions for Form model.
  */
-class TicketController extends Controller
+class FormController extends Controller
 {
     /**
      * @inheritDoc
@@ -31,7 +28,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Lists all Ticket models.
+     * Lists all Form models.
      *
      * @return string
      */
@@ -40,7 +37,7 @@ class TicketController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['/']);
         }
-        $query = Ticket::find()
+        $query = Form::find()
             ->where(["campaignId" => $campaignId])
             ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
@@ -54,14 +51,13 @@ class TicketController extends Controller
                 ]
             ],
         ]);
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Ticket model.
+     * Displays a single Form model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -71,63 +67,86 @@ class TicketController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['/']);
         }
-        $comments = TicketComment::find()
-            ->where(["ticketId" => $id])
-            ->andWhere(["deleted" => 0])
-            ->orderBy(["id" => SORT_DESC])
-            ->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'comments' => $comments
         ]);
     }
 
     /**
-     * Creates a new Ticket model.
+     * Displays a single Form model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionForm($id, $campaignId)
+    {
+        $ticket = new Ticket();
+        $form = $this->findModel($id);
+        $isPost = $this->request->isPost;
+        if (!$isPost) {
+            return $this->render('form', [
+                'model' => $form,
+            ]);
+        }
+        $isHuman = ControllerHelper::isHuman();
+        if (!$isHuman) {
+            $msg = "Failed to Submit Form. Please try again.";
+            Yii::$app->getSession()->setFlash('danger', $msg);
+            return $this->render('form', [
+                'model' => $form,
+            ]);
+        }
+        $arr = $_POST;
+        unset($arr["_csrf-frontend"]);
+        $ticket->note = json_encode($arr);
+        $ticket->name = $form->name . " form submission";
+        $isLoaded = !empty($ticket->note);
+        if (empty($ticket->status)) {
+            $ticket->status = Ticket::STATUS_NEW;
+        }
+        $isSaved = $ticket->save();
+        if ($isLoaded && $isSaved) {
+            $msg = "Successfully Created Ticket #".$ticket->id;
+            Yii::$app->getSession()->setFlash('success', $msg);
+            ControllerHelper::sendSubscriberEmail($ticket);
+        }
+        if (!$isSaved) {
+            foreach ($ticket->getErrors() as $err) {
+                print_r($err);
+            }
+        }
+        return $this->render('form', [
+            'model' => $form,
+        ]);
+    }
+
+    /**
+     * Creates a new Form model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate($campaignId)
     {
-        $model = new Ticket();
-        $isPost = $this->request->isPost;
-        if (!$isPost) {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/']);
         }
-        $isHuman = ControllerHelper::isHuman();
-        if (!$isHuman) {
-            $msg = "Failed to Create Ticket. Please try again.";
-            Yii::$app->getSession()->setFlash('danger', $msg);
+        $model = new Form();
+        if ($this->request->isPost) {
+            $model->load($this->request->post());
+            $model->status = 1;
+            if ($model->save()) {
+                return $this->redirect(['index', 'campaignId' => $campaignId]);
+            }
+        } else {
             $model->loadDefaultValues();
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
-        $isLoaded = $model->load($this->request->post());
-        if (empty($model->status)) {
-            $model->status = Ticket::STATUS_NEW;
-        }
-        $isSaved = $model->save();
-        if ($isLoaded && $isSaved) {
-            $msg = "Successfully Created Ticket #".$model->id;
-            Yii::$app->getSession()->setFlash('success', $msg);
-            ControllerHelper::sendSubscriberEmail($model);
-            $model = new Ticket();
-            $model->loadDefaultValues();
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-        $model->loadDefaultValues();
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Updates an existing Ticket model.
+     * Updates an existing Form model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -138,20 +157,17 @@ class TicketController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['/']);
         }
-
         $model = $this->findModel($id);
-
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'campaignId' => $campaignId]);
+            return $this->redirect(['view?campaignId='.$campaignId.'&id='.$model->id]);
         }
-
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing Ticket model.
+     * Deletes an existing Form model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -162,22 +178,20 @@ class TicketController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['/']);
         }
-
         $this->findModel($id)->delete();
-
         return $this->redirect(['index?campaignId='.$campaignId]);
     }
 
     /**
-     * Finds the Ticket model based on its primary key value.
+     * Finds the Form model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Ticket the loaded model
+     * @return Form the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Ticket::findOne(['id' => $id])) !== null) {
+        if (($model = Form::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

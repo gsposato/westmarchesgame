@@ -19,6 +19,7 @@ return [
         'complaints' => '/frontend/web/player-complaint',
         'triggers' => '/frontend/web/player-trigger',
         'tickets' => '/frontend/web/ticket',
+        'forms' => '/frontend/web/form',
         'rules' => '/frontend/web/campaign/view',
     ]
 ];
