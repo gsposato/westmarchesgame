@@ -79,30 +79,11 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                 }
             ],
             [
-                'label' => 'Games Played',
+                'label' => 'Game Credit',
                 'attribute' => '',
                 'format' => 'text',
                 'value' => function($model) {
-                    $now = time();
-                    $gamesPlayed = GamePlayer::find()
-                        ->where(["characterId" => $model->id])
-                        ->all();
-                    $countGamesPlayed = 0;
-                    foreach ($gamesPlayed as $gamePlayed) {
-                        $gameEvent = GameEvent::find()->where(["gameId" => $gamePlayed->gameId])->one();
-                        if (empty($gameEvent)) {
-                            continue;
-                        }
-                        $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId);
-                        if (empty($slot)) {
-                            continue;
-                        }
-                        if ($slot->unixtime > $now) {
-                            continue;
-                        }
-                        $countGamesPlayed++;
-                    }
-                    return $countGamesPlayed + ($model->startingCredit ?? 0);
+                    return $model->getTotalGameCredit();
                 }
             ],
             [

@@ -174,16 +174,24 @@ $userSelect = User::select();
         <textarea id="gamepoll-note" name="GamePoll[note]" rows="6" class="form-control">
 <?= $gamePoll->note; ?>
         </textarea>
-            <em>
-                The description that appears in your Game Poll text
-            </em>
+        <small>
+            <p>
+                <em>
+                    The description that appears in your Game Poll text
+                </em>
+            </p>
+        </small>
         </div>
     <?php endif; ?>
 
     <br />
 
     <?= $form->field($model, 'host')->dropDownList($userSelect, ['prompt' => '']); ?>
-    <em>Typically, this is you.  Sometimes, it's not.</em>
+    <small>
+        <p>
+            <em>Typically, this is you.  Sometimes, it's not.</em>
+        </p>
+    </small>
 
     <br />
     <br />

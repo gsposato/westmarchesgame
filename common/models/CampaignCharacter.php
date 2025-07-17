@@ -365,4 +365,60 @@ class CampaignCharacter extends NotarizedModel
         return $bastionPointsEarned - $bastionPointsSpent;
     }
 
+    /**
+     * Get Total Game Credit
+     */
+    public function getTotalGameCredit()
+    {
+        $isCreditWorthy = [];
+        $isBastionWorthy = [];
+        $isBonusBastionWorthy = [];
+        $isGoldWorthy = [];
+        $isDoubleGoldWorthy = [];
+        $bonuses = GamePlayer::bonuses();
+        $counter = 0;
+        foreach ($bonuses as $name => $bonus) {
+            $counter++;
+            foreach ($bonus as $bonusAttribute => $bonusValue) {
+                if ($bonusAttribute != "rewards") {
+                    continue;
+                }
+                if (empty($bonusValue)) {
+                    continue;
+                }
+                foreach ($bonusValue as $rewardName => $rewardValue) {
+                    if (empty($rewardValue)) {
+                        continue;
+                    }
+                    switch ($rewardName) {
+                        case "credit": $isCreditWorthy[$counter] = $rewardValue; break;
+                        case "bastion points": $isBastionWorthy[$counter] = $rewardValue; break;
+                        case "bonus bastion points": $isBonusBastionWorthy[$counter] = $rewardValue; break;
+                        case "gold": $isGoldWorthy[$counter] = $rewardValue; break;
+                        default: // do nothing
+                    }
+                }
+            }
+        }
+        $gamesPlayed = GamePlayer::find()
+            ->where(["characterId" => $this->id])
+            ->all();
+        $totalCreditsEarned = 0;
+        foreach ($gamesPlayed as $gamePlayed) {
+            $game = Game::findOne($gamePlayed->gameId);
+            if (empty($game)) {
+                continue;
+            }
+            if (!$game->isEnded()) {
+                continue;
+            }
+            if (array_key_exists($gamePlayed->hasBonusPoints, $isCreditWorthy)) {
+                $multiplier = $isCreditWorthy[$gamePlayed->hasBonusPoints];
+                $credit = ($game->credit * $multiplier);
+                $totalCreditsEarned += $credit;
+            }
+        }
+        return $totalCreditsEarned + ($this->startingCredit ?? 0);
+    }
+
 }

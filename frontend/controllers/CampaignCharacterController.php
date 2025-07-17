@@ -66,7 +66,7 @@ class CampaignCharacterController extends Controller
 
     /**
      * Roundup
-     *
+     * @param integer $campaignId
      * @return string
      */
     public function actionRoundup($campaignId)
