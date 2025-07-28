@@ -63,6 +63,8 @@ Duration: <?= $model->timeDuration; ?>
 ---
 [Check your character's level and bastion points](<?= ControllerHelper::url(); ?>/frontend/web/campaign-character/roundup?campaignId=<?= $id; ?>)
 ---
+
+@player
 </pre>
                     </div>
                     <div class="card-footer">
