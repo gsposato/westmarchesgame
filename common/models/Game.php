@@ -52,6 +52,11 @@ class Game extends NotarizedModel
      */
     public function attributeLabels()
     {
+        $campaign = Campaign::findOne($_GET['campaignId']);
+        $campaignRules = json_decode($campaign->rules);
+        $gold = ucwords($campaignRules->Currency->gold ?? "gold");
+        $bastion = ucwords($campaignRules->Currency->{"bastion points"} ?? "bastion points");
+        $credit = ucwords($campaignRules->Currency->credit ?? "credit");
         return [
             'id' => 'ID',
             'campaignId' => 'Campaign ID',
@@ -60,10 +65,10 @@ class Game extends NotarizedModel
             'gameInviteLink' => 'Game Invite Link',
             'timeDuration' => 'Time Duration',
             'voiceVenueLink' => 'Voice Venue Link',
-            'goldPayoutPerPlayer' => 'Gold Payout Per Player',
-            'baseBastionPointsPerPlayer' => 'Base Bastion Points Per Player',
-            'bonusBastionPointsPerPlayer' => 'Bonus Bastion Points Per Player',
-            'credit' => 'Credit',
+            'goldPayoutPerPlayer' => /* put gold var here */ $gold . ' Payout Per Player',
+            'baseBastionPointsPerPlayer' => $bastion . ' Per Player',
+            'bonusBastionPointsPerPlayer' => $bastion . ' Per Player',
+            'credit' => $credit,
             'host' => 'Host',
             'owner' => 'Owner',
             'creator' => 'Creator',

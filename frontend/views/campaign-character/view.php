@@ -21,6 +21,8 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Campaign Characters', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $campaign = Campaign::findOne($id);
+$purchaseCurrency = Purchase::currency();
+$purchaseCurrencyColor = Purchase::currencyColor();
 $campaignRules = json_decode($campaign->rules);
 $purchases = Purchase::find()->where(["characterId" => $model->id])->andWhere(["deleted" => 0])->all();
 $currencies = Currency::find()->where(["campaignId" => $id])->all();
@@ -66,6 +68,12 @@ foreach ($bonuses as $name => $bonus) {
 $character = $model;
 $state = Equipment::stateSelect();
 $equips = Equipment::find()->where(["characterId" => $character->id])->all();
+$goldLabel = $campaignRules->Currency->gold ?? "gold";
+$bastionLabel = $campaignRules->Currency->{"bastion points"} ?? "bastion points";
+$creditLabel = $campaignRules->Currency->credit ?? "credit";
+$ucGold = ucwords($goldLabel);
+$ucBastion = ucwords($bastionLabel);
+$ucCredit = ucwords($creditLabel);
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="campaign-character-view">
@@ -211,28 +219,28 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                     <li>
                         <?php $sessionId = Game::session($game->id); ?>
                         Session #<?= $sessionId ?> - <?= $game->name; ?> /
-                        <small style="font-weight:bold;">
+                        <small style="font-weight:bold;color:<?= $purchaseCurrencyColor[0]; ?>;">
                             <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isCreditWorthy)): ?>
                                 <?php $multiplier = $isCreditWorthy[$gamePlayed->hasBonusPoints]; ?>
                                 <?php $credit = ($game->credit * $multiplier); ?>
                                 <?= $credit; ?> credit<?= $credit == 1 ? "" : "s"; ?>
                                 <?php $totalCreditsEarned += $credit; ?>
                             <?php else: ?>
-                                0 credits
+                                0 <?= $creditLabel; ?>
                             <?php endif; ?>
                         </small> /
-                        <small style="font-weight:bold;color:#df8607;">
+                        <small style="font-weight:bold;color:<?= $purchaseCurrencyColor[1]; ?>;">
                             <?php $gold = 0; ?>
                             <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isGoldWorthy)): ?>
                                 <?php $multiplier = $isGoldWorthy[$gamePlayed->hasBonusPoints]; ?>
                                 <?php $gold += ($game->goldPayoutPerPlayer * $multiplier); ?>
-                                <?= $gold; ?> gold
+                                <?= $gold; ?> <?= $goldLabel; ?>
                                 <?php $totalGoldEarned += $gold; ?>
                             <?php else: ?>
-                                0 gold
+                                0 <?= $goldLabel; ?>
                             <?php endif; ?>
                         </small> /
-                        <small style="font-weight:bold;">
+                        <small style="font-weight:bold;color:<?= $purchaseCurrencyColor[2]; ?>">
                             <?php $bastionPoints = 0; ?>
                             <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isBastionWorthy)): ?>
                                 <?php $multiplier = $isBastionWorthy[$gamePlayed->hasBonusPoints]; ?>
@@ -242,7 +250,7 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                                 <?php $multiplier = $isBonusBastionWorthy[$gamePlayed->hasBonusPoints]; ?>
                                 <?php $bastionPoints += ($game->bonusBastionPointsPerPlayer * $multiplier); ?>
                             <?php endif; ?>
-                            <?= $bastionPoints; ?> bastion points
+                            <?= $bastionPoints; ?> <?= $bastionLabel; ?>
                             <?php $totalBastionPointsEarned += $bastionPoints; ?>
                         </small>
                     </li>
@@ -250,9 +258,12 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                 </ol>
                 </div>
                 <div class="card-footer">
-                    Total Credits Earned: <b><?= $totalCreditsEarned; ?></b> /
-                    Total Gold Earned: <b style="color:#df8607"><?= $totalGoldEarned; ?></b> /
-                    Total Bastion Points Earned: <b><?= $totalBastionPointsEarned; ?></b>
+                    <?php $cColor = 'style="color:'.$purchaseCurrencyColor[0].'"'; ?>
+                    <?php $gColor = 'style="color:'.$purchaseCurrencyColor[1].'"'; ?>
+                    <?php $bColor = 'style="color:'.$purchaseCurrencyColor[2].'"'; ?>
+                    Total <?= $ucCredit; ?> Earned: <b <?= $cColor; ?>><?= $totalCreditsEarned; ?></b> /
+                    Total <?= $ucGold; ?> Earned: <b <?= $gColor; ?>><?= $totalGoldEarned; ?></b> /
+                    Total <?= $ucBastion; ?> Earned: <b <?= $bColor; ?>><?= $totalBastionPointsEarned; ?></b>
                     <?php foreach ($purchases as $purchase): ?>
                         <?php if (empty($totals[$purchase->currency])): ?>
                             <?php $totals[$purchase->currency] = 0; ?>
@@ -286,47 +297,16 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                 <div class="card-body">
                 <ul>
                     <?php $totals = array(); ?>
+                    <?php foreach ($purchaseCurrency as $currencyId => $currencyName): ?>
+                        <?php $totals[$currencyId] = 0; ?>
+                    <?php endforeach; ?>
                     <?php foreach ($purchases as $purchase): ?>
                         <?php $currencyColor = "#000"; ?>
                         <?php $currencyName = "unknown currency"; ?>
-                        <?php foreach ($currencies as $currency): ?>
-                            <?php if ($purchase->currency == 1): ?>
-                                <?php $currencyColor = "#df8607"; ?>
-                                <?php $currencyName = "gold"; ?>
-                                <?php if (empty($totals["gold"])): ?>
-                                    <?php $totals["gold"] = 0; ?>
-                                <?php endif; ?>
-                                <?php break; ?>
-                            <?php endif; ?>
-                            <?php if ($purchase->currency == 2): ?>
-                                <?php $currencyColor = "#000"; ?>
-                                <?php $currencyName = "bastion points"; ?>
-                                <?php if (empty($totals["bastion points"])): ?>
-                                    <?php $totals["bastion points"] = 0; ?>
-                                <?php endif; ?>
-                                <?php break; ?>
-                            <?php endif; ?>
-                            <?php if ($purchase->currency == 3): ?>
-                                <?php $currencyColor = "#000"; ?>
-                                <?php $currencyName = "credits"; ?>
-                                <?php if (empty($totals["credits"])): ?>
-                                    <?php $totals["credits"] = 0; ?>
-                                <?php endif; ?>
-                                <?php break; ?>
-                            <?php endif; ?>
-                            <?php if ($purchase->currency != $currency->id): ?>
-                                <?php continue; ?>
-                            <?php endif; ?>
-                            <?php $currencyColor = $currency->color; ?>
-                            <?php $currencyName = $currency->name; ?>
-                            <?php if (empty($totals[$currency->name])): ?>
-                                <?php $totals[$currency->name] = 0; ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
                         <li>
                             <?= $purchase->name; ?> /
                             <small style="font-weight:bold;color:<?= $currencyColor; ?>;">
-                                <?= $purchase->price; ?> <?= $currencyName; ?>
+                                <?= $purchase->price; ?> <?= $purchaseCurrency[$purchase->currency]; ?>
                             </small>
                             <?php if (!empty($purchase->gameId)): ?>
                                 <?php $sessionId = Game::session($purchase->gameId); ?>
@@ -334,19 +314,20 @@ $equips = Equipment::find()->where(["characterId" => $character->id])->all();
                             <?php endif; ?>
                         </li>
                     <?php if (empty($purchase->gameId)): ?>
-                        <?php $totals[$currencyName] += $purchase->price; ?>
+                        <?php $totals[$purchase->currency] += $purchase->price; ?>
                     <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
                 </div>
                 <div class="card-footer">
-                    Total Gold Spent: <b style="color:#df8607"><?= $totals["gold"] ?? 0; ?></b> /
-                    Total Bastion Points Spent: <b><?= $totals["bastion points"] ?? 0; ?></b>
-                    <?php foreach ($currencies as $currency): ?>
-                         / Total <?= ucwords($currency->name); ?> Spent:
-                        <b style="color:<?= $currency->color; ?>">
-                            <?= $totals[$currency->name] ?? "0"; ?>
-                        </b>
+                    <?php foreach ($purchaseCurrency as $currencyId => $currencyName): ?>
+                        <?php $css = "style='color:#000;'"; ?>
+                        <?php foreach ($purchaseCurrencyColor as $currencyColorId => $currencyColor): ?>
+                            <?php if ($currencyId == $currencyColorId): ?>
+                                <?php $css = "style='color:".$currencyColor.";'"; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        Total <?= $currencyName; ?> Spent: <b <?= $css; ?>><?= $totals[$currencyId]; ?></b> /
                     <?php endforeach; ?>
                 </div>
             </div>

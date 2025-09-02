@@ -54,7 +54,7 @@ $userSelect = User::select();
     <small>
         <p>
             <em>
-                You can provide the Roll20 invite link for your game, helpful for new players
+                You can provide the virtual tabletop invite link for your game, helpful for new players
             </em>
         </p>
     </small>
@@ -63,7 +63,7 @@ $userSelect = User::select();
     <small>
         <p>
             <em>
-                You can provide a direct link to the discord voice channel, helpful for new players
+                You can provide a direct link to your game's voice channel, helpful for new players
             </em>
         </p>
     </small>
@@ -161,7 +161,7 @@ $userSelect = User::select();
                 <?php if (!empty($defaultGameCreditPerPlayerTooltip)): ?>
                     <?= $defaultGameCreditPerPlayerTooltip; ?>
                 <?php else: ?>
-                    Typically, one game is worth <?= $defaultGameCreditPerPlayer; ?> credit.
+                    Typically, its <?= $defaultGameCreditPerPlayer; ?>
                 <?php endif; ?>
             </em>
         </p>

@@ -66,9 +66,15 @@ class Purchase extends NotarizedModel
      */
     public static function currency()
     {
+        $campaign = Campaign::findOne($_GET['campaignId']);
+        $campaignRules = json_decode($campaign->rules);
+        $gold = ucwords($campaignRules->Currency->gold ?? "gold");
+        $bastion = ucwords($campaignRules->Currency->{"bastion points"} ?? "bastion points");
+        $credit = ucwords($campaignRules->Currency->credit ?? "credit");
         $list =  [
-            1 => "Gold",
-            2 => "Bastion Points",
+            0 => $credit,
+            1 => $gold,
+            2 => $bastion,
         ];
         $state = count($list);
         $currencies = Currency::find()->where(["campaignId" => $_GET['campaignId']])->all();
@@ -77,6 +83,32 @@ class Purchase extends NotarizedModel
                 continue;
             }
             $list[$currency->id] = ucwords($currency->name);
+        }
+        return $list;
+    }
+
+    /**
+     * Get Currency Color
+     */
+    public static function currencyColor()
+    {
+        $campaign = Campaign::findOne($_GET['campaignId']);
+        $campaignRules = json_decode($campaign->rules);
+        $gold = $campaignRules->CurrencyColor->gold ?? "#df8607";
+        $bastion = $campaignRules->CurrencyColor->{"bastion points"} ?? "#000";
+        $credit = $campaignRules->CurrencyColor->credit ?? "#000";
+        $list =  [
+            0 => $credit,
+            1 => $gold,
+            2 => $bastion,
+        ];
+        $state = count($list);
+        $currencies = Currency::find()->where(["campaignId" => $_GET['campaignId']])->all();
+        foreach ($currencies as $currency) {
+            if ($currency->id > 0 && $currency->id < 3) {
+                continue;
+            }
+            $list[$currency->id] = $currency->color;
         }
         return $list;
     }

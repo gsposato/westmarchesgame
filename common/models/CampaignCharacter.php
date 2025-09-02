@@ -58,6 +58,11 @@ class CampaignCharacter extends NotarizedModel
      */
     public function attributeLabels()
     {
+        $campaign = Campaign::findOne($_GET['campaignId']);
+        $campaignRules = json_decode($campaign->rules);
+        $gold = ucwords($campaignRules->Currency->gold ?? "gold");
+        $bastion = ucwords($campaignRules->Currency->{"bastion points"} ?? "bastion points");
+        $credit = ucwords($campaignRules->Currency->credit ?? "credit");
         return [
             'id' => 'ID',
             'campaignId' => 'Campaign ID',
@@ -68,9 +73,9 @@ class CampaignCharacter extends NotarizedModel
             'description' => 'Description',
             'bastionName' => 'Bastion Name',
             'bastionType' => 'Bastion Type',
-            'startingGold' => 'Starting Gold',
-            'startingBastionPoints' => 'Starting Bastion Points',
-            'startingCredit' => 'Starting Credit',
+            'startingGold' => 'Starting ' . $gold,
+            'startingBastionPoints' => 'Starting ' . $bastion,
+            'startingCredit' => 'Starting ' . $credit,
             'firstGamePlayed' => 'First Game Played',
             'owner' => 'Owner',
             'creator' => 'Creator',
