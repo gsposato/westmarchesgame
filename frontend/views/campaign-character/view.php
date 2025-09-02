@@ -301,12 +301,18 @@ $ucCredit = ucwords($creditLabel);
                         <?php $totals[$currencyId] = 0; ?>
                     <?php endforeach; ?>
                     <?php foreach ($purchases as $purchase): ?>
-                        <?php $currencyColor = "#000"; ?>
+                        <?php $myCurrencyColor = "#000"; ?>
+                        <?php foreach ($purchaseCurrencyColor as $currencyId => $currencyColor): ?>
+                            <?php if ($purchase->currency == $currencyId): ?>
+                                <?php $myCurrencyColor = $currencyColor; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                         <?php $currencyName = "unknown currency"; ?>
                         <li>
                             <?= $purchase->name; ?> /
-                            <small style="font-weight:bold;color:<?= $currencyColor; ?>;">
-                                <?= $purchase->price; ?> <?= $purchaseCurrency[$purchase->currency]; ?>
+                            <small style="font-weight:bold;color:<?= $myCurrencyColor; ?>;">
+                                <?php $curr = strtolower($purchaseCurrency[$purchase->currency]); ?>
+                                <?= $purchase->price; ?> <?= $curr; ?>
                             </small>
                             <?php if (!empty($purchase->gameId)): ?>
                                 <?php $sessionId = Game::session($purchase->gameId); ?>

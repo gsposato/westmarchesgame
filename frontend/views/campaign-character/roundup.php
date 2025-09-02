@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Campaign;
 use common\models\CampaignCharacter;
 use common\models\CampaignPlayer;
 use common\models\GamePollSlot;
@@ -20,6 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
 $campaignId = $_GET['campaignId'];
 $create = 'create?campaignId=' . $campaignId;
 $roundup = 'roundup?campaignId=' . $campaignId;
+$campaign = Campaign::findOne($campaignId);
+$campaignRules = json_decode($campaign->rules);
+$gold = ucwords($campaignRules->Currency->gold ?? "gold");
+$bastion = ucwords($campaignRules->Currency->{"bastion points"} ?? "bastion points");
+$credit = ucwords($campaignRules->Currency->credit ?? "credit");
 ?>
 <div class="campaign-character-index">
 
@@ -59,7 +65,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                 }
             ],
             [
-                'label' => 'Bastion Points',
+                'label' => $bastion,
                 'attribute' => '',
                 'format' => 'text',
                 'value' => function($model) {
@@ -79,7 +85,7 @@ $roundup = 'roundup?campaignId=' . $campaignId;
                 }
             ],
             [
-                'label' => 'Game Credit',
+                'label' => $credit,
                 'attribute' => '',
                 'format' => 'text',
                 'value' => function($model) {
