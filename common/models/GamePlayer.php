@@ -190,6 +190,8 @@ WHERE
     cp.isPlayer = 1
 AND
     gp.gameId = :gameId
+AND
+    cp.campaignId = :campaignId
 ORDER BY
     cp.gameEventTimestamp ASC
 SQL;
@@ -197,6 +199,7 @@ SQL;
             ->db
             ->createCommand($sql)
             ->bindValue(":gameId", $gameId)
+            ->bindValue(":campaignId", $campaignId)
             ->queryAll();
         foreach ($results as $result) {
             $players[] = GamePlayer::findOne($result["id"]);
