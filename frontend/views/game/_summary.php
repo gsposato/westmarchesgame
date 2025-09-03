@@ -8,10 +8,15 @@ use common\models\GamePoll;
 use common\models\GamePollSlot;
 use common\models\GameEvent;
 use common\models\GamePlayer;
+use common\models\Campaign;
 use common\models\CampaignPlayer;
 use common\models\CampaignCharacter;
 
 $id = $_GET['campaignId'];
+$campaign = Campaign::findOne($_GET['campaignId']);
+$campaignRules = json_decode($campaign->rules);
+$gameSummaryHeader = $campaignRules->GameSummary->header ?? "";
+$gameSummaryFooter = $campaignRules->GameSummary->footer ?? "";
 $owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
 $delete = '/frontend/web/game/deletenotes?campaignId=' . $id . '&id=' . $model->id;
 $createGameNote = '/frontend/web/game/note?campaignId=' . $id . '&id=' . $model->id;
@@ -47,6 +52,7 @@ if (!empty($gameEvent)) {
 <?php endif; ?>
 <?php $characterName = $character->name ?? ""; ?>
 <pre id="gamesummary-text" style="overflow-x:hidden;color#fff !important;">
+<?= $gameSummaryHeader; ?>
 **Session <?= Game::session($model->id); ?> - <?= $model->name; ?>**
 **Date:** <?= date("m/d/Y", $timestamp); ?> 
 **DM** <?= ucfirst($owner->name); ?> (<?= $characterName; ?>) 
@@ -95,6 +101,8 @@ if (!empty($gameEvent)) {
 <?= $highlight->note; ?> 
 <?php endif; ?>
 <?php endforeach; ?> 
+
+<?= $gameSummaryFooter; ?>
 </pre>
                     </div>
                     <div class="card-footer">

@@ -7,9 +7,14 @@ use common\models\GamePollSlot;
 use common\models\GameEvent;
 use common\models\GamePlayer;
 use common\models\CampaignPlayer;
+use common\models\Campaign;
 use frontend\helpers\ControllerHelper;
 
 $id = $_GET['campaignId'];
+$campaign = Campaign::findOne($_GET['campaignId']);
+$campaignRules = json_decode($campaign->rules);
+$gameEventHeader = $campaignRules->GameEvent->header ?? "";
+$gameEventFooter = $campaignRules->GameEvent->footer ?? "";
 $owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
 $createGameEvent = '/frontend/web/game/event?campaignId=' . $id . '&id=' . $model->id;
 $createGamePlayer = '/frontend/web/game/player?campaignId=' . $id . '&id=' . $model->id;
@@ -56,6 +61,7 @@ if (!empty($gameEvent)) {
 <?php $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId); ?>
 <?php $timestamp = $slot->unixtime; ?>
 <pre id="gameevent-text" style="overflow-x:hidden;">
+<?= $gameEventHeader; ?>
 **<?= $model->name; ?>**
 *Hosted by* @<?= $owner->name; ?> 
 <?php if (!empty($gamePlayers)): ?>
@@ -66,10 +72,18 @@ if (!empty($gameEvent)) {
 <?php endforeach; ?>
 <?php endif; ?>
 
+<?php if (!empty($model->gameInviteLink)): ?>
 **Game Invite Link:** <?= $model->gameInviteLink; ?> 
+<?php endif; ?>
+<?php if (!empty($model->voiceVenueLink)): ?>
 **Venue:** <?= $model->voiceVenueLink; ?> 
+<?php endif; ?>
+<?php if (!empty($model->levelRange)): ?>
 **Levels:** <?= $model->levelRange; ?> 
-**Duration:** <?= $model->timeDuration; ?> 
+<?php endif; ?>
+<?php if (!empty($model->timeDuration)): ?>
+**Duration:** <?= $model->timeDuration; ?>
+<?php endif; ?> 
 **Date/Time:** &lt;t:<?= $timestamp; ?>:F&gt;
 <?php if (!empty($gamePlayers)): ?> 
 **Players** 
@@ -89,10 +103,8 @@ if (!empty($gameEvent)) {
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endif; ?>
- 
----
-[Check your character's level and bastion points](<?= ControllerHelper::url(); ?>/frontend/web/campaign-character/roundup?campaignId=<?= $id; ?>)
----
+
+<?= $gameEventFooter; ?>
 </pre>
                     </div>
                     <div class="card-footer">

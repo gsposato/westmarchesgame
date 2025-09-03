@@ -59,7 +59,7 @@ $canModify = $model->canModify();
                 },
             ],
             [
-                'label' => 'event timestamp',
+                'label' => 'Event Timestamp',
                 'attribute' => '',
                 'format' => 'raw',
                 'value' => function($model) {

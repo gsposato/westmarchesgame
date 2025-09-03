@@ -5,10 +5,15 @@ use yii\widgets\ActiveForm;
 use common\models\GamePoll;
 use common\models\GamePollSlot;
 use common\models\CampaignPlayer;
+use common\models\Campaign;
 use common\widgets\Alert;
 use frontend\helpers\ControllerHelper;
 
 $id = $_GET['campaignId'];
+$campaign = Campaign::findOne($_GET['campaignId']);
+$campaignRules = json_decode($campaign->rules);
+$gamePollHeader = $campaignRules->GamePoll->header ?? "";
+$gamePollFooter = $campaignRules->GamePoll->footer ?? "";
 $owner = CampaignPlayer::find()->where(["userId" => $model->host()])->one();
 $createGamePoll = '/frontend/web/game/poll?campaignId=' . $id . '&id=' . $model->id;
 $createGamePollSlot = '#';
@@ -48,11 +53,18 @@ if (!empty($gamePoll->id)) {
                     </div>
                     <div class="card-body" style="background-color:#333;color:#fff">
 <pre id="gamepoll-text" style="overflow-x:hidden;">
+<?= $gamePollHeader; ?>
 **<?= $model->name; ?>**
-DM @<?= $owner->name; ?> 
+Hosted by @<?= $owner->name; ?> 
+<?php if (!empty($model->gameInviteLink)): ?>
 Game Invite Link: <?= $model->gameInviteLink; ?> 
+<?php endif; ?>
+<?php if (!empty($model->levelRange)): ?>
 Levels: <?= $model->levelRange; ?> 
+<?php endif; ?>
+<?php if (!empty($model->timeDuration)): ?>
 Duration: <?= $model->timeDuration; ?> 
+<?php endif; ?>
 
 <?= $gamePoll->note; ?> 
  
@@ -60,11 +72,7 @@ Duration: <?= $model->timeDuration; ?>
 &lt;t:<?= $gamePollSlot->unixtime; ?>:F&gt;
 <?php endforeach; ?>
 
----
-[Check your character's level and bastion points](<?= ControllerHelper::url(); ?>/frontend/web/campaign-character/roundup?campaignId=<?= $id; ?>)
----
-
-@player
+<?= $gamePollFooter; ?>
 </pre>
                     </div>
                     <div class="card-footer">
