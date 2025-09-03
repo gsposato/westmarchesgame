@@ -82,12 +82,11 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         }
 
-        // color tests
-        //L.marker([151.5, 100.09], {icon: greenIcon}).addTo(map).bindPopup("green");
-        //L.marker([151.49, 400], {icon: blueIcon}).addTo(map).bindPopup("blue");
-
         // backend map markers start
         <?php foreach ($markers as $m): ?>
+        <?php if (!empty($m->deleted)): ?>
+            <?php continue; ?>
+        <?php endif; ?>
         L.marker([<?= $m->lat; ?>, <?= $m->lng; ?>], {icon: <?= $m->color; ?>Icon}).addTo(map).bindPopup("<?= $m->name; ?>");
         <?php endforeach; ?>// backend map markers finish
     </script>
