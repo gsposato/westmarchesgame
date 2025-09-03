@@ -200,9 +200,11 @@ $ucCredit = ucwords($creditLabel);
                 <div class="card-header">
                     <b>Game History</b>
                     <b style="float: right;">
-                        <button class="btn btn-secondary">
-                            Character Level: <?= $characterAdvancement; ?>
-                        </button>
+                        <?php if (!empty($characterAdvancement)): ?>
+                            <button class="btn btn-secondary">
+                                Character Level: <?= $characterAdvancement; ?>
+                            </button>
+                        <?php endif; ?>
                     </b>
                 </div>
                 <div class="card-body">
@@ -289,9 +291,11 @@ $ucCredit = ucwords($creditLabel);
                 <div class="card-header">
                     <b>Transaction History</b>
                     <b style="float: right;">
-                        <button class="btn btn-secondary">
-                            Character Level: <?= $characterAdvancement; ?>
-                        </button>
+                        <?php if (!empty($characterAdvancement)): ?>
+                            <button class="btn btn-secondary">
+                                Character Level: <?= $characterAdvancement; ?>
+                            </button>
+                        <?php endif; ?>
                     </b>
                 </div>
                 <div class="card-body">
