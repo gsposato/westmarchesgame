@@ -24,6 +24,7 @@ $campaign = Campaign::findOne($id);
 $purchaseCurrency = Purchase::currency();
 $purchaseCurrencyColor = Purchase::currencyColor();
 $campaignRules = json_decode($campaign->rules);
+$showPurchases = !empty($campaignRules->Navigation->purchases);
 $purchases = Purchase::find()->where(["characterId" => $model->id])->andWhere(["deleted" => 0])->all();
 $currencies = Currency::find()->where(["campaignId" => $id])->all();
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
@@ -42,6 +43,7 @@ $isGoldWorthy = [];
 $isDoubleGoldWorthy = [];
 $bonuses = GamePlayer::bonuses();
 $counter = 0;
+if (!empty($bonuses)) {
 foreach ($bonuses as $name => $bonus) {
     $counter++;
     foreach ($bonus as $bonusAttribute => $bonusValue) {
@@ -64,6 +66,7 @@ foreach ($bonuses as $name => $bonus) {
             }
         }
     }
+}
 }
 $character = $model;
 $state = Equipment::stateSelect();
@@ -220,7 +223,8 @@ $ucCredit = ucwords($creditLabel);
                     <?php endif; ?>
                     <li>
                         <?php $sessionId = Game::session($game->id); ?>
-                        Session #<?= $sessionId ?> - <?= $game->name; ?> /
+                        Session #<?= $sessionId ?> - <?= $game->name; ?>
+                        <?php if (!empty($bonuses)): ?> /
                         <small style="font-weight:bold;color:<?= $purchaseCurrencyColor[0]; ?>;">
                             <?php if (array_key_exists($gamePlayed->hasBonusPoints, $isCreditWorthy)): ?>
                                 <?php $multiplier = $isCreditWorthy[$gamePlayed->hasBonusPoints]; ?>
@@ -255,11 +259,13 @@ $ucCredit = ucwords($creditLabel);
                             <?= $bastionPoints; ?> <?= $bastionLabel; ?>
                             <?php $totalBastionPointsEarned += $bastionPoints; ?>
                         </small>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
                 </ol>
                 </div>
                 <div class="card-footer">
+                    <?php if (!empty($bonuses)): ?>
                     <?php $cColor = 'style="color:'.$purchaseCurrencyColor[0].'"'; ?>
                     <?php $gColor = 'style="color:'.$purchaseCurrencyColor[1].'"'; ?>
                     <?php $bColor = 'style="color:'.$purchaseCurrencyColor[2].'"'; ?>
@@ -280,6 +286,7 @@ $ucCredit = ucwords($creditLabel);
                             <?= $totals[$currency->id] ?? 0; ?>
                         </b>
                     <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -287,6 +294,7 @@ $ucCredit = ucwords($creditLabel);
 
             <br />
 
+            <?php if ($showPurchases): ?>
             <div class="card">
                 <div class="card-header">
                     <b>Transaction History</b>
@@ -341,3 +349,4 @@ $ucCredit = ucwords($creditLabel);
                     <?php endforeach; ?>
                 </div>
             </div>
+            <?php endif; ?>

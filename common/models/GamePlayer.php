@@ -309,16 +309,15 @@ SQL;
     public static function bonuses()
     {
         $campaign = Campaign::findOne($_GET['campaignId'] ?? 0);
-        $default = json_decode(json_encode(self::GAME_BONUS));
         if (!$campaign) {
-            return $default;
+            return;
         }
         $rules = json_decode($campaign->rules);
         if (empty($rules)) {
-            return $default;
+            return;
         }
         if (empty($rules->GameBonus)) {
-            return $default;
+            return;
         }
         return $rules->GameBonus;
     }

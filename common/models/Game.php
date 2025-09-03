@@ -84,6 +84,9 @@ class Game extends NotarizedModel
     {
         preg_match_all('/\d+/', $this->timeDuration, $matches);
         $numbers = array_map('intval', $matches[0]);
+        if (empty($numbers)) {
+            return 1;
+        }
         $maxNumber = max($numbers);
         return $maxNumber * 60 * 60;
     }

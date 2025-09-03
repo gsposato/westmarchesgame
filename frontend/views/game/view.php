@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\Campaign;
 use common\models\Game;
+use common\models\GamePlayer;
 use common\models\User;
 
 /** @var yii\web\View $this */
@@ -130,10 +131,12 @@ $canModify = $model->canModify();
         ]) ?>
     </div>
     <br />
+    <?php if (!empty(GamePlayer::bonuses())): ?>
     <div id="gamebonus">
         <?= $this->render('_bonus', [
             'model' => $model,
             'canModify' => $canModify
         ]) ?>
     </div>
+    <?php endif; ?>
 </div>
