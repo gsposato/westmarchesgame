@@ -214,10 +214,23 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Select
+     * @param boolean $all
      */
-    public static function select()
+    public static function select($all = false)
     {
-        $records = self::find()->all();
-        return ArrayHelper::map($records, 'id', 'username');
+        if ($all) {
+            $records = self::find()->all();
+            return ArrayHelper::map($records, 'id', 'username');
+        }
+        $records = array();
+        $campaignId = $_GET['campaignId'];
+        $players = CampaignPlayer::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(['not', ['userId' => null]])
+            ->all();
+        foreach ($players as $player) {
+            $records[$player->userId] = $player->name;
+        }
+        return $records;
     }
 }

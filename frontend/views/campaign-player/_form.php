@@ -9,7 +9,7 @@ use common\models\User;
 /** @var common\models\CampaignPlayer $model */
 /** @var yii\widgets\ActiveForm $form */
 $campaignId = $_GET['campaignId'];
-$userSelect = User::select();
+$userSelect = User::select($all = true);
 ?>
 
 <div class="campaign-player-form">
