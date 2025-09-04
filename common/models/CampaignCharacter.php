@@ -382,6 +382,9 @@ class CampaignCharacter extends NotarizedModel
         $isDoubleGoldWorthy = [];
         $bonuses = GamePlayer::bonuses();
         $counter = 0;
+        if (empty($bonuses)) {
+            return 0;
+        }
         foreach ($bonuses as $name => $bonus) {
             $counter++;
             foreach ($bonus as $bonusAttribute => $bonusValue) {
