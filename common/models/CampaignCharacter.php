@@ -20,6 +20,7 @@ use Yii;
  * @property int $startingBastionPoints
  * @property int $startingCredit
  * @property int $firstGamePlayed
+ * @property string|null $extra
  * @property int $owner
  * @property int $creator
  * @property int $created
@@ -48,7 +49,7 @@ class CampaignCharacter extends NotarizedModel
         return [
             [['campaignId', 'playerId', 'name', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
             [['campaignId', 'type', 'status', 'startingGold', 'startingBastionPoints', 'startingCredit', 'owner', 'creator', 'created', 'updated'], 'integer'],
-            [['description', 'bastionName', 'bastionType', 'firstGamePlayed'], 'string'],
+            [['description', 'bastionName', 'bastionType', 'firstGamePlayed', 'extra'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -77,6 +78,7 @@ class CampaignCharacter extends NotarizedModel
             'startingBastionPoints' => 'Starting ' . $bastion,
             'startingCredit' => 'Starting ' . $credit,
             'firstGamePlayed' => 'First Game Played',
+            'extra' => 'Extra',
             'owner' => 'Owner',
             'creator' => 'Creator',
             'created' => 'Created',

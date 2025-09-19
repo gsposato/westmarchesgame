@@ -145,6 +145,7 @@ $ucCredit = ucwords($creditLabel);
             'startingBastionPoints',
             'startingCredit',
             'firstGamePlayed:datetime',
+            'extra'
             ],
             $model->view()
         )

@@ -44,6 +44,8 @@ $campaignPlayerSelect = $campaignPlayer->select();
         <?= $form->field($model, 'firstGamePlayed')->textInput(['value' => $firstGamePlayed]) ?>
     <?php endif; ?>
 
+    <?= $form->field($model, 'extra')->textInput() ?>
+
     <br />
 
     <?php if ($model->canNotarize()): ?>
