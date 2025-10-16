@@ -73,9 +73,14 @@ $before = $_GET["before"] ?? "";
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endif; ?>
-<?php $gamePoll = GamePoll::find()->where(["gameId" => $game->id])->one(); ?>
-<?= $gamePoll->note; ?> 
-<?php $gameNotes = GameNote::find()->where(["gameId" => $game->id])->andWhere(["inGameSummary" => 2])->all(); ?>
+<?= $game->gameRoundupNote ?? "In which..."; ?>
+<?= "\n"; ?>
+<?php $gameNotes = GameNote::find()
+    ->where(["gameId" => $game->id])
+    ->andWhere(["inGameSummary" => 2])
+    ->andWhere(["deleted" => 0])
+    ->all();
+?>
 Highlights: 
 <?php foreach ($gameNotes as $gameNote): ?>
 <?= $gameNote->note; ?>  

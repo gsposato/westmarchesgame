@@ -473,6 +473,25 @@ SQL;
     }
 
     /**
+     * Game Roundup Note
+     * @param Integer $id
+     * @param Integer $campaignId
+     */
+    public function actionRoundupnote($id, $campaignId)
+    {
+        $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gameroundupnote';
+        if (!$this->request->isPost) {
+            return $this->redirect([$url]);
+        }
+        if (!empty($_POST["Game"]["gameRoundupNote"])) {
+            $game = $this->findModel($id);
+            $game->gameRoundupNote = $_POST["Game"]["gameRoundupNote"];
+            $game->save();
+        }
+        return $this->redirect([$url]);
+    }
+
+    /**
      * Add Owner To Game
      * @param Integer $id
      */

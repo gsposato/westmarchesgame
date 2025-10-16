@@ -132,6 +132,15 @@ $canModify = $model->canModify();
     </div>
     <br />
     <?php if (!empty(GamePlayer::bonuses())): ?>
+    <div id="gameroundupnote">
+        <?= $this->render('_roundupnote', [
+            'model' => $model,
+            'canModify' => $canModify
+        ]) ?>
+    </div>
+    <?php endif; ?>
+    <br />
+    <?php if (!empty(GamePlayer::bonuses())): ?>
     <div id="gamebonus">
         <?= $this->render('_bonus', [
             'model' => $model,
