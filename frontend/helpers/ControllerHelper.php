@@ -72,11 +72,25 @@ class ControllerHelper
             self::createUserAction(200);
             return true;
         }
+        $uri = $_SERVER['REQUEST_URI'];
+        $campaign = Campaign::findOne($campaignId);
+        $campaignRules = (object) json_decode($campaign->rules);
+        $uris = $campaignRules->Navigation ?? (object) Yii::$app->params['navigation'];
+        $rank = self::getPlayerRank($campaignId);
+        $canNavigate = false;
+        if (!empty($uris->{$rank})) {
+            foreach ($uris->{$rank} as $key => $value) {
+                if (str_contains($uri, $value)) {
+                    $canNavigate = true;
+                    break;
+                }
+            }
+        }
         $campaignPlayers = CampaignPlayer::find()
             ->where(["campaignId" => $campaignId])
             ->andWhere(["userId" => $userId])
             ->all();
-        if (!empty($campaignPlayers)) {
+        if (!empty($campaignPlayers) && $canNavigate) {
             self::createUserAction(200);
             return true;
         }

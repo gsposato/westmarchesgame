@@ -6,6 +6,7 @@
 use common\models\Campaign;
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
+use frontend\helpers\ControllerHelper;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
@@ -26,11 +27,12 @@ if (empty($id) && !empty($_GET['id'])) {
 }
 if (!empty($id)) {
     $campaign = Campaign::findOne($id);
-    $campaignRules = json_decode($campaign->rules);
+    $campaignRules = (object) json_decode($campaign->rules);
 }
-$uris = $campaignRules->Navigation ?? Yii::$app->params['navigation'];
-if (!empty($uris)) {
-    foreach ($uris as $key => $value) {
+$uris = $campaignRules->Navigation ?? (object) Yii::$app->params['navigation'];
+$rank = ControllerHelper::getPlayerRank($id);
+if (!empty($uris->{$rank})) {
+    foreach ($uris->{$rank} as $key => $value) {
         $sel->{$key} = "";
         if (str_contains($uri, $value)) {
             $showNav = true;
@@ -129,7 +131,7 @@ pre {
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading"><?= $name; ?></div>
-                            <?php foreach ($uris as $label => $link): ?>
+                            <?php foreach ($uris->{$rank} as $label => $link): ?>
                             <?php $grey = $sel->{$label}; ?>
                             <a class="nav-link <?= $grey; ?>" href="<?= $link; ?>?campaignId=<?= $id; ?>">
                                 <div class="sb-nav-link-icon"><i class="fas fa-hashtag"></i></div>
