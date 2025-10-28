@@ -100,4 +100,28 @@ class Campaign extends NotarizedModel
         }
         return $myCampaigns;
     }
+
+    /**
+     * Show Purchases
+     * @param object $campaignRules
+     */
+    public static function showPurchases($campaignRules)
+    {
+        if (!empty($campaignRules->Navigation->purchases)) {
+            return true;
+        }
+        $isNotArray = !is_array($campaignRules->Navigation);
+        $isNotObject = !is_object($campaignRules->Navigation);
+        if ($isNotArray && $isNotObject) {
+            return false;
+        }
+        foreach ($campaignRules->Navigation as $rank) {
+            foreach ($rank as $key => $value) {
+                if (str_contains($value, "purchase")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

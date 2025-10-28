@@ -196,7 +196,8 @@ class CampaignCharacter extends NotarizedModel
             if (empty($gamePlayer->hasBonusPoints)) {
                 continue;
             }
-            $credit += ($game->credit * self::multiplier($rules, "credit", $gamePlayer->hasBonusPoints));
+            $multiplier = self::multiplier($rules, "credit", $gamePlayer->hasBonusPoints);
+            $credit += ($game->credit * $multiplier);
         }
         $currentAdvancement = $rules->CampaignCharacter->startingLevel;
         foreach ($rules->CampaignCharacter->GameLevelAdvancement as $games => $advancement) {

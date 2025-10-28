@@ -24,7 +24,7 @@ $campaign = Campaign::findOne($id);
 $purchaseCurrency = Purchase::currency();
 $purchaseCurrencyColor = Purchase::currencyColor();
 $campaignRules = json_decode($campaign->rules);
-$showPurchases = !empty($campaignRules->Navigation->purchases);
+$showPurchases = Campaign::showPurchases($campaignRules);
 $purchases = Purchase::find()->where(["characterId" => $model->id])->andWhere(["deleted" => 0])->all();
 $currencies = Currency::find()->where(["campaignId" => $id])->all();
 $gamesPlayed = GamePlayer::find()->where(["characterId" => $model->id])->all();
