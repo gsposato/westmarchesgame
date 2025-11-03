@@ -22,6 +22,7 @@ return [
             'tickets' => '/frontend/web/ticket',
             'forms' => '/frontend/web/form',
             'rules' => '/frontend/web/campaign/view',
+            'deleted' => '/frontend/web/deleted',
         ],
         'isHost' => [
             'announcements' => '/frontend/web/campaign-announcement',
