@@ -135,6 +135,7 @@ class NotarizedModel extends \yii\db\ActiveRecord
         $campaignId = $_GET['campaignId'];
         $records = $this::find()
             ->where(["campaignId" => $campaignId])
+            ->andWhere(["<=", "deleted", 0])
             ->all();
         return ArrayHelper::map($records, 'id', 'name');
     }

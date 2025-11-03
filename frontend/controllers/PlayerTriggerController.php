@@ -26,6 +26,15 @@ class PlayerTriggerController extends Controller
     }
 
     /**
+     * @inheritDoc
+     */
+    public function beforeAction($action)
+    {
+        ControllerHelper::canView();
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Lists all PlayerTrigger models.
      *
      * @return string
