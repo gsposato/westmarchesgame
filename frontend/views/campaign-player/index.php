@@ -13,6 +13,8 @@ $this->title = 'Campaign Players';
 $this->params['breadcrumbs'][] = $this->title;
 $campaignId = $_GET['campaignId'];
 $create = 'create?campaignId=' . $campaignId;
+$active = 'index?campaignId=' . $campaignId . '&hibernated=0';
+$hibernate = 'index?campaignId=' . $campaignId . '&hibernated=1';
 ?>
 <div class="campaign-player-index">
 
@@ -20,6 +22,11 @@ $create = 'create?campaignId=' . $campaignId;
 
     <p>
         <?= Html::a('Create Campaign Player', [$create], ['class' => 'btn btn-success']) ?>
+        <?php if (empty($_GET['hibernated'])): ?>
+            <?= Html::a('Hibernated Players', [$hibernate], ['class' => 'btn btn-secondary']) ?>
+        <?php else: ?>
+            <?= Html::a('Active Players', [$active], ['class' => 'btn btn-primary']) ?>
+        <?php endif; ?>
     </p>
 
 

@@ -227,6 +227,7 @@ class User extends ActiveRecord implements IdentityInterface
         $players = CampaignPlayer::find()
             ->where(["campaignId" => $campaignId])
             ->andWhere(['not', ['userId' => null]])
+            ->andWhere(["hibernated" => 0])
             ->all();
         foreach ($players as $player) {
             $records[$player->userId] = $player->name;

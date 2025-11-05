@@ -41,10 +41,11 @@ class CampaignPlayerController extends Controller
      *
      * @return string
      */
-    public function actionIndex($campaignId)
+    public function actionIndex($campaignId, $hibernated = 0)
     {
         $query = CampaignPlayer::find()
             ->where(["campaignId" => $campaignId])
+            ->andWhere(["hibernated" => $hibernated])
             ->andWhere(["deleted" => 0]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -84,15 +85,28 @@ class CampaignPlayerController extends Controller
     public function actionCreate($campaignId)
     {
         $model = new CampaignPlayer();
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index', 'campaignId' => $campaignId]);
-            }
-        } else {
-            $model->loadDefaultValues();
+        $rank = ControllerHelper::getPlayerRank($campaignId);
+        $campaignPlayers = CampaignPlayer::find()->where(["campaignId" => $campaignId])->all();
+        $canCreate = ($rank == 'isAdmin' || empty($campaignPlayers));
+        $isPost = $this->request->isPost;
+        if (!$isPost) {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
         }
-
+        $isLoaded = false;
+        $isSaved = false;
+        if ($canCreate) {
+            $isLoaded = $model->load($this->request->post());
+            $isSaved = $model->save();
+        }
+        if ($isLoaded && $isSaved) {
+            return $this->redirect(['index', 'campaignId' => $campaignId]);
+        }
+        if (!$canCreate) {
+            Yii::$app->session->setFlash("danger", "An administrator is required to perform that action.");
+        }
+        $model->loadDefaultValues();
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -121,17 +135,70 @@ class CampaignPlayerController extends Controller
             $model->save();
             return $this->redirect(['index', 'campaignId' => $campaignId]);
         }
-        else if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'campaignId' => $campaignId]);
+        if ($rank == 'isAdmin') {
+            if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['index', 'campaignId' => $campaignId]);
+            }
         }
         if ($userId == $model->userId && $rank != 'isAdmin') {
             return $this->render('update-self', [
                 'model' => $model,
             ]);
         }
+        if ($this->request->isPost) {
+            Yii::$app->session->setFlash("danger", "An administrator is required to perform that action.");
+        }
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Hibernate Campaign Player
+     * @param integer $campaignId
+     * @param integer $id
+     */
+    public function actionHibernate($campaignId, $id)
+    {
+        $userId = Yii::$app->user->identity->id ?? 1;
+        $model = $this->findModel($id);
+        if ($userId == $model->userId) {
+            ControllerHelper::updateUserAction(403);
+            $forbiddenException = 'This account is not authorized to view the requested page.';
+            throw new ForbiddenHttpException($forbiddenException);
+        }
+        $rank = ControllerHelper::getPlayerRank($campaignId);
+        if ($rank == 'isAdmin') {
+            $model->hibernated = 1;
+            $model->save();
+        } else {
+            Yii::$app->session->setFlash("danger", "An administrator is required to perform that action.");
+        }
+        return $this->redirect(['index', 'campaignId' => $campaignId]);
+    }
+
+    /**
+     * Activate Campaign Player
+     * @param integer $campaignId
+     * @param integer $id
+     */
+    public function actionActivate($campaignId, $id)
+    {
+        $userId = Yii::$app->user->identity->id ?? 1;
+        $model = $this->findModel($id);
+        if ($userId == $model->userId) {
+            ControllerHelper::updateUserAction(403);
+            $forbiddenException = 'This account is not authorized to view the requested page.';
+            throw new ForbiddenHttpException($forbiddenException);
+        }
+        $rank = ControllerHelper::getPlayerRank($campaignId);
+        if ($rank == 'isAdmin') {
+            $model->hibernated = 0;
+            $model->save();
+        } else {
+            Yii::$app->session->setFlash("danger", "An administrator is required to perform that action.");
+        }
+        return $this->redirect(['index', 'campaignId' => $campaignId]);
     }
 
     /**
@@ -150,7 +217,12 @@ class CampaignPlayerController extends Controller
             $forbiddenException = 'This account is not authorized to view the requested page.';
             throw new ForbiddenHttpException($forbiddenException);
         }
-        $model->delete();
+        $rank = ControllerHelper::getPlayerRank($campaignId);
+        if ($rank == 'isAdmin') {
+            $model->delete();
+        } else {
+            Yii::$app->session->setFlash("danger", "An administrator is required to perform that action.");
+        }
         return $this->redirect(['index', 'campaignId' => $campaignId]);
     }
 

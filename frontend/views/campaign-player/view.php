@@ -103,6 +103,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     return 'True';
                 },
             ],
+            [
+                'label' => 'Is Hibernated',
+                'attribute' => 'hibernated',
+                'format' => 'text',
+                'value' => function($model) {
+                    if (empty($model->hibernated)) {
+                        return 'False';
+                    }
+                    return 'True';
+                },
+            ],
             'gameEventTimestamp:datetime',
             'gameEventNumber',
             'created:datetime',
@@ -110,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <?php if (empty($model->userId)): ?>
+    <?php if (empty($model->userId) && empty($model->hibernated)): ?>
     <div class="card">
         <div class="card-header">
             <b>Invite Link</b>
@@ -128,5 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <?php endif; ?>
+
+
 
 </div>

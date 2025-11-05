@@ -46,7 +46,7 @@ if (!empty($gameEvent)) {
                     <div class="card-body" style="background-color:#333;color:#fff!important;">
 <?php $slot = GamePollSlot::findOne($gameEvent->gamePollSlotId); ?>
 <?php $timestamp = $slot->unixtime; ?>
-<?php $gamePlayer = GamePlayer::find()->where(["gameId" => $model->id, "userId" => $owner->id])->one(); ?>
+<?php $gamePlayer = GamePlayer::find()->where(["gameId" => $model->id, "userId" => ($owner->id ?? 0)])->one(); ?>
 <?php if (!empty($gamePlayer->characterId)): ?>
     <?php $character = CampaignCharacter::findOne($gamePlayer->characterId); ?>
 <?php endif; ?>
@@ -55,7 +55,7 @@ if (!empty($gameEvent)) {
 <?= $gameSummaryHeader; ?>
 **Session <?= Game::session($model->id); ?> - <?= $model->name; ?>**
 **Date:** <?= date("m/d/Y", $timestamp); ?> 
-**DM** <?= ucfirst($owner->name); ?> (<?= $characterName; ?>) 
+**DM** <?= ucfirst($owner->name ?? ""); ?> (<?= $characterName; ?>) 
 <?php if (!empty($gamePlayers)): ?>
 <?php foreach ($gamePlayers as $gamePlayer): ?>
 <?php if ($gamePlayer->status == GamePlayer::STATUS_COHOST): ?>
@@ -71,7 +71,7 @@ if (!empty($gameEvent)) {
 **PCs** 
 <?php foreach ($gamePlayers as $gamePlayer): ?>
 <?php if ($gamePlayer->status == GamePlayer::STATUS_SCHEDULED): ?>
-<?php if ($gamePlayer->userId != $owner->id): ?>
+<?php if ($gamePlayer->userId != ($owner->id ?? 0)): ?>
 <?php $character = CampaignCharacter::findOne($gamePlayer->characterId); ?>
 <?php $characterName = $character->name ?? ""; ?>
 - <?= ucfirst($gamePlayer->name()) . ": " . $characterName . "\n"; ?>

@@ -55,7 +55,7 @@ if (!empty($gamePoll->id)) {
 <pre id="gamepoll-text" style="overflow-x:hidden;">
 <?= $gamePollHeader; ?>
 **<?= $model->name; ?>**
-Hosted by @<?= $owner->name; ?> 
+Hosted by @<?= $owner->name ?? ""; ?> 
 <?php if (!empty($model->gameInviteLink)): ?>
 Game Invite Link: <?= $model->gameInviteLink; ?> 
 <?php endif; ?>

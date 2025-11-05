@@ -63,7 +63,7 @@ if (!empty($gameEvent)) {
 <pre id="gameevent-text" style="overflow-x:hidden;">
 <?= $gameEventHeader; ?>
 **<?= $model->name; ?>**
-*Hosted by* @<?= $owner->name; ?> 
+*Hosted by* @<?= $owner->name ?? ""; ?> 
 <?php if (!empty($gamePlayers)): ?>
 <?php foreach ($gamePlayers as $gamePlayer): ?>
 <?php if ($gamePlayer->status == GamePlayer::STATUS_COHOST): ?>
@@ -89,7 +89,7 @@ if (!empty($gameEvent)) {
 **Players** 
 <?php foreach ($gamePlayers as $gamePlayer): ?>
 <?php if ($gamePlayer->status == GamePlayer::STATUS_SCHEDULED): ?>
-<?php if ($gamePlayer->userId != $owner->id): ?>
+<?php if ($gamePlayer->userId != ($owner->id ?? 0)): ?>
 @<?= $gamePlayer->name() . "\n"; ?>
 <?php endif; ?>
 <?php endif; ?>
@@ -118,7 +118,7 @@ if (!empty($gameEvent)) {
                             </small>
                             <br />
                             <?php foreach ($gamePlayers as $gamePlayer): ?>
-                                <?php if ($gamePlayer->userId == $owner->id): ?>
+                                <?php if ($gamePlayer->userId == ($owner->id ?? 0)): ?>
                                     <?php continue; ?>
                                 <?php endif; ?>
                                 <?php $url = $changeGamePlayerStatus; ?>

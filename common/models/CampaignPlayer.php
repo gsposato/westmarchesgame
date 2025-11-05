@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "campaign_player".
@@ -100,5 +101,19 @@ class CampaignPlayer extends NotarizedModel
             }
         }
         return $number;
+    }
+
+    /**
+     * Select
+     */
+    public function select()
+    {
+        $campaignId = $_GET['campaignId'];
+        $records = $this::find()
+            ->where(["campaignId" => $campaignId])
+            ->andWhere(["<=", "deleted", 0])
+            ->andWhere(["<=", "hibernated", 0])
+            ->all();
+        return ArrayHelper::map($records, 'id', 'name');
     }
 }

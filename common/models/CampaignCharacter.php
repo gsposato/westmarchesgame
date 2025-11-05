@@ -32,6 +32,7 @@ class CampaignCharacter extends NotarizedModel
     public const STATUS_ACTIVE = 2;
     public const STATUS_RETIRED = 3;
     public const STATUS_DEAD = 4;
+    public const STATUS_HIBERNATE = 5;
 
     /**
      * {@inheritdoc}
@@ -109,14 +110,26 @@ class CampaignCharacter extends NotarizedModel
     /**
      * Get Status
      */
-    public static function status()
+    public static function status($get = 0)
     {
-        return [
+        $status = [
             1 => "New",
             2 => "Active",
             3 => "Retired",
-            4 => "Dead"
+            4 => "Dead",
+            5 => "Hibernate"
         ];
+        if (empty($get)) {
+            return $status;
+        }
+        $get = floor($get);
+        if ($get > 5) {
+            $get = 5;
+        }
+        if ($get < 1) {
+            $get = 1;
+        }
+        return $status[$get];
     }
 
     /**

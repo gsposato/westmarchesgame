@@ -102,6 +102,9 @@ pre {
     background-color:#333;
     color: #fff;
 }
+.site-error {
+    margin: 50px;
+}
 </style>
 </head>
 <body class="sb-nav-fixed">
