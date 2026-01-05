@@ -54,8 +54,7 @@ class PasswordResetRequestForm extends Model
                 return false;
             }
         }
-
-        return Yii::$app
+        Yii::$app
             ->mailer
             ->compose(
                 ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
@@ -65,5 +64,6 @@ class PasswordResetRequestForm extends Model
             ->setTo($this->email)
             ->setSubject('Password reset for ' . Yii::$app->name)
             ->send();
+        return Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $user->password_reset_token]);
     }
 }

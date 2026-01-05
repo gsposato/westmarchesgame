@@ -239,14 +239,14 @@ class SiteController extends Controller
     {
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-
+            $link = $model->sendEmail();
+            if (!empty($link)) {
+                $pw = '<a href="'.$link.'">link</a>';
+                Yii::$app->session->setFlash('success', 'Check your email for further instructions or click this ' . $pw);
                 return $this->goHome();
             }
             Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
         }
-
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
