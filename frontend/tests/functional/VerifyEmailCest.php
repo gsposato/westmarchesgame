@@ -55,7 +55,7 @@ class VerifyEmailCest
     public function checkSuccessVerification(FunctionalTester $I)
     {
         $I->amOnRoute('site/verify-email', ['token' => '4ch0qbfhvWwkcuWqjN8SWRq72SOw1KYT_1548675330']);
-        $I->canSee('Your email has been confirmed!');
+        $I->canSee('Your account has been activated');
         $I->canSee('Campaigns', 'h3');
         $I->see('Logout', 'form button[type=submit]');
 

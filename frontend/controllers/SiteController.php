@@ -208,26 +208,25 @@ class SiteController extends Controller
             return $this->goHome();
         }
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            $campaignPlayer = CampaignPlayer::findOne($json->campaignPlayerId);
-            if (empty($campaignPlayer->userId)) {
-                $user = User::find()
-                    ->where(["status" => 9])
-                    ->orderBy(["id" => SORT_DESC])
-                    ->one();
-                $campaignPlayer->userId = $user->id;
-                $campaignPlayer->save();
+        $verifyFormSubmission = [
+            "isLoaded" => $model->load(Yii::$app->request->post()),
+            "activateLink" => $model->signup()
+        ];
+        foreach ($verifyFormSubmission as $key => $submission) {
+            if (!$submission) {
+                return $this->render('signup', [
+                    'model' => $submission ?: new SignupForm(),
+                ]);
             }
-            Yii::$app->session->setFlash(
-                'success',
-                'Thank you for registration. Please check your inbox for verification email.'
-            );
-            return $this->goHome();
         }
-
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
+        $link = $verifyFormSubmission['activateLink'];
+        $link .= "&campaignToken=" . $token;
+        $msg = 'Thank you for registration. ';
+        $msg .= 'Please check your inbox for verification email ';
+        $msg .= 'or click this ';
+        $msg .= '<a href="'.$link.'">link</a>.';
+        Yii::$app->session->setFlash('success', $msg);
+        return $this->goHome();
     }
 
     /**
@@ -282,22 +281,34 @@ class SiteController extends Controller
      * Verify email address
      *
      * @param string $token
+     * @param string $campaignToken
      * @throws BadRequestHttpException
      * @return yii\web\Response
      */
-    public function actionVerifyEmail($token)
+    public function actionVerifyEmail($token, $campaignToken = "")
     {
         try {
             $model = new VerifyEmailForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        if (($user = $model->verifyEmail()) && Yii::$app->user->login($user)) {
-            Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
+
+        $isVerifiedEmail = ($user = $model->verifyEmail());
+        $isLoggedIn = Yii::$app->user->login($user);
+
+        if ($isVerifiedEmail && $isLoggedIn) {
+            Yii::$app->session->setFlash(
+                'success',
+                'Your account has been activated'
+            );
+            $this->verifyCampaignToken($campaignToken);
             return $this->goHome();
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
+        Yii::$app->session->setFlash(
+            'error',
+            'Sorry, we are unable to activate your account.'
+        );
         return $this->goHome();
     }
 
@@ -362,5 +373,32 @@ class SiteController extends Controller
         }
         Yii::$app->session->setFlash('success', $msg);
         return $this->goHome();
+    }
+
+    /**
+     * Verify Campaign Token
+     * @param string $token
+     */
+    protected function verifyCampaignToken($token)
+    {
+        if (empty($token)) {
+            return;
+        }
+        $json = json_decode(base64_decode($token));
+        $keys = [
+            "campaignId",
+            "campaignPlayerId",
+            "unixtimestamp"
+        ];
+        foreach ($keys as $key) {
+            if (empty($json->{$key})) {
+                return;
+            }
+        }
+        $campaignPlayer = CampaignPlayer::findOne(
+            $json->campaignPlayerId
+        );
+        $campaignPlayer->userId = Yii::$app->user->identity->id ?? "";
+        $campaignPlayer->save();
     }
 }

@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\base\Model;
+use common\models\Email;
 use common\models\User;
 
 /**
@@ -41,40 +42,84 @@ class SignupForm extends Model
     /**
      * Signs user up.
      *
-     * @return bool whether the creating new account was successful and email was sent
+     * @return string
      */
     public function signup()
     {
         if (!$this->validate()) {
             return null;
         }
-        
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-
-        return $user->save() && $this->sendEmail($user);
+        $user->save();
+        return $this->sendEmail($user);
     }
 
     /**
      * Sends confirmation email to user
      * @param User $user user model to with email should be send
-     * @return bool whether the email was sent
+     * @return string
      */
     protected function sendEmail($user)
     {
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['user' => $user]
-            )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
-            ->setTo($this->email)
-            ->setSubject('Account registration at ' . Yii::$app->name)
-            ->send();
+        // prepare email
+        $html = 'emailVerify-html';
+        $text = 'emailVerify-text';
+        $templates = [
+            'html' => $html,
+            'text' => $text,
+        ];
+        $variables = [
+            'user' => $user
+        ];
+        $fromEmail = Yii::$app->params['supportEmail'];
+        $fromName = Yii::$app->name;
+        $from = [
+            $fromEmail => $fromName
+        ];
+        $to = $this->email;
+        $subject = 'Account registration at ';
+        $subject .= Yii::$app->name;
+
+        $start = microtime(true);
+
+        try {
+            // send email
+            $result = Yii::$app
+                ->mailer
+                ->compose($templates, $variables)
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->send();
+        } catch (\Throwable $e) {
+            // capture unusual result
+            $result = $e->getMessage();
+        }
+
+        // record result
+        $end = microtime(true);
+        $now = time();
+        $email = new Email();
+        $email->name = uniqId();
+        $email->result = strval($result) ?? "";
+        $email->response = $end - $start;
+        $email->owner = 0; // system
+        $email->creator = 0; // system
+        $email->created = $now;
+        $email->updated = $now;
+        $email->deleted = $now;
+        $email->save();
+
+        $url = Yii::$app->urlManager->createAbsoluteUrl([
+            'site/verify-email',
+            'token' => $user->verification_token
+        ]);
+
+        return $url;
     }
 }

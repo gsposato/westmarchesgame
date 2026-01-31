@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\base\Model;
+use common\models\Email;
 use common\models\User;
 
 /**
@@ -34,7 +35,7 @@ class PasswordResetRequestForm extends Model
     /**
      * Sends an email with a link, for resetting the password.
      *
-     * @return bool whether the email was send
+     * @return string
      */
     public function sendEmail()
     {
@@ -47,23 +48,70 @@ class PasswordResetRequestForm extends Model
         if (!$user) {
             return false;
         }
+
+        $token = $user->password_reset_token;
+        $isValidToken = User::isPasswordResetTokenValid($token);
         
-        if (!User::isPasswordResetTokenValid($user->password_reset_token)) {
+        if (!$isValidToken) {
             $user->generatePasswordResetToken();
             if (!$user->save()) {
                 return false;
             }
         }
-        Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
-                ['user' => $user]
-            )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
-            ->setTo($this->email)
-            ->setSubject('Password reset for ' . Yii::$app->name)
-            ->send();
-        return Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $user->password_reset_token]);
+
+        $html = 'passwordResetToken-html';
+        $text = 'passwordResetToken-text';
+        $templates = [
+            'html' => $html,
+            'text' => $text,
+        ];
+        $variables = [
+            'user' => $user
+        ];
+        $fromEmail = Yii::$app->params['supportEmail'];
+        $fromName = Yii::$app->name;
+        $from = [
+            $fromEmail => $fromName
+        ];
+        $to = $this->email;
+        $subject = 'Password reset for ';
+        $subject .= Yii::$app->name;
+
+        $start = microtime(true);
+
+        try {
+            // send email
+            $result = Yii::$app
+                ->mailer
+                ->compose($templates, $variables)
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->send();
+        } catch (\Throwable $e) {
+            // capture unusual result
+            $result = $e->getMessage();
+        }
+
+        // record result
+        $end = microtime(true);
+        $now = time();
+        $email = new Email();
+        $email->name = uniqId();
+        $email->result = strval($result) ?? "";
+        $email->response = $end - $start;
+        $email->owner = 0; // system
+        $email->creator = 0; // system
+        $email->created = $now;
+        $email->updated = $now;
+        $email->deleted = $now;
+        $email->save();
+
+        $url = Yii::$app->urlManager->createAbsoluteUrl([
+            'site/reset-password',
+            'token' => $token
+        ]);
+
+        return $url;
     }
 }
