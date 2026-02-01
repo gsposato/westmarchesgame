@@ -310,7 +310,7 @@ SQL;
         if ($slot->gamePollId != $poll->id) {
             return $this->redirect([$url]);
         }
-        $slot->delete();
+        $slot->delete($hard = true);
         return $this->redirect([$url]);
     }
 
