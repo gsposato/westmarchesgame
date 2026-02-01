@@ -52,6 +52,16 @@ class CampaignCharacter extends NotarizedModel
             [['campaignId', 'type', 'status', 'startingGold', 'startingBastionPoints', 'startingCredit', 'owner', 'creator', 'created', 'updated'], 'integer'],
             [['description', 'bastionName', 'bastionType', 'firstGamePlayed', 'extra'], 'string'],
             [['name'], 'string', 'max' => 255],
+
+            // force unique character names per campaign:
+            [['name', 'campaignId'], 'required'],
+            [
+                ['name'],
+                'unique',
+                'targetAttribute' => ['name', 'campaignId'],
+                'message' => 'That name is already used in this campaign.',
+            ],
+
         ];
     }
 
@@ -92,7 +102,8 @@ class CampaignCharacter extends NotarizedModel
      */
     public function beforeSave($insert)
     {
-        $this->firstGamePlayed = strval(strtotime($this->firstGamePlayed));
+        $first = strval(strtotime($this->firstGamePlayed));
+        $this->firstGamePlayed = $first;
         return parent::beforeSave($insert);
     }
 
