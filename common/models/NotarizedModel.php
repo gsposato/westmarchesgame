@@ -34,6 +34,22 @@ class NotarizedModel extends \yii\db\ActiveRecord
     }
 
     /**
+     * After Save
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($this::class == "common\models\Event") {
+            return parent::afterSave($insert, $changedAttributes);
+        }
+        if (!$insert) {
+            foreach ($changedAttributes as $name => $value) {
+                Event::add($this, $name, $value);
+            }
+        }
+        return parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
      * Notarize
      */
     public function notarize($asAdmin = false)
@@ -96,8 +112,10 @@ class NotarizedModel extends \yii\db\ActiveRecord
     {
         $attr = $this->attributes;
         $sapi = php_sapi_name();
+        $isHttp = ($sapi != "cli");
+        $isGuest = Yii::$app->user->isGuest;
         $isGuestAllowed = !empty($_POST['challenge']);
-        if ($sapi != "cli" && Yii::$app->user->isGuest && !$isGuestAllowed) {
+        if ($isHttp && $isGuest && !$isGuestAllowed) {
             return false;
         }
         $userId = Yii::$app->user->identity->id ?? 1;
