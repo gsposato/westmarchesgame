@@ -110,12 +110,23 @@ class CampaignCharacter extends NotarizedModel
     /**
      * Get Type
      */
-    public static function type()
+    public static function type($get = 0)
     {
-        return [
+        $type = [
             1 => "Player Character (PC)",
             2 => "Non Playable Character (NPC)"
         ];
+        if (empty($get)) {
+            return $type;
+        }
+        $get = floor($get);
+        if ($get > 2) {
+            $get = 2;
+        }
+        if ($get < 1) {
+            $get = 1;
+        }
+        return $type[$get];
     }
 
     /**

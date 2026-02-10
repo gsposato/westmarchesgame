@@ -44,7 +44,7 @@ if (!empty($gameEvent)) {
                             <?php $url = $createGameEvent . "&slotId=" . $gamePollSlot->id; ?>
                             <a href="<?= $url; ?>" class="btn btn-secondary" style="margin:5px">
                                 <i class="fa fa-calendar"></i>&nbsp;
-                                <?= date("m/d/Y h:i a", $gamePollSlot->unixtime); ?>
+                                <?= date("m/d/Y h:i A", $gamePollSlot->unixtime); ?>
                             </a>
                         <?php endforeach; ?>
                 </div>

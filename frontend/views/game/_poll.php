@@ -80,7 +80,7 @@ Duration: <?= $model->timeDuration; ?>
                             <?php $url = $deleteGamePollSlot . "&slotId=" . $gamePollSlot->id; ?>
                             <a href="<?= $url; ?>" class="btn btn-danger" style="margin:5px">
                                 <i class="fa fa-times"></i>&nbsp;
-                                <?= date("m/d/Y h:i a", $gamePollSlot->unixtime); ?>
+                                <?= date("m/d/Y h:i A", $gamePollSlot->unixtime); ?>
                             </a>
                         <?php endforeach; ?>
                         <hr />

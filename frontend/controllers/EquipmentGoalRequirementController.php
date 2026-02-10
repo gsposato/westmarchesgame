@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\EquipmentGoalRequirement;
+use common\models\Event;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -65,7 +66,12 @@ class EquipmentGoalRequirementController extends Controller
      */
     public function actionView($campaignId, $id)
     {
+        $events = Event::find()
+            ->where(["modelClass" => "EquipmentGoalRequirement"])
+            ->andWhere(["modelId" => $id])
+            ->all();
         return $this->render('view', [
+            'events' => $events,
             'model' => $this->findModel($id),
         ]);
     }

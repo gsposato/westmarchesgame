@@ -12,6 +12,7 @@ use common\models\Game;
 use common\models\Equipment;
 use common\models\EquipmentGoal;
 use common\models\EquipmentGoalRequirement as Egr;
+use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\CampaignCharacter $model */
@@ -351,3 +352,40 @@ $ucCredit = ucwords($creditLabel);
                 </div>
             </div>
             <?php endif; ?>
+    <br />
+    <br />
+
+    <h3>Events</h3>
+
+    <hr />
+
+    <?php $isGuest = Yii::$app->user->isGuest; ?>
+    <?php foreach ($events as $event): ?>
+        <?php $name = $event->attributeName; ?>
+        <?php $value = $event->attributeValue; ?>
+        <?php if ($name == "status"): ?>
+            <?php $value = CampaignCharacter::status($value); ?>
+        <?php endif; ?>
+        <?php if ($name == "type"): ?>
+            <?php $value = CampaignCharacter::type($value); ?>
+        <?php endif; ?>
+        <?php $time = date("m/d/Y h:i A", $event->created); ?>
+        <?php $owner = User::findOne($event->owner); ?>
+        <div class="card">
+            <div class="card-header">
+                <?php if ($isGuest): ?>
+                    <span style="color:grey">Event</span>
+                <?php else: ?>
+                    <i class="fa fa-user">&nbsp;</i>&nbsp;
+                    <?= $owner->username ?? ""; ?>
+                <?php endif; ?>
+            </div>
+            <div class="card-body">
+                <b><?= ucwords($name); ?>:</b> <?= $value; ?>
+            </div>
+            <div class="card-footer">
+                <i class="fa fa-clock"></i>&nbsp;<?= $time; ?>
+            </div>
+        </div>
+        <br />
+    <?php endforeach; ?>

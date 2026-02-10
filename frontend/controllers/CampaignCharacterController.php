@@ -6,6 +6,7 @@ use Yii;
 use common\models\Campaign;
 use common\models\CampaignCharacter;
 use common\models\CampaignPlayer;
+use common\models\Event;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -113,7 +114,12 @@ class CampaignCharacterController extends Controller
                 $model->save();
             }
         }
+        $events = Event::find()
+            ->where(["modelClass" => "CampaignCharacter"])
+            ->andWhere(["modelId" => $id])
+            ->all();
         return $this->render('view', [
+            'events' => $events,
             'model' => $this->findModel($id),
         ]);
     }

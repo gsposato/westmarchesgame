@@ -1,6 +1,7 @@
 <?php
 
 use common\models\EquipmentGoal;
+use common\models\User;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -65,5 +66,32 @@ $canModify = $model->canModify();
         ],
         $model->view())
     ]) ?>
+
+    <br />
+    <br />
+
+    <h3>Events</h3>
+
+    <hr />
+
+    <?php foreach ($events as $event): ?>
+        <?php $name = $event->attributeName; ?>
+        <?php $value = $event->attributeValue; ?>
+        <?php $time = date("m/d/Y h:i A", $event->created); ?>
+        <?php $owner = User::findOne($event->owner); ?>
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-user">&nbsp;</i>&nbsp;
+                <?= $owner->username ?? ""; ?>
+            </div>
+            <div class="card-body">
+                <b><?= ucwords($name); ?>:</b> <?= $value; ?>
+            </div>
+            <div class="card-footer">
+                <i class="fa fa-clock"></i>&nbsp;<?= $time; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
 
 </div>
