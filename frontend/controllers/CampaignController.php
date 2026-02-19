@@ -70,6 +70,7 @@ class CampaignController extends Controller
                 $cp->isPlayer = 1;
                 $cp->isHost = 1;
                 $cp->isAdmin = 1;
+                $cp->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
