@@ -146,13 +146,14 @@ class ControllerHelper
      * Create User Action
      * @param integer $statuscode
      */
-    public static function createUserAction($statuscode)
+    public static function createUserAction($statuscode, $message = "")
     {
         $action = new UserAction();
         $action->userId = Yii::$app->user->identity->id ?? -1;
         $action->uri = $_SERVER['REQUEST_URI'];
         $action->unixtime = time();
         $action->statuscode = $statuscode;
+        $action->message = $message;
         $action->save();
     }
 

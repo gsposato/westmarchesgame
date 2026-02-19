@@ -43,7 +43,13 @@ class NotarizedModel extends \yii\db\ActiveRecord
         }
         if (!$insert) {
             foreach ($changedAttributes as $name => $value) {
-                Event::add($this, $name, $value);
+                try {
+                    Event::add($this, $name, $value);
+                } catch (\Exception $e) {
+                    $message = "Event Exception: ";
+                    $message .= $e->getMessage();
+                    ControllerHelper::createUserAction(500, $message);
+                }
             }
         }
         return parent::afterSave($insert, $changedAttributes);
