@@ -37,7 +37,7 @@ class Event extends NotarizedModel
         return [
             [['modelId', 'modelClass', 'attributeName', 'attributeValue', 'owner', 'creator', 'created', 'updated', 'deleted'], 'required'],
             [['modelId', 'owner', 'creator', 'created', 'updated', 'deleted'], 'integer'],
-            [['modelClass', 'attributeName', 'attributeValue'], 'string', 'max' => 255],
+            //[['modelClass', 'attributeName', 'attributeValue'], 'string', 'max' => 255],
         ];
     }
 
