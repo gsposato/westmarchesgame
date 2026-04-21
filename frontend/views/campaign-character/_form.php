@@ -35,7 +35,7 @@ $campaignPlayerSelect = $campaignPlayer->select();
 
     <?= $form->field($model, 'startingBastionPoints')->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'startingCredit')->textInput(['type' => 'number']) ?>
+    <?= $form->field($model, 'startingCredit')->textInput(['type' => 'number', 'step' => '0.01']) ?>
 
     <?php if (empty($model->firstGamePlayed)): ?>
         <?= $form->field($model, 'firstGamePlayed')->textInput(['type' => 'datetime-local']) ?>

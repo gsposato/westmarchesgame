@@ -42,7 +42,8 @@ class Game extends NotarizedModel
     {
         return [
             [['campaignId', 'name', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'credit', 'host', 'owner', 'creator', 'created', 'updated', 'category'], 'integer'],
+            [['campaignId', 'goldPayoutPerPlayer', 'baseBastionPointsPerPlayer', 'bonusBastionPointsPerPlayer', 'host', 'owner', 'creator', 'created', 'updated', 'category'], 'integer'],
+            [['credit'], 'number'],
             [['gameInviteLink', 'voiceVenueLink', 'gameRoundupNote'], 'string'],
             [['name', 'levelRange', 'timeDuration'], 'string', 'max' => 255],
         ];

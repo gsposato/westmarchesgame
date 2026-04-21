@@ -151,7 +151,8 @@ $userSelect = User::select();
 
     <?php $options = [
             'type' => 'number',
-            'value' => $model->credit ?? $defaultGameCreditPerPlayer
+            'step' => '0.01',
+            'value' => ($model->credit == "0.00") ? $defaultGameCreditPerPlayer : $model->credit
         ];
     ?>
     <?= $form->field($model, 'credit')->textInput($options) ?>

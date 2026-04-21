@@ -49,7 +49,8 @@ class CampaignCharacter extends NotarizedModel
     {
         return [
             [['campaignId', 'playerId', 'name', 'type', 'status', 'owner', 'creator', 'created', 'updated'], 'required'],
-            [['campaignId', 'type', 'status', 'startingGold', 'startingBastionPoints', 'startingCredit', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['campaignId', 'type', 'status', 'startingGold', 'startingBastionPoints', 'owner', 'creator', 'created', 'updated'], 'integer'],
+            [['startingCredit'], 'number'],
             [['description', 'bastionName', 'bastionType', 'firstGamePlayed', 'extra'], 'string'],
             [['name'], 'string', 'max' => 255],
 
