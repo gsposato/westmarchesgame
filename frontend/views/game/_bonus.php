@@ -35,7 +35,7 @@ if (!empty($gameEvent)) {
                             <?php $bonus = $gamePlayer->bonus($isHost, $view = true); ?>
                             <?php $alert = $bonus["alert"]; ?>
                             <?php $icon = $bonus["icon"]; ?>
-                            <a href="<?= $url; ?>" class="btn btn-<?= $alert; ?>" style="margin:5px" <?= $ti; ?>>
+                            <a href="<?= $url; ?>" class="btn btn-<?= $alert; ?> game-btn" style="margin:5px" <?= $ti; ?>>
                                 <i class="fa <?= $icon; ?>"></i>&nbsp;<?= $character->name; ?>
                             </a>
                         <?php endforeach; ?>

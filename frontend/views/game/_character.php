@@ -42,12 +42,12 @@ if (!empty($gameEvent)) {
                                 <?php $ti = 'title="'.$ch->description.'"'; ?>
                                 <?php $st = 'style="margin:5px"'; ?>
                                 <?php if ($gamePlayer->characterId == $character->id): ?>
-                                    <?php $cl = 'class="btn btn-success"'; ?>
+                                    <?php $cl = 'class="btn btn-success game-btn"'; ?>
                                     <a href="<?= $url; ?>" <?= $cl; ?> <?= $ti; ?> <?= $st; ?>>
                                         <i class="fa fa-check"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>
                                 <?php else: ?>
-                                    <?php $cl = 'class="btn btn-secondary"'; ?>
+                                    <?php $cl = 'class="btn btn-secondary game-btn"'; ?>
                                     <a href="<?= $url; ?>" <?= $cl; ?> <?= $ti; ?> <?= $st; ?>>
                                         <i class="fa fa-minus"></i>&nbsp;<?= $character->name . " • " . $ca; ?>
                                     </a>

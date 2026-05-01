@@ -60,3 +60,31 @@ function selectText(nodeId) {
         console.warn("Could not select text in node: Unsupported browser.");
     }
 }
+
+$(function () {
+
+    console.log('scripts.js loaded');
+
+    $(document).on('click', '.game-btn', function (e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const url = $btn.attr('href') + "&js=true";
+        const $icon = $btn.find('svg');
+        $btn.addClass('disabled');
+        $icon.removeClass().addClass('svg-inline--fa fa-spinner fa-spin');
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                alert('Something went wrong.');
+                $icon.removeClass().addClass('svg-inline--fa fa-times');
+                $btn.removeClass('disabled');
+                $btn.addClass('danger');
+            }
+        });
+    });
+
+});

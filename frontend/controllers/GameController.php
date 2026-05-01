@@ -291,27 +291,28 @@ SQL;
      * @param Integer $id
      * @param Integer $campaignId
      * @param Integer $slotId
+     * @param Boolean $js
      */
-    public function actionPollslotdelete($id, $campaignId, $slotId)
+    public function actionPollslotdelete($id, $campaignId, $slotId, $js = false)
     {
         $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamepoll';
         $event = GameEvent::find()->where(["gamePollSlotId" => $slotId])->one();
         if (!empty($event)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $poll = GamePoll::find()->where(["gameId" => $id])->one();
         if (empty($poll)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $slot = GamePollSlot::findOne($slotId);
         if (empty($slot)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         if ($slot->gamePollId != $poll->id) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $slot->delete($hard = true);
-        return $this->redirect([$url]);
+        return ($js) ? "true" : $this->redirect([$url]);
     }
 
     /**
@@ -366,17 +367,18 @@ SQL;
      * @param Integer $id
      * @param Integer $campaignId
      * @param Integer $gamePlayerId
+     * @param Boolean $js
      */
-    public function actionPlayerstatus($id, $campaignId, $gamePlayerId)
+    public function actionPlayerstatus($id, $campaignId, $gamePlayerId, $js = false)
     {
         $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gameevent';
         $player = GamePlayer::findOne($gamePlayerId);
         if (empty($player)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $player->status = GamePlayer::change($player->status);
         $player->save();
-        return $this->redirect([$url]);
+        return ($js) ? "true" : $this->redirect([$url]);
     }
 
     /**
@@ -384,29 +386,30 @@ SQL;
      * @param Integer $id
      * @param Integer $campaignId
      * @param Integer $characterId
+     * @param Boolean $js
      */
-    public function actionCharacter($id, $campaignId, $characterId)
+    public function actionCharacter($id, $campaignId, $characterId, $js = false)
     {
         $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamecharacter';
         $character = CampaignCharacter::findOne($characterId);
         if (empty($character)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $player = GamePlayer::find()
             ->where(["userId" => $character->playerId])
             ->andWhere(["gameId" => $id])
             ->one();
         if (empty($player)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         if ($player->characterId == $character->id) {
             $player->characterId = -1;
             $player->save();
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $player->characterId = $character->id;
         $player->save();
-        return $this->redirect([$url]);
+        return ($js) ? "true" : $this->redirect([$url]);
     }
 
     /**
@@ -451,13 +454,14 @@ SQL;
      * @param Integer $id
      * @param Integer $campaignId
      * @param Integer $characterId
+     * @param Boolean $js
      */
-    public function actionBonus($id, $campaignId, $characterId)
+    public function actionBonus($id, $campaignId, $characterId, $js = false)
     {
         $url = 'view?campaignId='. $campaignId.'&id='.$id.'#gamebonus';
         $character = CampaignCharacter::findOne($characterId);
         if (empty($character)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $player = GamePlayer::find()
             ->where(["userId" => $character->playerId])
@@ -465,11 +469,11 @@ SQL;
             ->andWhere(["gameId" => $id])
             ->one();
         if (empty($player)) {
-            return $this->redirect([$url]);
+            return ($js) ? "true" : $this->redirect([$url]);
         }
         $isHost = CampaignCharacter::isHostCharacter($id, $characterId);
         $player->bonus($isHost);
-        return $this->redirect([$url]);
+        return ($js) ? "true" : $this->redirect([$url]);
     }
 
     /**

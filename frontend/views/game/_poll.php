@@ -78,7 +78,7 @@ Duration: <?= $model->timeDuration; ?>
                     <div class="card-footer">
                         <?php foreach ($gamePollSlots as $gamePollSlot): ?>
                             <?php $url = $deleteGamePollSlot . "&slotId=" . $gamePollSlot->id; ?>
-                            <a href="<?= $url; ?>" class="btn btn-danger" style="margin:5px">
+                            <a href="<?= $url; ?>" class="btn btn-danger game-btn" style="margin:5px">
                                 <i class="fa fa-times"></i>&nbsp;
                                 <?= date("m/d/Y h:i A", $gamePollSlot->unixtime); ?>
                             </a>
